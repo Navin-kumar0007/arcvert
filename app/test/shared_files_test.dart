@@ -118,6 +118,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
       expect(find.textContaining('Getting what you shared'), findsNothing);
       expect(find.textContaining('shared.png'), findsOneWidget);
+      await tester.tap(find.text('Make it fit'));
+      await tester.pump();
       expect(find.text('WhatsApp'), findsOneWidget);
     });
 

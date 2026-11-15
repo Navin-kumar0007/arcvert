@@ -1161,4 +1161,104 @@ class WordsHi extends Words {
 
   @override
   String get previewCompareShort => 'तुलना';
+
+  @override
+  String get modeFit => 'फ़िट करें';
+
+  @override
+  String get homeTitle => 'फ़ाइल को डायल पर छोड़ें';
+
+  @override
+  String get homeSubtitle => 'बदलें, छोटा करें या सँवारें। असली फ़ाइल कभी नहीं बदलती।';
+
+  @override
+  String get offlineBadge => 'ऑफ़लाइन · कुछ भी अपलोड नहीं होता';
+
+  @override
+  String get fromAnyApp => 'किसी भी ऐप से';
+
+  @override
+  String get shiftDragAction => 'फ़ाइल खींचें';
+
+  @override
+  String get shiftDragExplain =>
+      'डायल आपके कर्सर पर, किसी भी ऐप के ऊपर खुलता है। किसी हिस्से पर छोड़ दें।';
+
+  @override
+  String get toolsKeyHint => 'से टूल मिलते हैं: काटना, घुमाना, आकार बदलना';
+
+  @override
+  String get fitChat => 'चैट ऐप';
+
+  @override
+  String get fitChatNote => 'फ़ोन पर साफ़, भेजने में जल्दी';
+
+  @override
+  String get fitEmail => 'ईमेल';
+
+  @override
+  String get fitEmailNote => 'अटैचमेंट की आम सीमा से कम';
+
+  @override
+  String get fitSize => 'तय आकार से कम';
+
+  @override
+  String get fitSizeNote => '100 KB, 500 KB या 1 MB';
+
+  @override
+  String get fitForm => 'फ़ॉर्म की फ़ोटो और हस्ताक्षर';
+
+  @override
+  String get fitFormNote => 'फ़ॉर्म जितने पिक्सेल और KB माँगे, ठीक उतने';
+
+  @override
+  String get recent => 'हाल के';
+
+  @override
+  String get allHistory => 'पूरा इतिहास';
+
+  @override
+  String get recentEmpty => 'आप जो नतीजे सहेजेंगे, वे यहाँ दिखेंगे।';
+
+  @override
+  String get privacyNote => 'सब कुछ इसी डिवाइस पर होता है। न खाता, न अपलोड, न ट्रैकिंग।';
+
+  @override
+  String get familyPhotos => 'फ़ोटो और HEIC';
+
+  @override
+  String get familyPdf => 'PDF और Word';
+
+  @override
+  String get familyMedia => 'वीडियो और आवाज़';
+
+  @override
+  String get familyArchives => 'ZIP, 7z, RAR';
+
+  @override
+  String get familySubtitles => 'सबटाइटल';
+
+  @override
+  String get addFiles => 'फ़ाइलें जोड़ें';
+
+  @override
+  String get clearFiles => 'हटाएँ';
+
+  @override
+  String get dragOutHint => 'मेल, चैट या फ़ोल्डर में खींचें';
+
+  @override
+  String get keysChoose => 'कोई हिस्सा चुनें';
+
+  @override
+  String get keysRing => 'बाहरी घेरे पर उसके विकल्प';
+
+  @override
+  String get keysRun => 'चलाएँ';
+
+  @override
+  String get keysClose => 'डायल बंद करें';
+
+  @override
+  String get keyArrows => 'तीर कुंजियाँ';
 }

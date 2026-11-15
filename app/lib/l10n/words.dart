@@ -1982,6 +1982,204 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Compare'**
   String get previewCompareShort;
+
+  /// No description provided for @modeFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it fit'**
+  String get modeFit;
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop a file on the dial'**
+  String get homeTitle;
+
+  /// No description provided for @homeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert, shrink or tidy it. The original is never changed.'**
+  String get homeSubtitle;
+
+  /// No description provided for @offlineBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · nothing is uploaded'**
+  String get offlineBadge;
+
+  /// No description provided for @fromAnyApp.
+  ///
+  /// In en, this message translates to:
+  /// **'From any app'**
+  String get fromAnyApp;
+
+  /// No description provided for @shiftDragAction.
+  ///
+  /// In en, this message translates to:
+  /// **'drag a file'**
+  String get shiftDragAction;
+
+  /// No description provided for @shiftDragExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'The dial opens at your cursor, over any app. Let go on a slice.'**
+  String get shiftDragExplain;
+
+  /// No description provided for @toolsKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'adds tools: crop, rotate, resize'**
+  String get toolsKeyHint;
+
+  /// No description provided for @fitChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat apps'**
+  String get fitChat;
+
+  /// No description provided for @fitChatNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp on a phone, quick to send'**
+  String get fitChatNote;
+
+  /// No description provided for @fitEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get fitEmail;
+
+  /// No description provided for @fitEmailNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Under the usual attachment limit'**
+  String get fitEmailNote;
+
+  /// No description provided for @fitSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Under a size'**
+  String get fitSize;
+
+  /// No description provided for @fitSizeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'100 KB, 500 KB or 1 MB'**
+  String get fitSizeNote;
+
+  /// No description provided for @fitForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Form photo and signature'**
+  String get fitForm;
+
+  /// No description provided for @fitFormNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact pixels and KB a form asks for'**
+  String get fitFormNote;
+
+  /// No description provided for @recent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recent;
+
+  /// No description provided for @allHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'All history'**
+  String get allHistory;
+
+  /// No description provided for @recentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Results you save show up here.'**
+  String get recentEmpty;
+
+  /// No description provided for @privacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything happens on this device. No account, no upload, no tracking.'**
+  String get privacyNote;
+
+  /// No description provided for @familyPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos and HEIC'**
+  String get familyPhotos;
+
+  /// No description provided for @familyPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF and Word'**
+  String get familyPdf;
+
+  /// No description provided for @familyMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Video and sound'**
+  String get familyMedia;
+
+  /// No description provided for @familyArchives.
+  ///
+  /// In en, this message translates to:
+  /// **'ZIP, 7z, RAR'**
+  String get familyArchives;
+
+  /// No description provided for @familySubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles'**
+  String get familySubtitles;
+
+  /// No description provided for @addFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add files'**
+  String get addFiles;
+
+  /// No description provided for @clearFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearFiles;
+
+  /// No description provided for @dragOutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag into mail, chat or a folder'**
+  String get dragOutHint;
+
+  /// No description provided for @keysChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a slice'**
+  String get keysChoose;
+
+  /// No description provided for @keysRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Its choices on the outer ring'**
+  String get keysRing;
+
+  /// No description provided for @keysRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Run it'**
+  String get keysRun;
+
+  /// No description provided for @keysClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the dial'**
+  String get keysClose;
+
+  /// No description provided for @keyArrows.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrows'**
+  String get keyArrows;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

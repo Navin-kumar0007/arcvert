@@ -43,6 +43,11 @@ class RadialAction {
   /// is already in that format: WhatsApp on a JPG still resizes it.
   bool get isFormatChange => suffix == 'converted';
 
+  /// True for Make it fit: the actions on the Shift menu that aim at a purpose or a size, such as
+  /// WhatsApp or Under 100 KB, rather than only changing the format. The window gives them their
+  /// own tab and colour; the Shift-drag menu keeps them beside the formats.
+  bool get isFit => mode == ActionMode.convert && !isFormatChange;
+
   /// The format this action writes for [input].
   ///
   /// Keeps the input's format unless the engines can only read it: we ship no HEIC

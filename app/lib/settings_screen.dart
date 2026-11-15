@@ -7,6 +7,7 @@ import 'app_settings.dart';
 import 'open_page.dart';
 import 'shift_drag.dart';
 import 'update_check.dart';
+import 'theme.dart';
 import 'words.dart';
 
 /// Opens Settings over the current screen.
@@ -184,7 +185,7 @@ class ResultsFolderChoice extends StatelessWidget {
   }
 }
 
-/// Light, dark, or as the system is.
+/// Light, dark, or as the system is: three cards, each with a small picture of the dial in it.
 class ThemeChoice extends StatelessWidget {
   const ThemeChoice({super.key, required this.settings});
 
@@ -197,20 +198,148 @@ class ThemeChoice extends StatelessWidget {
       valueListenable: settings,
       builder: (context, value, _) => _Labelled(
         label: words.theme,
-        child: SegmentedButton<String>(
-          showSelectedIcon: false,
-          segments: [
-            ButtonSegment(value: 'system', label: Text(words.themeSystem)),
-            ButtonSegment(value: 'light', label: Text(words.themeLight)),
-            ButtonSegment(value: 'dark', label: Text(words.themeDark)),
-          ],
-          selected: {value.theme},
-          onSelectionChanged: (chosen) =>
-              settings.change((old) => old.copyWith(theme: chosen.single)),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final cards = [
+              ('system', words.themeSystem, [SdColors.light, SdColors.dark]),
+              ('light', words.themeLight, [SdColors.light]),
+              ('dark', words.themeDark, [SdColors.dark]),
+            ];
+            return Row(
+              children: [
+                for (final (id, label, looks) in cards) ...[
+                  if (id != 'system') const SizedBox(width: 10),
+                  Expanded(
+                    child: _ThemeCard(
+                      label: label,
+                      looks: looks,
+                      selected: value.theme == id,
+                      onTap: () => settings.change((old) => old.copyWith(theme: id)),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
         ),
       ),
     );
   }
+}
+
+class _ThemeCard extends StatelessWidget {
+  const _ThemeCard({
+    required this.label,
+    required this.looks,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final List<SdColors> looks;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final sd = context.sd;
+    return Semantics(
+      inMutuallyExclusiveGroup: true,
+      checked: selected,
+      button: true,
+      child: Material(
+        color: sd.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: selected ? sd.accent : sd.line, width: 2),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ExcludeSemantics(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox(
+                      height: 64,
+                      child: Row(
+                        children: [
+                          for (final look in looks)
+                            Expanded(
+                              child: ColoredBox(
+                                color: look.bg,
+                                child: Center(
+                                  child: CustomPaint(
+                                    size: const Size.square(38),
+                                    painter: _MiniDial(look),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    if (selected) Icon(Icons.check_circle, size: 18, color: sd.accent),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniDial extends CustomPainter {
+  const _MiniDial(this.look);
+
+  final SdColors look;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centre = size.center(Offset.zero);
+    final radius = size.width / 2 - 4;
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 7
+      ..color = look.surface2;
+    canvas.drawCircle(centre, radius, ring);
+    canvas.drawArc(
+      Rect.fromCircle(center: centre, radius: radius),
+      -1.5708,
+      1.0472,
+      false,
+      ring..color = look.amber,
+    );
+    canvas.drawArc(
+      Rect.fromCircle(center: centre, radius: radius),
+      -0.5236,
+      1.0472,
+      false,
+      ring..color = look.accent,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_MiniDial oldDelegate) => oldDelegate.look != look;
 }
 
 /// The switch for showing a small picture of each file and result.

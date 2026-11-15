@@ -14,6 +14,7 @@ import 'drop_files.dart';
 import 'file_chip.dart';
 import 'history_screen.dart';
 import 'history_store.dart';
+import 'home_parts.dart';
 import 'keep_going.dart';
 import 'option_screens.dart';
 import 'presets.dart';
@@ -26,6 +27,7 @@ import 'settings_store.dart';
 import 'shared_files.dart';
 import 'shift_drag.dart';
 import 'size_preview.dart';
+import 'theme.dart';
 import 'words.dart';
 
 typedef FilesPicker = Future<List<PickedFile>> Function();
@@ -79,6 +81,10 @@ class _Result {
   final PickedFile from;
   final int? bytesBefore;
 }
+
+/// The window's three menus. Convert and Make it fit are both the Shift menu's actions, split so
+/// purposes don't crowd formats; Tools is the Shift + Option menu.
+enum _Tab { convert, fit, tools }
 
 class _Job {
   _Job(this.name, this.bytesBefore);
@@ -209,7 +215,7 @@ class ConverterScreen extends StatefulWidget {
 class _ConverterScreenState extends State<ConverterScreen> {
   List<PickedFile> _files = const [];
   List<FileKind> _kinds = const [];
-  ActionMode _mode = ActionMode.convert;
+  _Tab _tab = _Tab.convert;
   bool _menuOpen = false;
   List<_Job> _jobs = const [];
   ConvertControl? _control;
@@ -349,6 +355,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
       // Anything already added while this was reading stays, newest first.
       final added = _history.items;
       _history = HistoryLog([...added, ...loaded.items]);
+      if (mounted) setState(() {});
       if (forgot > 0 || added.isNotEmpty) await _storeHistory();
     } catch (error) {
       debugPrint('Could not read history: $error');
@@ -524,7 +531,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
     if (!mounted) return;
     _open(files);
     // Opening the menu again offers the same kind of actions.
-    setState(() => _mode = action.mode);
+    setState(() => _tab = _tabOf(action));
     if (dragged != null) _previews = dragged.previews;
     await _start(action, options, saveBeside: true);
   }
@@ -1131,90 +1138,60 @@ class _ConverterScreenState extends State<ConverterScreen> {
     final styles = Theme.of(context).textTheme;
     final words = context.words;
     final screen = Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 44,
-        backgroundColor: Colors.transparent,
-        actions: [
-          if (SettingsScope.maybeOf(context) != null)
-            IconButton(
-              tooltip: words.settingsTitle,
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () => openSettings(context, onShowGuide: widget.showGuide),
-            ),
-          IconButton(
-            tooltip: words.about,
-            icon: const Icon(Icons.info_outline),
-            onPressed: () => showAbout(context),
-          ),
-          IconButton(
-            tooltip: words.history,
-            icon: const Icon(Icons.history),
-            onPressed: _openHistory,
-          ),
-        ],
-      ),
+      appBar: _buildBar(words),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(16),
-              children: [
-                Text('ShiftDrop', style: styles.headlineSmall, textAlign: TextAlign.center),
-                const SizedBox(height: 4),
-                Text(words.tagline, style: styles.bodyMedium, textAlign: TextAlign.center),
-                const SizedBox(height: 24),
-                Center(
-                  child: FilledButton.icon(
-                    onPressed: _pick,
-                    icon: const Icon(Icons.upload_file),
-                    label: Text(_files.isEmpty ? words.chooseFiles : words.chooseOtherFiles),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final wide = constraints.maxWidth >= 1000;
+            final centre = _buildCentre(styles, words);
+            final side = _buildSide(words);
+            final info = _files.isEmpty ? _buildInfo() : null;
+            final Widget body;
+            if (wide) {
+              body = Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(width: 290, child: info ?? _buildFileCard(words)),
+                  const SizedBox(width: 24),
+                  Expanded(child: centre),
+                  const SizedBox(width: 24),
+                  SizedBox(width: 310, child: side),
+                ],
+              );
+            } else {
+              body = Column(
+                children: [
+                  if (_files.isNotEmpty) ...[
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 560),
+                      child: _buildFileCard(words),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  centre,
+                  const SizedBox(height: 28),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 560),
+                    child: Column(
+                      children: [
+                        side,
+                        if (info != null) ...[const SizedBox(height: 16), info],
+                      ],
+                    ),
                   ),
+                ],
+              );
+            }
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1320),
+                  child: body,
                 ),
-                if (_receiving) ...[
-                  const SizedBox(height: 24),
-                  const Center(child: CircularProgressIndicator()),
-                  const SizedBox(height: 12),
-                  Text(words.receiving, style: styles.bodyMedium, textAlign: TextAlign.center),
-                ],
-                if (_files.isEmpty && _acceptsDrops) ...[
-                  const SizedBox(height: 12),
-                  Text(words.dropAnywhere, style: styles.bodyMedium, textAlign: TextAlign.center),
-                ],
-                if (_files.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Text(_summary(), textAlign: TextAlign.center, style: styles.bodyMedium),
-                  if (_showPreviews) ...[const SizedBox(height: 12), _buildPreview()],
-                  const SizedBox(height: 16),
-                  Center(child: _buildModeSwitch()),
-                ],
-                const SizedBox(height: 24),
-                if (_menuOpen) Center(child: _buildMenu(styles)),
-                for (final job in _jobs)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Center(child: _buildChip(job)),
-                  ),
-                if (_waitingToSave.length > 1)
-                  Center(
-                    child: FilledButton.tonalIcon(
-                      onPressed: _savingAll ? null : _saveAll,
-                      icon: const Icon(Icons.save_alt),
-                      label: Text(_saveAllLabel(words)),
-                    ),
-                  ),
-                if (_files.isNotEmpty && !_menuOpen)
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: () => setState(() => _menuOpen = true),
-                      icon: const Icon(Icons.refresh),
-                      label: Text(words.openMenuAgain),
-                    ),
-                  ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -1227,6 +1204,286 @@ class _ConverterScreenState extends State<ConverterScreen> {
         _dropped(details.files);
       },
       child: Stack(fit: StackFit.expand, children: [screen, if (_dragging) _buildDropHint(styles)]),
+    );
+  }
+
+  PreferredSizeWidget _buildBar(Words words) {
+    final width = MediaQuery.sizeOf(context).width;
+    final narrow = width < 860;
+    Widget labelled(String label, IconData icon, VoidCallback onPressed) {
+      if (narrow) return IconButton(tooltip: label, icon: Icon(icon), onPressed: onPressed);
+      return Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Tooltip(
+          message: label,
+          excludeFromSemantics: true,
+          child: OutlinedButton.icon(
+            onPressed: onPressed,
+            icon: Icon(icon, size: 18),
+            label: Text(label),
+          ),
+        ),
+      );
+    }
+
+    return AppBar(
+      toolbarHeight: 64,
+      titleSpacing: 20,
+      title: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SdLogo(),
+          SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              'ShiftDrop',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600, letterSpacing: -0.2),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        if (width >= 1100) const Center(child: OfflineBadge()),
+        labelled(words.history, Icons.history, _openHistory),
+        if (SettingsScope.maybeOf(context) != null)
+          labelled(
+            words.settingsTitle,
+            Icons.tune,
+            () => openSettings(context, onShowGuide: widget.showGuide),
+          ),
+        IconButton(
+          tooltip: words.about,
+          icon: const Icon(Icons.info_outline),
+          onPressed: () => showAbout(context),
+        ),
+        const SizedBox(width: 12),
+      ],
+      bottom: const PreferredSize(preferredSize: Size.fromHeight(1), child: Divider(height: 1)),
+    );
+  }
+
+  /// Where Shift-drag works: a desktop app, not a browser.
+  bool get _hasShiftDrag =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.macOS ||
+          defaultTargetPlatform == TargetPlatform.windows);
+
+  /// Before any file: how to use the app from anywhere, and what Make it fit offers.
+  Widget _buildInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_hasShiftDrag) ...[const ShiftDragTip(), const SizedBox(height: 16)],
+        const FitPanel(),
+      ],
+    );
+  }
+
+  Widget _buildSide(Words words) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_files.isEmpty) ...[
+          RecentPanel(
+            items: [
+              for (final item in _history.items)
+                if (item.undoneAt == null) item,
+            ].take(4).toList(),
+            onOpenHistory: _openHistory,
+            onUndo: _undoAvailable ? (item) => _undo(item) : null,
+          ),
+          const SizedBox(height: 16),
+        ] else if (_menuOpen) ...[
+          _buildKeys(words),
+          const SizedBox(height: 16),
+        ],
+        const PrivacyPanel(),
+      ],
+    );
+  }
+
+  /// The keys that work the dial, while it's open.
+  Widget _buildKeys(Words words) {
+    final sd = context.sd;
+    Widget row(List<String> keys, String what) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 92,
+              child: Wrap(spacing: 4, children: [for (final key in keys) KeyCap(key)]),
+            ),
+            Expanded(
+              child: Text(what, style: TextStyle(fontSize: 13, color: sd.text2)),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SdPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          row([words.keyArrows], words.keysChoose),
+          row(['Tab'], words.keysRing),
+          row(['Enter'], words.keysRun),
+          row(['Esc'], words.keysClose),
+        ],
+      ),
+    );
+  }
+
+  /// The chosen files: a preview where Settings allow, what they are, and ways to change them.
+  Widget _buildFileCard(Words words) {
+    return SdPanel(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_showPreviews) ...[_buildPreview(), const SizedBox(height: 12)],
+          Text(_summary(), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _pick,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text(words.chooseOtherFiles, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton(
+                onPressed: _working > 0 ? null : _clearFiles,
+                child: Text(words.clearFiles),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _clearFiles() {
+    setState(() {
+      _files = const [];
+      _kinds = const [];
+      _jobs = const [];
+      _menuOpen = false;
+      _previewHidden = false;
+    });
+  }
+
+  /// The centre of the dial before any file: a way to choose some, and where to drop them.
+  Widget _buildPickHub(Words words) {
+    final sd = context.sd;
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(color: sd.accentSoft, shape: BoxShape.circle),
+            child: Icon(Icons.upload_rounded, color: sd.accent),
+          ),
+          const SizedBox(height: 8),
+          FilledButton(onPressed: _pick, child: Text(words.chooseFiles)),
+          if (_acceptsDrops) ...[
+            const SizedBox(height: 6),
+            SizedBox(
+              width: 150,
+              child: Text(
+                words.dropAnywhere,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: sd.muted),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCentre(TextTheme styles, Words words) {
+    final sd = context.sd;
+    final receiving = [
+      if (_receiving) ...[
+        const SizedBox(height: 16),
+        const Center(child: CircularProgressIndicator()),
+        const SizedBox(height: 8),
+        Text(words.receiving, textAlign: TextAlign.center),
+      ],
+    ];
+    if (_files.isEmpty) {
+      return Column(
+        children: [
+          Text(
+            words.homeTitle,
+            textAlign: TextAlign.center,
+            style: styles.headlineSmall?.copyWith(fontWeight: FontWeight.w600, letterSpacing: -0.4),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            words.homeSubtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: sd.muted, fontSize: 15),
+          ),
+          const SizedBox(height: 22),
+          IdleDial(centre: _buildPickHub(words)),
+          ...receiving,
+          const SizedBox(height: 22),
+          const FamilyChips(),
+        ],
+      );
+    }
+    final tabs = _tabs;
+    return Column(
+      children: [
+        ...receiving,
+        if (tabs.length > 1) ...[
+          ModeTabs<_Tab>(
+            tabs: [for (final tab in tabs) (tab, _tabLabel(words, tab))],
+            selected: _shownTab,
+            isFit: (tab) => tab == _Tab.fit,
+            onSelected: (tab) {
+              setState(() {
+                _tab = tab;
+                _menuOpen = true;
+                _jobs = const [];
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (_menuOpen) _buildMenu(styles),
+        if (_menuOpen && _jobs.isNotEmpty) const SizedBox(height: 16),
+        for (final job in _jobs)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Center(child: _buildChip(job)),
+          ),
+        if (_waitingToSave.length > 1)
+          Center(
+            child: FilledButton.icon(
+              onPressed: _savingAll ? null : _saveAll,
+              icon: const Icon(Icons.save_alt),
+              label: Text(_saveAllLabel(words)),
+            ),
+          ),
+        if (!_menuOpen)
+          Center(
+            child: TextButton.icon(
+              onPressed: () => setState(() => _menuOpen = true),
+              icon: const Icon(Icons.refresh),
+              label: Text(words.openMenuAgain),
+            ),
+          ),
+      ],
     );
   }
 
@@ -1282,11 +1539,28 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   Widget _buildDropHint(TextTheme styles) {
-    final colours = Theme.of(context).colorScheme;
+    final sd = context.sd;
     return IgnorePointer(
       child: ColoredBox(
-        color: colours.surface.withValues(alpha: 0.92),
-        child: Center(child: Text(_words.dropToConvert, style: styles.headlineSmall)),
+        color: sd.bg.withValues(alpha: 0.92),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+            decoration: BoxDecoration(
+              color: sd.accentSoft,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: sd.accent, width: 2),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.file_download_outlined, size: 40, color: sd.accent),
+                const SizedBox(height: 12),
+                Text(_words.dropToConvert, style: styles.headlineSmall),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -1297,34 +1571,61 @@ class _ConverterScreenState extends State<ConverterScreen> {
     return '$names · ${formatBytes(total)}';
   }
 
-  Widget _buildModeSwitch() {
-    return SegmentedButton<ActionMode>(
-      segments: [
-        ButtonSegment(value: ActionMode.convert, label: Text(_words.modeConvert)),
-        ButtonSegment(value: ActionMode.tools, label: Text(_words.modeTools)),
-      ],
-      selected: {_mode},
-      onSelectionChanged: (selection) {
-        setState(() {
-          _mode = selection.single;
-          _menuOpen = true;
-          _jobs = const [];
-        });
-      },
-    );
+  String _tabLabel(Words words, _Tab tab) => switch (tab) {
+    _Tab.convert => words.modeConvert,
+    _Tab.fit => words.modeFit,
+    _Tab.tools => words.modeTools,
+  };
+
+  _Tab _tabOf(RadialAction action) {
+    if (action.mode == ActionMode.tools) return _Tab.tools;
+    return action.isFit ? _Tab.fit : _Tab.convert;
   }
 
-  Widget _buildMenu(TextTheme styles) {
-    final actions = availableActions(
+  /// The menu behind [_tab]: Convert and Tools as their own menus, with Make it fit taken out of
+  /// Convert into its own.
+  ActionMode get _mode => _tab == _Tab.tools ? ActionMode.tools : ActionMode.convert;
+
+  List<RadialAction> _actionsFor(_Tab tab) {
+    final all = availableActions(
       _kinds,
-      _mode,
+      tab == _Tab.tools ? ActionMode.tools : ActionMode.convert,
       mediaAvailable: _mediaAvailable,
       mediaOutputs: mediaOutputsHere(),
     );
+    return switch (tab) {
+      _Tab.convert => [
+        for (final action in all)
+          if (!action.isFit) action,
+      ],
+      _Tab.fit => [
+        for (final action in all)
+          if (action.isFit) action,
+      ],
+      _Tab.tools => all,
+    };
+  }
+
+  /// The tabs these files have anything in.
+  List<_Tab> get _tabs => [
+    for (final tab in _Tab.values)
+      if (_actionsFor(tab).isNotEmpty) tab,
+  ];
+
+  /// The chosen tab, or the first with anything in it when the chosen one is empty for these files.
+  _Tab get _shownTab {
+    final tabs = _tabs;
+    return tabs.isEmpty || tabs.contains(_tab) ? _tab : tabs.first;
+  }
+
+  Widget _buildMenu(TextTheme styles) {
+    final tab = _shownTab;
+    final actions = _actionsFor(tab);
     return Column(
       children: [
         RadialMenu(
           actions: actions,
+          diameter: 400,
           fileCount: _files.length,
           sizeOf: _sizePreviews?.guess,
           onSelected: _choose,
@@ -1335,7 +1636,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
         if (actions.isEmpty) ...[
           const SizedBox(height: 12),
           Text(
-            notAvailableMessage(_words, _kinds, _mode),
+            notAvailableMessage(_words, _kinds, tab == _Tab.tools ? ActionMode.tools : _mode),
             textAlign: TextAlign.center,
             style: styles.bodyMedium,
           ),
@@ -1399,6 +1700,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
       thumbnail: look == null
           ? null
           : PreviewThumb(preview: look, kind: PreviewSubject.ofResult(output!)!.kind),
+      kept: output == null || before == null || before <= 0 || output.size >= before
+          ? null
+          : output.size / before,
     );
   }
 }

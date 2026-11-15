@@ -171,4 +171,21 @@ void main() {
       expect(keepsOrder(actionById('image-to-jpg')!), isFalse);
     });
   });
+
+  group('isFit', () {
+    test('purposes and size limits are Make it fit; formats and tools are not', () {
+      for (final id in ['fit-whatsapp-photo', 'fit-email-pdf', 'fit-image-100kb', 'image-form']) {
+        expect(actionById(id)!.isFit, isTrue, reason: id);
+      }
+      for (final id in ['image-to-jpg', 'pdf-to-docx', 'image-compress', 'video-trim']) {
+        expect(actionById(id)!.isFit, isFalse, reason: id);
+      }
+    });
+
+    test('every Make it fit action is on the Shift menu', () {
+      for (final action in actionCatalogue) {
+        if (action.isFit) expect(action.mode, ActionMode.convert, reason: action.id);
+      }
+    });
+  });
 }

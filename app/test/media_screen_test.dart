@@ -88,6 +88,8 @@ void main() {
 
   testWidgets('a video gets a menu when the engine is here', (tester) async {
     await pump(tester, [video()], (a, f, k, p, c, o) async => []);
+    await tester.tap(find.text('Make it fit'));
+    await tester.pump();
     expect(find.text('WhatsApp'), findsOneWidget);
     expect(find.textContaining('in this build yet'), findsNothing);
   });
@@ -165,6 +167,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(cancelled, 1);
     expect(find.byType(CircularProgressIndicator), findsNothing);
+    await tester.tap(find.text('Make it fit'));
+    await tester.pump();
     expect(find.text('WhatsApp'), findsOneWidget);
 
     // The cancelled job finishing later changes nothing.

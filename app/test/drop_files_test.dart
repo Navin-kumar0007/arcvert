@@ -167,6 +167,8 @@ void main() {
       expect(find.textContaining('drop them'), findsOneWidget);
       await drop(tester, [DropItemFile('/x/dropped.png')]);
       expect(find.textContaining('dropped.png'), findsOneWidget);
+      await tester.tap(find.text('Make it fit'));
+      await tester.pump();
       expect(find.text('WhatsApp'), findsOneWidget);
       expect(find.textContaining('drop them'), findsNothing);
     });
@@ -190,6 +192,8 @@ void main() {
       );
       await drop(tester, [DropItemDirectory('/x/holiday', const [])]);
       expect(find.textContaining('2 files'), findsOneWidget);
+      await tester.tap(find.text('Make it fit'));
+      await tester.pump();
       expect(find.text('WhatsApp'), findsOneWidget);
       expect(find.byType(SnackBar), findsNothing);
     });
@@ -206,6 +210,8 @@ void main() {
       );
       await drop(tester, [DropItemDirectory('/x/holiday', const [])]);
       expect(find.textContaining('2 files'), findsOneWidget);
+      await tester.tap(find.text('Make it fit'));
+      await tester.pump();
       expect(find.text('WhatsApp'), findsOneWidget);
       expect(find.textContaining('2 other files in that folder were left out'), findsOneWidget);
     });

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
 import 'package:shiftdrop/about.dart';
 import 'package:shiftdrop/conversion.dart';
+import 'package:shiftdrop/home_parts.dart';
+import 'package:shiftdrop/theme.dart';
 import 'package:shiftdrop/converter_screen.dart';
 import 'package:shiftdrop/radial_menu.dart';
 import 'package:shiftdrop/words.dart';
@@ -118,6 +121,70 @@ void main() {
     await pump(tester);
     expect(find.text('Choose files'), findsOneWidget);
     expect(find.byType(RadialMenu), findsNothing);
+  });
+
+  testWidgets('home shows the dial to drop on, and what the app takes', (tester) async {
+    await pump(tester);
+    expect(find.text('Drop a file on the dial'), findsOneWidget);
+    expect(find.byType(IdleDial), findsOneWidget);
+    expect(find.text('Photos and HEIC'), findsOneWidget);
+    expect(find.text('Chat apps'), findsWidgets);
+  });
+
+  testWidgets('Make it fit has its own tab, apart from the formats', (tester) async {
+    await pump(tester);
+    await chooseFiles(tester);
+    expect(find.text('PNG'), findsOneWidget);
+    expect(find.text('WhatsApp'), findsNothing);
+    await tester.tap(find.text('Make it fit'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('WhatsApp'), findsOneWidget);
+    expect(find.text('PNG'), findsNothing);
+    await tester.tap(find.text('Tools'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Rotate'), findsOneWidget);
+    expect(find.text('WhatsApp'), findsNothing);
+  });
+
+  testWidgets('Clear puts the screen back to the dial', (tester) async {
+    await pump(tester);
+    await chooseFiles(tester);
+    expect(find.byType(RadialMenu), findsOneWidget);
+    await tester.tap(find.text('Clear'));
+    await tester.pump();
+    expect(find.byType(RadialMenu), findsNothing);
+    expect(find.byType(IdleDial), findsOneWidget);
+  });
+
+  group('theme', () {
+    test('light and dark carry the brand colours and the app\'s own', () {
+      final light = shiftDropTheme(Brightness.light);
+      final dark = shiftDropTheme(Brightness.dark);
+      expect(light.colorScheme.primary, const Color(0xFF0B6E5F));
+      expect(dark.colorScheme.primary, const Color(0xFF34C3A6));
+      expect(light.extension<SdColors>(), SdColors.light);
+      expect(dark.extension<SdColors>(), SdColors.dark);
+      expect(light.scaffoldBackgroundColor, SdColors.light.bg);
+      expect(dark.scaffoldBackgroundColor, SdColors.dark.bg);
+    });
+
+    test('text on every main colour is readable', () {
+      double contrast(Color a, Color b) {
+        final x = a.computeLuminance(), y = b.computeLuminance();
+        return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
+      }
+
+      for (final sd in [SdColors.light, SdColors.dark]) {
+        expect(contrast(sd.text, sd.bg), greaterThan(7));
+        expect(contrast(sd.muted, sd.surface), greaterThan(4.5));
+        expect(contrast(sd.accentInk, sd.accent), greaterThan(4.5));
+        expect(contrast(sd.amberInk, sd.amber), greaterThan(4.5));
+        expect(contrast(sd.amberText, sd.bg), greaterThan(4.5));
+        expect(contrast(sd.badText, sd.bg), greaterThan(4.5));
+      }
+    });
   });
 
   testWidgets('works in Hindi, from choosing to a result', (tester) async {

@@ -216,6 +216,12 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   on the page, as JPEGs at most 1600 px, placed before the first text below their top and shown at their width on the
   page. Pictures inside form objects aren't reached yet. Any failure leaves pages as before, plain and without
   pictures. Checked on the 54 Downloads PDFs (about a second at most) and in Chrome.
+- Look (`app/lib/theme.dart`, `home_parts.dart`): `SdColors` holds the light and dark colours as a `ThemeExtension`,
+  read with `context.sd`; `shiftDropTheme` fills Material's scheme from it, so plain Material screens follow. Teal is
+  "go", amber is Make it fit (`RadialAction.isFit`: Shift menu actions that aren't plain format changes). The window
+  splits the Shift menu into Convert and Make it fit tabs (`_Tab` in `converter_screen.dart`); Shift-drag keeps them
+  together. No characters outside Latin-1 and Devanagari in `app/lib`: key captions say "Arrows", not arrow symbols.
+  Inter isn't bundled yet, so text uses the platform's font.
 - Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
   an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.

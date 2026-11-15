@@ -1159,4 +1159,104 @@ class WordsEn extends Words {
 
   @override
   String get previewCompareShort => 'Compare';
+
+  @override
+  String get modeFit => 'Make it fit';
+
+  @override
+  String get homeTitle => 'Drop a file on the dial';
+
+  @override
+  String get homeSubtitle => 'Convert, shrink or tidy it. The original is never changed.';
+
+  @override
+  String get offlineBadge => 'Offline · nothing is uploaded';
+
+  @override
+  String get fromAnyApp => 'From any app';
+
+  @override
+  String get shiftDragAction => 'drag a file';
+
+  @override
+  String get shiftDragExplain => 'The dial opens at your cursor, over any app. Let go on a slice.';
+
+  @override
+  String get toolsKeyHint => 'adds tools: crop, rotate, resize';
+
+  @override
+  String get fitChat => 'Chat apps';
+
+  @override
+  String get fitChatNote => 'Sharp on a phone, quick to send';
+
+  @override
+  String get fitEmail => 'Email';
+
+  @override
+  String get fitEmailNote => 'Under the usual attachment limit';
+
+  @override
+  String get fitSize => 'Under a size';
+
+  @override
+  String get fitSizeNote => '100 KB, 500 KB or 1 MB';
+
+  @override
+  String get fitForm => 'Form photo and signature';
+
+  @override
+  String get fitFormNote => 'Exact pixels and KB a form asks for';
+
+  @override
+  String get recent => 'Recent';
+
+  @override
+  String get allHistory => 'All history';
+
+  @override
+  String get recentEmpty => 'Results you save show up here.';
+
+  @override
+  String get privacyNote =>
+      'Everything happens on this device. No account, no upload, no tracking.';
+
+  @override
+  String get familyPhotos => 'Photos and HEIC';
+
+  @override
+  String get familyPdf => 'PDF and Word';
+
+  @override
+  String get familyMedia => 'Video and sound';
+
+  @override
+  String get familyArchives => 'ZIP, 7z, RAR';
+
+  @override
+  String get familySubtitles => 'Subtitles';
+
+  @override
+  String get addFiles => 'Add files';
+
+  @override
+  String get clearFiles => 'Clear';
+
+  @override
+  String get dragOutHint => 'Drag into mail, chat or a folder';
+
+  @override
+  String get keysChoose => 'Choose a slice';
+
+  @override
+  String get keysRing => 'Its choices on the outer ring';
+
+  @override
+  String get keysRun => 'Run it';
+
+  @override
+  String get keysClose => 'Close the dial';
+
+  @override
+  String get keyArrows => 'Arrows';
 }

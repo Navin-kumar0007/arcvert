@@ -30,7 +30,9 @@ The first time it opens, a short guide shows what ShiftDrop does and lets you pr
 
 Hold **Option** (Mac) or **Alt** (Windows) as well, at any point in the drag, and the menu switches to **Tools**, such as Compress, Rotate, Resize and Strip metadata. Let go of it and Convert comes back. Rotate, Flip and Resize show their choices around the slice there too.
 
-**In the window.** Choose files, or drop them on the window, and pick a slice. Press **Tools** for things like merging and compressing, and use **More** for further slices.
+**In the window.** Drop files on the dial, or press **Choose files** in its middle, then pick a slice. **Convert** changes the format, **Make it fit** (in amber) aims at a purpose or a size, such as a chat app, an email or under 100 KB, and **Tools** does things like merging, compressing and rotating. Use **More** for further slices. **Clear** starts again.
+
+**Light or dark.** ShiftDrop follows your device's light or dark setting. To choose one for the app alone, open **Settings** and pick **Light** or **Dark**; **As the system** goes back to following the device.
 
 **Previews.** Once files are chosen, a small panel shows the first one: a picture or PDF page, a frame of a video, the first lines of subtitles, or the names in an archive, with its size and weight. After converting, it shows the result too. For pictures and PDF pages of the same shape a line runs across them, with the original on the left and the result on the right: drag it, or use the arrow keys, to see what changed. **Enlarge** shows it full size: choose **Compare**, or **Before** or **After** alone to zoom in with a pinch or scroll. Each result in the list gets a small picture. A locked PDF shows a lock until its password has been typed for a job, and a 7z or RAR shows the names inside once it has been unpacked for one. The eye button hides the panel for now, and **Show previews** in **Settings** turns them off. Previews are made on your device and never saved.
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'theme.dart';
 import 'words.dart';
 
 enum FileChipState { working, done, failed }
@@ -32,6 +33,7 @@ class FileChip extends StatefulWidget {
     this.onFaded,
     this.fadeAfter = const Duration(seconds: 10),
     this.thumbnail,
+    this.kept,
   });
 
   final String name;
@@ -65,6 +67,10 @@ class FileChip extends StatefulWidget {
 
   /// A small picture of the result, shown in place of the tick once it's done.
   final Widget? thumbnail;
+
+  /// How much of the original's size the result kept, from 0 to 1, drawn as a bar once done. Null
+  /// when it didn't shrink or can't be compared.
+  final double? kept;
 
   @override
   State<FileChip> createState() => _FileChipState();
@@ -116,12 +122,19 @@ class _FileChipState extends State<FileChip> {
         if (_fading) widget.onFaded?.call();
       },
       child: Material(
-        color: colours.surfaceContainerHigh,
-        elevation: 6,
-        borderRadius: BorderRadius.circular(14),
+        color: widget.state == FileChipState.failed
+            ? Color.alphaBlend(context.sd.badSoft, context.sd.surface)
+            : context.sd.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: widget.state == FileChipState.failed ? context.sd.badLine : context.sd.line,
+          ),
+        ),
         child: _draggable(
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -210,18 +223,77 @@ class _FileChipState extends State<FileChip> {
   }
 
   Widget _buildText(BuildContext context) {
-    final styles = Theme.of(context).textTheme;
+    final sd = context.sd;
     final message = widget.message;
     final detail = widget.detail;
+    final kept = widget.kept;
+    final done = widget.state == FileChipState.done;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: styles.bodyMedium),
-        if (widget.state == FileChipState.done && detail != null)
-          Text(detail, maxLines: 3, overflow: TextOverflow.ellipsis, style: styles.bodySmall),
+        Text(
+          widget.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+        if (done && detail != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              detail,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 13, color: sd.text2),
+            ),
+          ),
+        if (done && kept != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: ExcludeSemantics(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(3),
+                child: SizedBox(
+                  width: 180,
+                  child: LinearProgressIndicator(
+                    value: kept.clamp(0.02, 1.0),
+                    minHeight: 5,
+                    backgroundColor: sd.track,
+                    color: sd.accent,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        if (done && widget.onDragOut != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.drag_indicator, size: 16, color: sd.accentText),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    context.words.dragOutHint,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, color: sd.accentText),
+                  ),
+                ),
+              ],
+            ),
+          ),
         if (widget.state == FileChipState.failed && message != null)
-          Text(message, maxLines: 2, overflow: TextOverflow.ellipsis, style: styles.bodySmall),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              message,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 13, color: sd.badText),
+            ),
+          ),
       ],
     );
   }

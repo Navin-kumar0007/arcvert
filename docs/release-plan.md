@@ -108,6 +108,11 @@ Rules:
 
 Build from about 27 November, publish about 20 December 2026.
 
+- **New look** (agreed 15 November 2026 from the canvas of concepts): light and dark colour sets (`theme.dart`), the
+  dial shown before any file as the drop target, Make it fit as its own amber tab, result cards with a size bar,
+  theme cards in Settings. **Done** in the window on every platform. Still to do: the phone's half dial within thumb
+  reach, and the native Shift-drag menus' colours on Mac and Windows.
+
 - **Copy details** on every failed file: app version, platform, action, file kind and the error's key, ready to paste
   into a bug report. Never file names or contents. **Done** (`failure_details.dart`, 15 November 2026).
 - **Live preview in the menu's centre**: resting on Rotate, Flip or Resize, or one of their choices, shows the

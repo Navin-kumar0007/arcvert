@@ -4,6 +4,7 @@ import 'about.dart';
 import 'app_home.dart';
 import 'app_settings.dart';
 import 'settings_store.dart';
+import 'theme.dart';
 import 'shift_drag.dart';
 import 'words.dart';
 
@@ -55,7 +56,6 @@ class _RadialAppState extends State<RadialApp> {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF0B6E5F);
     return SettingsScope(
       store: widget.settings,
       child: MaterialApp(
@@ -65,8 +65,8 @@ class _RadialAppState extends State<RadialApp> {
         supportedLocales: Words.supportedLocales,
         locale: widget.settings.value.locale,
         themeMode: widget.settings.value.themeMode,
-        theme: _theme(accent, Brightness.light),
-        darkTheme: _theme(accent, Brightness.dark),
+        theme: _theme(Brightness.light),
+        darkTheme: _theme(Brightness.dark),
         home: AppHome(settings: widget.settings),
       ),
     );
@@ -74,10 +74,5 @@ class _RadialAppState extends State<RadialApp> {
 
   /// Hindi file names and labels need a font we ship: in a browser, Flutter would otherwise
   /// fetch a missing font from Google, and nothing here may touch the network.
-  ThemeData _theme(Color accent, Brightness brightness) {
-    final base = ThemeData(colorSchemeSeed: accent, brightness: brightness);
-    return base.copyWith(
-      textTheme: base.textTheme.apply(fontFamilyFallback: const ['NotoSansDevanagari']),
-    );
-  }
+  ThemeData _theme(Brightness brightness) => shiftDropTheme(brightness);
 }

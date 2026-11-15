@@ -10,6 +10,7 @@ import 'package:radial_core/radial_core.dart';
 import 'action_icons.dart';
 import 'radial_geometry.dart';
 import 'size_preview.dart';
+import 'theme.dart';
 import 'words.dart';
 
 const _openDuration = Duration(milliseconds: 120);
@@ -403,6 +404,11 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
     _diameter = widget.diameter;
   }
 
+  /// The highlighted slice's own colour: amber for Make it fit, teal for the rest.
+  bool get _highlightIsFit => _highlightedAction?.isFit ?? false;
+  Color get _hiFill => _highlightIsFit ? context.sd.amber : context.sd.accent;
+  Color get _hiInk => _highlightIsFit ? context.sd.amberInk : context.sd.accentInk;
+
   Widget _buildMenu(BuildContext context) {
     final colours = Theme.of(context).colorScheme;
     final diameter = _diameter;
@@ -438,9 +444,9 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                             count: _sliceCount,
                             choices: ring.length,
                             highlighted: _choice,
-                            surface: colours.surfaceContainerHigh.withValues(alpha: 0.96),
-                            divider: colours.outlineVariant,
-                            accent: colours.primary,
+                            surface: context.sd.surface2.withValues(alpha: 0.97),
+                            divider: context.sd.line2,
+                            accent: _hiFill,
                           ),
                         ),
                       ),
@@ -460,12 +466,17 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                                       count: _sliceCount,
                                       highlighted: _highlighted,
                                       hubRadius: _hubRadius,
-                                      surface: colours.surfaceContainerHigh.withValues(alpha: 0.92),
-                                      hub: colours.surface,
-                                      divider: colours.outlineVariant,
+                                      surface: context.sd.dialFill.withValues(alpha: 0.96),
+                                      hub: context.sd.bg,
+                                      divider: context.sd.line2,
+                                      fits: [
+                                        for (var i = 0; i < _sliceCount; i++)
+                                          !_isMore(i) && _shown[i].isFit,
+                                      ],
+                                      fitFill: context.sd.amberSoft,
                                       accent: _choice == null
-                                          ? colours.primary
-                                          : colours.primary.withValues(alpha: 0.45),
+                                          ? _hiFill
+                                          : _hiFill.withValues(alpha: 0.45),
                                     ),
                                   ),
                                 ),
@@ -489,7 +500,6 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
   }
 
   Widget _buildChoice(int index, RingChoice choice) {
-    final colours = Theme.of(context).colorScheme;
     final words = context.words;
     final action = _highlightedAction!;
     final isOn = index == _choice;
@@ -523,10 +533,10 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 12,
                   height: 1.1,
-                  color: isOn ? colours.onPrimary : colours.onSurface,
-                  fontWeight: isOn ? FontWeight.w700 : FontWeight.w500,
+                  color: isOn ? _hiInk : context.sd.text,
+                  fontWeight: isOn ? FontWeight.w700 : FontWeight.w600,
                 ),
               ),
             ),
@@ -537,11 +547,12 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
   }
 
   Widget _buildSlice(int slice) {
-    final colours = Theme.of(context).colorScheme;
     final isMore = _isMore(slice);
     final action = isMore ? null : _shown[slice];
     final isOn = slice == _highlighted;
-    final colour = isOn ? colours.onPrimary : colours.onSurface;
+    final fit = action?.isFit ?? false;
+    final sd = context.sd;
+    final colour = isOn ? (fit ? sd.amberInk : sd.accentInk) : (fit ? sd.amberText : sd.text);
     final centre = sliceCentre(
       slice,
       diameter: _diameter,
@@ -585,10 +596,10 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     height: 1.1,
                     color: colour,
-                    fontWeight: isOn ? FontWeight.w700 : FontWeight.w500,
+                    fontWeight: isOn ? FontWeight.w700 : FontWeight.w600,
                   ),
                 ),
               ],
@@ -638,8 +649,9 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                         size.describe(words),
                         maxLines: 1,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 17,
                           fontWeight: FontWeight.w700,
+                          letterSpacing: -0.3,
                           color: colours.onSurface,
                         ),
                       ),
@@ -668,6 +680,8 @@ class _RingPainter extends CustomPainter {
     required this.hub,
     required this.divider,
     required this.accent,
+    this.fits = const [],
+    this.fitFill = const Color(0x00000000),
   });
 
   final int count;
@@ -677,6 +691,10 @@ class _RingPainter extends CustomPainter {
   final Color hub;
   final Color divider;
   final Color accent;
+
+  /// Which slices are Make it fit, tinted so they read as a group.
+  final List<bool> fits;
+  final Color fitFill;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -688,6 +706,15 @@ class _RingPainter extends CustomPainter {
     final span = count == 0 ? 0.0 : 2 * math.pi / count;
     for (var i = 0; i < count; i++) {
       final start = -math.pi / 2 + i * span - span / 2;
+      if (i != highlighted && i < fits.length && fits[i] && count > 1) {
+        canvas.drawPath(
+          Path()
+            ..arcTo(outer, start, span, true)
+            ..arcTo(inner, start + span, -span, false)
+            ..close(),
+          Paint()..color = fitFill,
+        );
+      }
       if (i == highlighted) {
         final Path slice;
         if (count == 1) {
@@ -730,7 +757,8 @@ class _RingPainter extends CustomPainter {
     return oldDelegate.count != count ||
         oldDelegate.highlighted != highlighted ||
         oldDelegate.surface != surface ||
-        oldDelegate.accent != accent;
+        oldDelegate.accent != accent ||
+        oldDelegate.fits.length != fits.length;
   }
 }
 
