@@ -205,6 +205,13 @@ class WordsEn extends Words {
   String get readFailed => 'This file could not be read. It may have moved or be too large.';
 
   @override
+  String get copyDetails => 'Copy details';
+
+  @override
+  String get detailsCopied =>
+      'Details copied. Paste them into a bug report. They hold no file names.';
+
+  @override
   String get saveFailed => 'This file could not be saved. Try again.';
 
   @override

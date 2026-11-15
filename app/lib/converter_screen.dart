@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
 
@@ -91,6 +92,9 @@ class _Job {
   ConvertedFile? output;
   PickedFile? from;
   String? message;
+
+  /// For a failure: facts for a bug report, without file names (`failureDetails`).
+  String? details;
   bool saved = false;
 
   /// What was done, as the menu called it.
@@ -759,10 +763,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
     if (files.length == 1 || combinesFiles(action)) {
       return unlocking(files, kinds, onProgress);
     }
-    _Job failure(PickedFile file, String message) {
+    _Job failure(PickedFile file, String message, FileKind kind, EngineFailed? error) {
       return _Job(file.name, null)
         ..state = FileChipState.failed
-        ..message = message;
+        ..message = message
+        ..details = _failureDetails(action, [kind], error);
     }
 
     final results = <_Result>[];
@@ -779,9 +784,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
       } on JobCancelled {
         rethrow;
       } on EngineFailed catch (error) {
-        failed.add(failure(files[i], failureText(deviceWords, error)));
+        failed.add(failure(files[i], failureText(deviceWords, error), kinds[i], error));
       } catch (_) {
-        failed.add(failure(files[i], deviceWords.convertFailed));
+        failed.add(failure(files[i], deviceWords.convertFailed, kinds[i], null));
       }
     }
     return results;
@@ -943,6 +948,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
     if (!mounted) return;
     final before = _files.fold<int>(0, (sum, file) => sum + file.size);
     final files = _files;
+    final kinds = _kinds;
     final jobs = [_Job(_workingName(), before)];
     final control = ConvertControl()..outputFolder = folder;
     _stopRunningJob();
@@ -958,7 +964,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
       var results = await _run(
         action,
         files,
-        _kinds,
+        kinds,
         (progress) {
           if (mounted && identical(_jobs, jobs)) setState(() => job.progress = progress);
         },
@@ -1002,7 +1008,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
       setState(() {
         job
           ..state = FileChipState.failed
-          ..message = failureText(_words, error);
+          ..message = failureText(_words, error)
+          ..details = _failureDetails(action, kinds, error);
       });
     } catch (error) {
       if (saveBeside) showAppWindow();
@@ -1010,11 +1017,33 @@ class _ConverterScreenState extends State<ConverterScreen> {
       setState(() {
         job
           ..state = FileChipState.failed
-          ..message = _words.convertFailed;
+          ..message = _words.convertFailed
+          ..details = _failureDetails(action, kinds, null);
       });
     } finally {
       if (--_working == 0) unawaited(widget.keepWorking(false));
     }
+  }
+
+  /// The kind is said only when every file shares it.
+  String _failureDetails(RadialAction action, List<FileKind> kinds, EngineFailed? error) {
+    return failureDetails(
+      appVersion: appVersion,
+      platform: platformLabel,
+      action: action.label,
+      kind: kinds.isNotEmpty && kinds.every((kind) => kind == kinds.first) ? kinds.first : null,
+      failure: error,
+    );
+  }
+
+  Future<void> _copyDetails(String details) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: details));
+    } catch (error) {
+      debugPrint('Copying failed: $error');
+      return;
+    }
+    if (mounted) _say(_words.detailsCopied);
   }
 
   String _workingName() {
@@ -1359,6 +1388,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
           ? _words.saved(sizes ?? '')
           : sizes,
       message: job.message,
+      onCopyDetails: job.details == null ? null : () => _copyDetails(job.details!),
       fadeAfter: null,
       onSave: job.undone || output == null || output.savedPath != null ? null : () => _save(job),
       onUndo: canReach ? () => _undo(remembered!) : null,

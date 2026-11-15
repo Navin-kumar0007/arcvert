@@ -28,6 +28,7 @@ class FileChip extends StatefulWidget {
     this.onCopy,
     this.onShowInFolder,
     this.onUndo,
+    this.onCopyDetails,
     this.onFaded,
     this.fadeAfter = const Duration(seconds: 10),
     this.thumbnail,
@@ -56,6 +57,9 @@ class FileChip extends StatefulWidget {
   final VoidCallback? onCopy;
   final VoidCallback? onShowInFolder;
   final VoidCallback? onUndo;
+
+  /// Shown once failed: puts facts for a bug report on the clipboard.
+  final VoidCallback? onCopyDetails;
   final VoidCallback? onFaded;
   final Duration? fadeAfter;
 
@@ -137,6 +141,10 @@ class _FileChipState extends State<FileChip> {
                   if (widget.onShowInFolder != null)
                     _action(Icons.folder_open_outlined, words.showInFolder, widget.onShowInFolder),
                   if (widget.onUndo != null) _action(Icons.undo, words.undo, widget.onUndo),
+                ],
+                if (widget.state == FileChipState.failed && widget.onCopyDetails != null) ...[
+                  const SizedBox(width: 6),
+                  _action(Icons.content_copy_outlined, words.copyDetails, widget.onCopyDetails),
                 ],
               ],
             ),

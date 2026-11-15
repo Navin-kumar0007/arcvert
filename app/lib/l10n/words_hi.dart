@@ -205,6 +205,13 @@ class WordsHi extends Words {
   String get readFailed => 'यह फ़ाइल पढ़ी नहीं जा सकी। शायद वह कहीं और चली गई है या बहुत बड़ी है।';
 
   @override
+  String get copyDetails => 'जानकारी कॉपी करें';
+
+  @override
+  String get detailsCopied =>
+      'जानकारी कॉपी हो गई। इसे बग रिपोर्ट में चिपकाएँ। इसमें फ़ाइलों के नाम नहीं हैं।';
+
+  @override
   String get saveFailed => 'यह फ़ाइल सहेजी नहीं जा सकी। फिर से कोशिश करें।';
 
   @override

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.0 (unreleased)
+
+- **Copy details** on a file that failed puts the app's version, the platform, the action, the kind of file and the
+  failure's name on the clipboard, ready to paste into a bug report. Never the file's name or anything inside it.
+
 ## 0.11.0 (beta, 11 November 2026)
 
 - Settings, behind the gear at the top: where results go (beside the original, or one folder of your choice, on Mac

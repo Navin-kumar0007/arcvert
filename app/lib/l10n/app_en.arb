@@ -138,6 +138,8 @@
   },
   "convertFailed": "Something went wrong. This file could not be converted.",
   "readFailed": "This file could not be read. It may have moved or be too large.",
+  "copyDetails": "Copy details",
+  "detailsCopied": "Details copied. Paste them into a bug report. They hold no file names.",
   "saveFailed": "This file could not be saved. Try again.",
   "saveAllFailed": "These files could not be saved. Try again.",
   "handOverFailed": "This file could not be handed over. Try saving it instead.",

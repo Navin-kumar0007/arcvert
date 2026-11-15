@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
+import 'package:shiftdrop/about.dart';
 import 'package:shiftdrop/conversion.dart';
 import 'package:shiftdrop/converter_screen.dart';
 import 'package:shiftdrop/radial_menu.dart';
@@ -831,6 +832,63 @@ void main() {
       await convertAll(tester);
       expect(find.textContaining('could not be read as a picture'), findsNWidgets(2));
       expect(find.textContaining('Save all'), findsNothing);
+    });
+
+    group('copy details', () {
+      late List<String> copied;
+
+      setUp(() {
+        copied = [];
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          (call) async {
+            if (call.method == 'Clipboard.setData') {
+              copied.add((call.arguments as Map)['text'] as String);
+            }
+            return null;
+          },
+        );
+      });
+
+      tearDown(() {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        );
+      });
+
+      testWidgets('a failed file copies facts for a bug report, without its name', (tester) async {
+        toPick = [picked('a.jpg', jpeg()), picked('secret plans.jpg', broken())];
+        await convertAll(tester);
+        expect(find.byTooltip('Copy details'), findsOneWidget);
+        await tester.tap(find.byTooltip('Copy details'));
+        await tester.pump();
+        final details = copied.single;
+        expect(details, startsWith('ShiftDrop $appVersion\n'));
+        expect(details, contains('Platform: '));
+        expect(details, contains('File kind: image (jpg)'));
+        expect(details, contains('Error: notAPicture'));
+        expect(details, isNot(contains('secret')));
+        expect(find.textContaining('Details copied'), findsOneWidget);
+      });
+
+      testWidgets('an unexpected error copies too, saying so', (tester) async {
+        await convertAll(
+          tester,
+          converter: (action, files, onProgress, options) async => throw StateError('internals'),
+        );
+        await tester.tap(find.byTooltip('Copy details'));
+        await tester.pump();
+        expect(copied.single, contains('Error: unexpected'));
+        expect(copied.single, isNot(contains('internals')));
+        expect(copied.single, isNot(contains('photo')));
+      });
+
+      testWidgets('a finished result has no Copy details', (tester) async {
+        await convertAll(tester);
+        expect(find.byTooltip('Save'), findsOneWidget);
+        expect(find.byTooltip('Copy details'), findsNothing);
+      });
     });
 
     testWidgets('only one file is read at a time', (tester) async {

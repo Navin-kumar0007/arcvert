@@ -5,6 +5,7 @@ export 'src/action_options.dart';
 export 'src/actions.dart';
 export 'src/detect.dart';
 export 'src/docx_writer.dart';
+export 'src/failure_details.dart';
 export 'src/failures.dart';
 export 'src/file_kind.dart';
 export 'src/folder_files.dart';

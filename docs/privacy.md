@@ -1,6 +1,6 @@
 # Privacy policy
 
-*Last updated 11 November 2026. This covers the ShiftDrop apps and web app.*
+*Last updated 15 November 2026. This covers the ShiftDrop apps and web app.*
 
 **In short: your files stay on your device. We don't collect anything. The only thing the app ever fetches is a small file saying what the newest version is, and you can turn that off.**
 
@@ -29,6 +29,7 @@ The desktop video engine has networking compiled out on macOS. On Windows it's b
 - **History.** The name of each result you save, where it was saved on a desktop, how large it was and what was done. It's kept for 30 days in a file only the app uses, or in your browser's storage for the web app. **Clear** in the History screen removes it at once, and it never touches your files. Nothing inside your files is stored.
 - **Settings.** Whether you've seen the first-launch guide, the language and theme you chose, whether to show previews and check for new versions, when that last happened, and the folder for results if you chose one. Kept in a small file only the app uses, or in your browser's storage.
 - **Previews.** The small pictures of your files and results are made on your device and kept only in memory while the app shows them. They are never written to disk or added to history.
+- **Copy details.** On a file that failed, this puts the app's version, the platform, the action, the kind of file and the failure's name on your clipboard, for you to paste into a bug report if you want. Never the file's name, folder or contents. Nothing is sent anywhere by the app.
 - **Passwords.** One you type to open a locked file is kept only while that job runs, and is never saved or logged.
 - **Temporary copies.** A result dragged to another app is written to a temporary folder first, and cleared the next time the app opens after a day has passed. On Android, results wait in the app's cache until the app next opens. In a browser, large results wait in the browser's private storage, and are cleared the next time video is converted.
 

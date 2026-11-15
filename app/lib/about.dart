@@ -8,6 +8,19 @@ import 'words.dart';
 const appName = 'ShiftDrop';
 const appVersion = '0.11.0';
 
+/// Where the app is running, as a bug report would say it.
+String get platformLabel {
+  if (kIsWeb) return 'Web';
+  return switch (defaultTargetPlatform) {
+    TargetPlatform.macOS => 'macOS',
+    TargetPlatform.windows => 'Windows',
+    TargetPlatform.android => 'Android',
+    TargetPlatform.iOS => 'iOS',
+    TargetPlatform.linux => 'Linux',
+    TargetPlatform.fuchsia => 'Fuchsia',
+  };
+}
+
 const projectAddress = 'https://github.com/Navin-kumar0007/shiftdrop';
 
 /// Parts built into the app whose licences Flutter can't find by itself, as they aren't Dart

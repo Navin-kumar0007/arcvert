@@ -82,4 +82,4 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Settings.** The gear at the top holds every choice, saved as soon as it's made. On a Mac or Windows, **Where results go** can be **Beside the original**, as before, or **In one folder** you choose; if that folder is later moved or can't be written to, results go beside the originals and the app says so. **Theme** is light, dark or as the system, and **Show previews** turns the small pictures of files on or off.
 
-**Something wrong?** Please tell us in the project's [issues](https://github.com/Navin-kumar0007/shiftdrop/issues).
+**Something wrong?** Please tell us in the project's [issues](https://github.com/Navin-kumar0007/shiftdrop/issues). A file that failed has a **Copy details** icon: paste what it copies into the issue. It says the app's version, your platform, what you chose, the kind of file and which failure it was, and never the file's name or contents, so check before attaching the file itself.

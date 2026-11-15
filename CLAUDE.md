@@ -216,6 +216,9 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   on the page, as JPEGs at most 1600 px, placed before the first text below their top and shown at their width on the
   page. Pictures inside form objects aren't reached yet. Any failure leaves pages as before, plain and without
   pictures. Checked on the 54 Downloads PDFs (about a second at most) and in Chrome.
+- Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
+  an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
+  Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.
 - Passwords: a locked PDF or ZIP throws `PasswordNeeded`, and the screen asks and runs it again, so every action handles
   locked files with no code of its own. The right password is tried on the next file of a batch before asking, and lasts
   only for that job. Remove password runs on PDFs through PDFium; Add password runs on archives and always makes an AES

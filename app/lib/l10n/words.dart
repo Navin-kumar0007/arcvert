@@ -411,6 +411,18 @@ abstract class Words {
   /// **'This file could not be read. It may have moved or be too large.'**
   String get readFailed;
 
+  /// No description provided for @copyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy details'**
+  String get copyDetails;
+
+  /// No description provided for @detailsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Details copied. Paste them into a bug report. They hold no file names.'**
+  String get detailsCopied;
+
   /// No description provided for @saveFailed.
   ///
   /// In en, this message translates to:
