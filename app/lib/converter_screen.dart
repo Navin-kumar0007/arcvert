@@ -15,6 +15,7 @@ import 'file_chip.dart';
 import 'history_screen.dart';
 import 'history_store.dart';
 import 'home_parts.dart';
+import 'live_look.dart';
 import 'keep_going.dart';
 import 'option_screens.dart';
 import 'presets.dart';
@@ -1610,6 +1611,17 @@ class _ConverterScreenState extends State<ConverterScreen> {
     return tabs.isEmpty || tabs.contains(_tab) ? _tab : tabs.first;
   }
 
+  /// The picture in the dial's centre, turned, flipped or resized as the highlighted slice would,
+  /// before anything runs. One picture only, and only where previews are on.
+  Widget? _centreLook(RadialAction action, ActionOptions options, double side) {
+    if (!_showPreviews || _files.length != 1) return null;
+    final kind = _kinds.single;
+    if (kind.family != FileFamily.image) return null;
+    final look = liveLookFor(action, options);
+    if (look == null) return null;
+    return LiveLookView(preview: _lookAt(_files.single, kind), look: look, size: side);
+  }
+
   /// A phone gets the half dial along the bottom, within reach of a thumb.
   bool get _thumbArc {
     final phone =
@@ -1637,6 +1649,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
         RadialMenu(
           actions: actions,
           diameter: 400,
+          centreLook: _centreLook,
           fileCount: _files.length,
           sizeOf: _sizePreviews?.guess,
           onSelected: _choose,

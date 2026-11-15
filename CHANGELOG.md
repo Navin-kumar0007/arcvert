@@ -7,6 +7,8 @@
   stays blue. The signature presets turn it on; photos never get it, as forms refuse retouched ones.
 - **Scanned document** in Make it fit: photos of pages become one clean greyscale PDF, with white paper and black
   print, under 1 MB, or 500 KB or 200 KB from the outer ring. Put the pages in order first. It prints at A4 size.
+- Resting on **Rotate**, **Flip** or **Resize**, or one of their choices, shows the picture already turned, flipped
+  or smaller in the middle of the menu, with its new size in pixels, before anything is converted.
 
 ## 0.12.0 (beta, 15 November 2026)
 

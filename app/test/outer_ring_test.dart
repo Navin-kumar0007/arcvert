@@ -29,7 +29,12 @@ void main() {
     chosen = [];
   });
 
-  Future<void> pump(WidgetTester tester, {double? width, bool withRing = true}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    double? width,
+    bool withRing = true,
+    Widget? Function(RadialAction, ActionOptions, double)? centreLook,
+  }) async {
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: Words.localizationsDelegates,
@@ -43,6 +48,7 @@ void main() {
                   onSelected: selected.add,
                   onChoice: withRing ? (action, options) => chosen.add((action, options)) : null,
                   onCancelled: () {},
+                  centreLook: centreLook,
                 ),
               ),
             ),
@@ -271,5 +277,24 @@ void main() {
       expect(at(centre + const Offset(0, -170)), 1);
       expect(at(centre + const Offset(0, -210)), isNull);
     });
+  });
+
+  testWidgets('the centre shows what the slice would do, then what each choice would', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      centreLook: (action, options, side) =>
+          action.id == 'image-rotate' ? Text('look ${options.degrees ?? 'default'}') : null,
+    );
+    expect(find.textContaining('look'), findsNothing);
+    final mouse = await hover(tester, slicePoint(tester, rotate));
+    expect(find.text('look 90'), findsOneWidget);
+    await mouse.moveTo(choicePoint(tester, 1, 3));
+    await tester.pump();
+    expect(find.text('look 180'), findsOneWidget);
+    await mouse.moveTo(slicePoint(tester, compress));
+    await tester.pump();
+    expect(find.textContaining('look'), findsNothing, reason: 'Compress has nothing to show');
   });
 }

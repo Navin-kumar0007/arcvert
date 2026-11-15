@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shiftdrop/live_look.dart';
 import 'package:image/image.dart' as img;
 import 'package:radial_core/radial_core.dart';
 import 'package:shiftdrop/app_settings.dart';
@@ -509,6 +510,32 @@ void main() {
       await letPreviewsFinish(tester);
       expect(unpacked, 1);
       expect(find.text('report.txt'), findsWidgets);
+    });
+
+    testWidgets('resting on Resize shows the picture smaller, with its new size', (tester) async {
+      await pump(tester, previews: true);
+      await letPreviewsFinish(tester);
+      await tester.tap(find.text('Tools'));
+      await tester.pump(const Duration(milliseconds: 300));
+      final tools = availableActions(const [FileKind.png], ActionMode.tools, mediaAvailable: false);
+      final resize = menuPages(tools).first.indexWhere((action) => action.id == 'image-resize');
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      for (var i = 0; i < resize; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      }
+      await tester.pump();
+      await letPreviewsFinish(tester);
+      expect(find.byType(LiveLookView), findsOneWidget);
+      expect(find.text('200 × 150'), findsOneWidget);
+    });
+
+    testWidgets('without previews the centre shows no picture', (tester) async {
+      await pump(tester, previews: false);
+      await tester.tap(find.text('Tools'));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pump();
+      expect(find.byType(LiveLookView), findsNothing);
     });
 
     testWidgets('turned off in Settings, there are none', (tester) async {

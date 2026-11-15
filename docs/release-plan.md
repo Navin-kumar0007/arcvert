@@ -121,7 +121,8 @@ owner chose to ship the new look with Copy details and move the other planned it
 Build from about 21 December 2026, publish about mid-January 2027.
 
 - **Live preview in the menu's centre**: resting on Rotate, Flip or Resize, or one of their choices, shows the
-  picture already turned, flipped or smaller, without converting. Window menu only.
+  picture already turned, flipped or smaller, without converting. Window menu only. **Done** (`live_look.dart`,
+  16 November 2026).
 - **Thumbnails on the Shift-drag result chip**, from the system's own thumbnails (Quick Look on a Mac, the shell on
   Windows).
 - **Signature cleanup**: crop to the ink, whiten the paper, darken the ink, then the form's size and KB limits.

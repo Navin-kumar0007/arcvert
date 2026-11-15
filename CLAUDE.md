@@ -192,6 +192,9 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   `cleanSignature`: paper is the median brightness, ink the darkest 0.05%, as Otsu fails when ink is a tiny share;
   isolated dust pixels are ignored; then the crop is fitted with white padding (`_containOnWhite`), never cut, and
   thin strokes darkened (`_deepenInk`).
+- Live look (`live_look.dart`, `RadialMenu.centreLook`): resting on Rotate, Flip or Resize, or a ring choice, the hub
+  draws the file's preview picture turned (`RotatedBox`), flipped (`Transform.flip`) or smaller with its new size, from
+  `liveLookFor(action, options)`. Window only, one picture, only where previews are on; nothing is converted.
 - Scanned document (`images-scan-pdf`, Make it fit, builtIn engine, so `isActionWired` leaves it out): `cleanPage`
   makes each photo greyscale with paper white and print black, at 1754 px (A4 at 150 dpi), then `searchUnderSize`
   finds a JPEG quality and scale (not below 0.45) whose PDF fits; pages print at A4 (`buildImagePdf(pageLongSide:)`).

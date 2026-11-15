@@ -55,6 +55,7 @@ class RadialMenu extends StatefulWidget {
     this.onChoice,
     this.ringWidth = 60,
     this.drag,
+    this.centreLook,
   });
 
   final List<RadialAction> actions;
@@ -84,6 +85,10 @@ class RadialMenu extends StatefulWidget {
 
   /// A drag to follow, which hovers as the pointer moves and chooses where it's let go.
   final RadialMenuDrag? drag;
+
+  /// What the highlighted slice, or its highlighted ring choice, would make of the file, drawn in
+  /// the centre in a square of the given side. Null for slices it can't show.
+  final Widget? Function(RadialAction action, ActionOptions options, double side)? centreLook;
 
   @override
   State<RadialMenu> createState() => _RadialMenuState();
@@ -616,6 +621,14 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
     final action = _highlightedAction;
     // A choice may differ in size from what the slice makes, so the centre only speaks for the slice.
     final size = action == null || _choice != null ? null : _sizes[action.id];
+    final ring = action == null ? const <RingChoice>[] : ringChoices(action);
+    final look = action == null
+        ? null
+        : widget.centreLook?.call(
+            action,
+            ring.isEmpty ? const ActionOptions() : ring[_choice ?? 0].options,
+            _hubRadius * 1.1,
+          );
     return Semantics(
       button: true,
       label: widget.fileCount > 1 ? words.cancelFiles(widget.fileCount) : words.cancel,
@@ -640,7 +653,9 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                       style: TextStyle(fontSize: 11, color: colours.onPrimary),
                     ),
                   ),
-                if (size != null)
+                if (look != null)
+                  look
+                else if (size != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 6),
                     child: FittedBox(
