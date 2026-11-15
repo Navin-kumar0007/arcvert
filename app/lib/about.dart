@@ -6,7 +6,7 @@ import 'words.dart';
 
 /// Shown to people, and checked against `pubspec.yaml` by a test.
 const appName = 'ShiftDrop';
-const appVersion = '0.11.0';
+const appVersion = '0.12.0';
 
 /// Where the app is running, as a bug report would say it.
 String get platformLabel {
@@ -50,6 +50,13 @@ const bundledLicences = <({String packages, String file, String note})>[
     packages: 'libarchive, xz',
     file: 'libarchive.txt',
     note: 'Reads 7z and RAR. Source: https://github.com/libarchive/libarchive',
+  ),
+  (
+    packages: 'Inter, Space Grotesk, Noto Sans Devanagari',
+    file: 'ofl-1.1.txt',
+    note:
+        'Fonts, under the SIL Open Font License 1.1. Inter and Space Grotesk are cut to Latin and to '
+        'fixed weights from https://github.com/google/fonts.',
   ),
   (
     packages: 'AndroidX Media3, libarchive-android',

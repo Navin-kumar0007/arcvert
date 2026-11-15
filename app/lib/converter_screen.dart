@@ -28,6 +28,7 @@ import 'shared_files.dart';
 import 'shift_drag.dart';
 import 'size_preview.dart';
 import 'theme.dart';
+import 'thumb_arc.dart';
 import 'words.dart';
 
 typedef FilesPicker = Future<List<PickedFile>> Function();
@@ -1294,7 +1295,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
             onUndo: _undoAvailable ? (item) => _undo(item) : null,
           ),
           const SizedBox(height: 16),
-        ] else if (_menuOpen) ...[
+        ] else if (_menuOpen && !_thumbArc) ...[
           _buildKeys(words),
           const SizedBox(height: 16),
         ],
@@ -1346,22 +1347,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
           if (_showPreviews) ...[_buildPreview(), const SizedBox(height: 12)],
           Text(_summary(), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _pick,
-                  icon: const Icon(Icons.add, size: 18),
-                  label: Text(words.chooseOtherFiles, overflow: TextOverflow.ellipsis),
-                ),
-              ),
-              const SizedBox(width: 8),
-              OutlinedButton(
-                onPressed: _working > 0 ? null : _clearFiles,
-                child: Text(words.clearFiles),
-              ),
-            ],
+          OutlinedButton.icon(
+            onPressed: _pick,
+            icon: const Icon(Icons.add, size: 18),
+            label: Text(words.chooseOtherFiles, overflow: TextOverflow.ellipsis),
           ),
+          const SizedBox(height: 4),
+          TextButton(onPressed: _working > 0 ? null : _clearFiles, child: Text(words.clearFiles)),
         ],
       ),
     );
@@ -1618,9 +1610,28 @@ class _ConverterScreenState extends State<ConverterScreen> {
     return tabs.isEmpty || tabs.contains(_tab) ? _tab : tabs.first;
   }
 
+  /// A phone gets the half dial along the bottom, within reach of a thumb.
+  bool get _thumbArc {
+    final phone =
+        defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
+    return phone && MediaQuery.sizeOf(context).width < 600;
+  }
+
   Widget _buildMenu(TextTheme styles) {
     final tab = _shownTab;
     final actions = _actionsFor(tab);
+    if (_thumbArc && actions.isNotEmpty) {
+      return ThumbArc(
+        key: ValueKey(tab),
+        actions: actions,
+        fileCount: _files.length,
+        sizeOf: _sizePreviews?.guess,
+        onSelected: _choose,
+        onChoice: (action, options) => _start(action, options),
+        onCancelled: () => setState(() => _menuOpen = false),
+      );
+    }
     return Column(
       children: [
         RadialMenu(

@@ -14,6 +14,7 @@ import 'package:shiftdrop/about.dart';
 import 'package:shiftdrop/conversion.dart';
 import 'package:shiftdrop/home_parts.dart';
 import 'package:shiftdrop/theme.dart';
+import 'package:shiftdrop/thumb_arc.dart';
 import 'package:shiftdrop/converter_screen.dart';
 import 'package:shiftdrop/radial_menu.dart';
 import 'package:shiftdrop/words.dart';
@@ -146,6 +147,16 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('Rotate'), findsOneWidget);
     expect(find.text('WhatsApp'), findsNothing);
+  });
+
+  testWidgets('a phone gets the half dial along the bottom', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await pump(tester);
+    await chooseFiles(tester);
+    expect(find.byType(ThumbArc), findsOneWidget);
+    expect(find.byType(RadialMenu), findsNothing);
   });
 
   testWidgets('Clear puts the screen back to the dial', (tester) async {

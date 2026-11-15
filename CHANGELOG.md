@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.12.0 (unreleased)
+## 0.12.0 (beta, 15 November 2026)
 
 - A new look, in light and dark, following the device unless **Settings** says otherwise. The main screen shows the
   dial before any file is in: drop files on it, or choose them from its middle. Beside it, how Shift-drag works, what
@@ -8,6 +8,10 @@
 - **Make it fit** has its own tab and its own amber colour, apart from the formats in **Convert** and the **Tools**.
 - Results show how much smaller they came out, and where they can be dragged on.
 - **Settings** shows the three themes as small pictures to choose from.
+- On a phone, the menu is half a dial along the bottom, in reach of a thumb, with a big button to run what's chosen
+  and its choices, such as Rotate's 180°, above it.
+- The Shift-drag menu and the chip after it, on Mac and Windows, have the same colours, in light and dark.
+- Text is set in Inter, with headings in Space Grotesk, both shipped in the app.
 - **Copy details** on a file that failed puts the app's version, the platform, the action, the kind of file and the
   failure's name on the clipboard, ready to paste into a bug report. Never the file's name or anything inside it.
 

@@ -649,8 +649,9 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
                         size.describe(words),
                         maxLines: 1,
                         style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
+                          fontFamily: headingFont,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                           letterSpacing: -0.3,
                           color: colours.onSurface,
                         ),

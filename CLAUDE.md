@@ -221,7 +221,11 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   "go", amber is Make it fit (`RadialAction.isFit`: Shift menu actions that aren't plain format changes). The window
   splits the Shift menu into Convert and Make it fit tabs (`_Tab` in `converter_screen.dart`); Shift-drag keeps them
   together. No characters outside Latin-1 and Devanagari in `app/lib`: key captions say "Arrows", not arrow symbols.
-  Inter isn't bundled yet, so text uses the platform's font.
+  Fonts: Inter 400-700 and Space Grotesk 600, static weights cut from google/fonts' variable files and subset to Latin
+  with fontTools (about 240 KB in all; Hindi falls back to Noto). A button's own `textStyle` replaces the theme's, so
+  name `bodyFont` in any built from scratch. Phones (Android or iOS, under 600 px) get `ThumbArc`, a half dial, instead
+  of `RadialMenu`. The native menus draw `MenuPalette` (Swift) and `MenuPalette` (C++) copied from `SdColors`; the
+  theme choice reaches them as `theme` among the words in `setWords`, and each slice carries `fit`.
 - Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
   an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.

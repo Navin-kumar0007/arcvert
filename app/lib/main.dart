@@ -34,6 +34,7 @@ class _RadialAppState extends State<RadialApp> {
     super.initState();
     _language = widget.settings.value.language;
     _themeName = widget.settings.value.theme;
+    chosenTheme = _themeName;
     chosenLocale = widget.settings.value.locale;
     widget.settings.addListener(_changed);
   }
@@ -46,7 +47,11 @@ class _RadialAppState extends State<RadialApp> {
 
   void _changed() {
     final value = widget.settings.value;
-    if (value.theme != _themeName) setState(() => _themeName = value.theme);
+    if (value.theme != _themeName) {
+      chosenTheme = value.theme;
+      sendNativeWords();
+      setState(() => _themeName = value.theme);
+    }
     if (value.language == _language) return;
     chosenLocale = value.locale;
     // The Shift-drag menu draws its own words, so it's told too.

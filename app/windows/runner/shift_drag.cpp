@@ -47,7 +47,43 @@ const int kSize = 300;
 const double kMenuRadius = kSize / 2.0;
 const double kRingWidth = 56;
 const double kInnerRadius = 38;
-const COLORREF kAccent = RGB(0x0B, 0x6E, 0x5F);
+
+// The app's colours, light and dark, as theme.dart has them, so the menu matches the window.
+// Translucent ones are given already laid over the surface, as GDI has no alpha.
+struct MenuPalette {
+  COLORREF background;
+  COLORREF surface;
+  COLORREF raised;
+  COLORREF line;
+  COLORREF text;
+  COLORREF muted;
+  COLORREF accent;
+  COLORREF accent_ink;
+  COLORREF amber;
+  COLORREF amber_ink;
+  COLORREF amber_text;
+  COLORREF amber_soft;
+};
+
+const MenuPalette kDark = {
+    RGB(0x0D, 0x14, 0x12), RGB(0x14, 0x1D, 0x1A), RGB(0x1B, 0x27, 0x23), RGB(0x33, 0x3A, 0x38),
+    RGB(0xE7, 0xEF, 0xEB), RGB(0x9A, 0xAC, 0xA5), RGB(0x34, 0xC3, 0xA6), RGB(0x03, 0x23, 0x1D),
+    RGB(0xF4, 0xB7, 0x40), RGB(0x2A, 0x1C, 0x00), RGB(0xF4, 0xC7, 0x6A), RGB(0x2A, 0x2C, 0x1E)};
+
+const MenuPalette kLight = {
+    RGB(0xF4, 0xF7, 0xF5), RGB(0xFF, 0xFF, 0xFF), RGB(0xE9, 0xEF, 0xEC), RGB(0xD9, 0xDA, 0xDA),
+    RGB(0x0F, 0x1A, 0x17), RGB(0x55, 0x66, 0x5F), RGB(0x0B, 0x6E, 0x5F), RGB(0xFF, 0xFF, 0xFF),
+    RGB(0xF4, 0xB7, 0x40), RGB(0x2A, 0x1C, 0x00), RGB(0x8A, 0x5A, 0x00), RGB(0xFD, 0xF3, 0xE0)};
+
+// Whether Windows is set to dark mode for apps. Light if it can't tell, as older Windows is.
+bool SystemUsesDark() {
+  DWORD light = 1;
+  DWORD size = sizeof(light);
+  const LSTATUS status = ::RegGetValueW(
+      HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+      L"AppsUseLightTheme", RRF_RT_REG_DWORD, nullptr, &light, &size);
+  return status == ERROR_SUCCESS && light == 0;
+}
 const double kPi = 3.141592653589793;
 
 bool LeftButtonDown() {
@@ -266,6 +302,15 @@ std::wstring NativeWord(const std::string& key, const wchar_t* english) {
   return found == Words().end() ? std::wstring(english) : found->second;
 }
 
+// What Settings chose, or Windows' own setting for "As the system". The app sends its choice
+// along with the menu's words.
+const MenuPalette& CurrentPalette() {
+  const std::wstring theme = NativeWord("theme", L"system");
+  if (theme == L"dark") return kDark;
+  if (theme == L"light") return kLight;
+  return SystemUsesDark() ? kDark : kLight;
+}
+
 ShiftDrag::ShiftDrag(flutter::BinaryMessenger* messenger, HWND app_window)
     : app_window_(app_window) {
   channel_ = std::make_unique<flutter::MethodChannel<EncodableValue>>(
@@ -399,7 +444,14 @@ void ShiftDrag::HideChip() {
 void ShiftDrag::PaintChip() {
   PAINTSTRUCT paint;
   HDC dc = ::BeginPaint(chip_, &paint);
+  const MenuPalette& colours = CurrentPalette();
+  RECT whole;
+  ::GetClientRect(chip_, &whole);
+  HBRUSH surface = ::CreateSolidBrush(colours.surface);
+  ::FillRect(dc, &whole, surface);
+  ::DeleteObject(surface);
   ::SetBkMode(dc, TRANSPARENT);
+  ::SetTextColor(dc, colours.text);
   std::wstring title;
   if (chip_paths_.size() == 1) {
     const size_t slash = chip_paths_[0].find_last_of(L"\\/");
@@ -410,7 +462,7 @@ void ShiftDrag::PaintChip() {
   RECT top = {12, 8, kChipWidth - 12, 30};
   ::DrawTextW(dc, title.c_str(), -1, &top, DT_SINGLELINE | DT_PATH_ELLIPSIS | DT_NOPREFIX);
   RECT bottom = {12, 30, kChipWidth - 12, 50};
-  ::SetTextColor(dc, ::GetSysColor(COLOR_GRAYTEXT));
+  ::SetTextColor(dc, colours.accent);
   ::DrawTextW(dc, NativeWord("dragToApp", L"Drag to another app").c_str(), -1, &bottom,
               DT_SINGLELINE | DT_NOPREFIX);
   ::EndPaint(chip_, &paint);
@@ -643,6 +695,10 @@ std::vector<ShiftDrag::Slice> ShiftDrag::SlicesFrom(const EncodableValue* answer
     const auto* label_text = std::get_if<std::string>(&label->second);
     if (id_text == nullptr || label_text == nullptr) continue;
     Slice slice{*id_text, Utf16FromUtf8(*label_text), {}};
+    const auto fit = map->find(EncodableValue("fit"));
+    if (fit != map->end()) {
+      if (const auto* flag = std::get_if<bool>(&fit->second)) slice.fit = *flag;
+    }
     const auto choices = map->find(EncodableValue("choices"));
     if (choices != map->end()) {
       if (const auto* names = std::get_if<EncodableList>(&choices->second)) {
@@ -855,14 +911,23 @@ void ShiftDrag::Paint() {
   // The menu's square, inside the window, which has room for the ring around it.
   const int box_from = static_cast<int>(centre - outer);
   const int box_to = static_cast<int>(centre + outer);
-  const COLORREF background = ::GetSysColor(COLOR_WINDOW);
-  const COLORREF text = ::GetSysColor(COLOR_WINDOWTEXT);
+  const MenuPalette& colours = CurrentPalette();
+  const COLORREF background = colours.surface;
+  const COLORREF text = colours.text;
+  const int slice_count = static_cast<int>(slices_.size());
+  const bool fit_on = highlighted_ >= 0 && highlighted_ < slice_count && slices_[highlighted_].fit;
+  // The highlighted slice's own colour: amber for Make it fit, teal for the rest.
+  const COLORREF own = fit_on ? colours.amber : colours.accent;
+  const COLORREF own_ink = fit_on ? colours.amber_ink : colours.accent_ink;
 
   HBRUSH background_brush = ::CreateSolidBrush(background);
+  HBRUSH fit_brush = ::CreateSolidBrush(colours.amber_soft);
+  HBRUSH raised_brush = ::CreateSolidBrush(colours.raised);
+  HBRUSH hub_brush = ::CreateSolidBrush(colours.background);
   // Fainter while one of the slice's choices is the one dropped on.
-  HBRUSH accent_brush = ::CreateSolidBrush(choice_ >= 0 ? Mix(kAccent, background) : kAccent);
-  HBRUSH choice_brush = ::CreateSolidBrush(kAccent);
-  HPEN line = ::CreatePen(PS_SOLID, 1, ::GetSysColor(COLOR_3DSHADOW));
+  HBRUSH accent_brush = ::CreateSolidBrush(choice_ >= 0 ? Mix(own, background) : own);
+  HBRUSH choice_brush = ::CreateSolidBrush(own);
+  HPEN line = ::CreatePen(PS_SOLID, 1, colours.line);
   HFONT font = MenuFont(13, scale, FW_SEMIBOLD);
   HGDIOBJ old_pen = ::SelectObject(dc, line);
   HGDIOBJ old_brush = ::SelectObject(dc, background_brush);
@@ -879,7 +944,8 @@ void ShiftDrag::Paint() {
       // Clockwise from the top: x grows with sin, and y falls with cos.
       const double from = middle + span / 2;
       const double to = middle - span / 2;
-      ::SelectObject(dc, i == highlighted_ ? accent_brush : background_brush);
+      ::SelectObject(dc, i == highlighted_ ? accent_brush
+                                           : (slices_[i].fit ? fit_brush : background_brush));
       if (count == 1) {
         ::Ellipse(dc, box_from, box_from, box_to, box_to);
       } else {
@@ -897,7 +963,7 @@ void ShiftDrag::Paint() {
       const int half_width = static_cast<int>(60 * scale);
       const int half_height = static_cast<int>(12 * scale);
       RECT label = {x - half_width, y - half_height, x + half_width, y + half_height};
-      ::SetTextColor(dc, i == highlighted_ ? RGB(255, 255, 255) : text);
+      ::SetTextColor(dc, i == highlighted_ ? own_ink : (slices_[i].fit ? colours.amber_text : text));
       ::DrawTextW(dc, slices_[i].label.c_str(), -1, &label,
                   DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
     }
@@ -913,7 +979,7 @@ void ShiftDrag::Paint() {
     for (int i = 0; i < total; i++) {
       const double middle = ChoiceAngle(i, highlighted_, count, total);
       auto points = Sector(centre, ring_inner, ring_outer, middle - span / 2, middle + span / 2);
-      ::SelectObject(dc, i == choice_ ? choice_brush : background_brush);
+      ::SelectObject(dc, i == choice_ ? choice_brush : raised_brush);
       ::Polygon(dc, points.data(), static_cast<int>(points.size()));
       const double reach = (ring_inner + ring_outer) / 2;
       const int x = static_cast<int>(centre + std::sin(middle) * reach);
@@ -921,7 +987,7 @@ void ShiftDrag::Paint() {
       const int width = static_cast<int>(2 * reach * std::sin(span / 2) - 6 * scale);
       HFONT choice_font = FittedFont(dc, choices[i], width, scale, FW_SEMIBOLD, 11, 8);
       ::SelectObject(dc, choice_font);
-      ::SetTextColor(dc, i == choice_ ? RGB(255, 255, 255) : text);
+      ::SetTextColor(dc, i == choice_ ? own_ink : text);
       RECT label = {x - width / 2, y - static_cast<int>(10 * scale), x + width / 2,
                     y + static_cast<int>(10 * scale)};
       ::DrawTextW(dc, choices[i].c_str(), -1, &label,
@@ -931,7 +997,7 @@ void ShiftDrag::Paint() {
     }
   }
 
-  ::SelectObject(dc, background_brush);
+  ::SelectObject(dc, hub_brush);
   const int hub = static_cast<int>(inner - 4 * scale);
   const int middle = static_cast<int>(centre);
   ::Ellipse(dc, middle - hub, middle - hub, middle + hub, middle + hub);
@@ -943,7 +1009,7 @@ void ShiftDrag::Paint() {
     HFONT tools_font = FittedFont(dc, tools_word, static_cast<int>(hub * 1.4), scale, FW_SEMIBOLD,
                                   9, 7);
     ::SelectObject(dc, tools_font);
-    ::SetTextColor(dc, kAccent);
+    ::SetTextColor(dc, colours.accent);
     RECT top = {middle - hub, middle - hub + static_cast<int>(4 * scale), middle + hub,
                 middle - hub + static_cast<int>(18 * scale)};
     ::DrawTextW(dc, tools_word.c_str(), -1, &top, DT_CENTER | DT_TOP | DT_SINGLELINE | DT_NOPREFIX);
@@ -972,7 +1038,7 @@ void ShiftDrag::Paint() {
     ::DrawTextW(dc, size_text->c_str(), -1, &above,
                 DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_NOPREFIX);
     ::SelectObject(dc, cancel_font);
-    ::SetTextColor(dc, ::GetSysColor(COLOR_GRAYTEXT));
+    ::SetTextColor(dc, colours.muted);
     RECT below = {middle - hub, middle + gap, middle + hub, middle + hub};
     ::DrawTextW(dc, cancel_word.c_str(), -1, &below,
                 DT_CENTER | DT_TOP | DT_SINGLELINE | DT_NOPREFIX);
@@ -989,5 +1055,8 @@ void ShiftDrag::Paint() {
   ::DeleteObject(accent_brush);
   ::DeleteObject(choice_brush);
   ::DeleteObject(background_brush);
+  ::DeleteObject(fit_brush);
+  ::DeleteObject(raised_brush);
+  ::DeleteObject(hub_brush);
   ::EndPaint(panel_, &paint);
 }

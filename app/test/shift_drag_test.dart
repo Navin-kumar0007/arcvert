@@ -165,6 +165,11 @@ void main() {
       'id': 'image-to-jpg',
       'label': 'JPG',
     });
+    // Make it fit is marked, so the native menus colour it amber as the window does.
+    expect(
+      shiftDragSlice(actionById('fit-whatsapp-photo')!, lookupWords(const Locale('en')))['fit'],
+      isTrue,
+    );
   });
 
   group('through the screen', () {

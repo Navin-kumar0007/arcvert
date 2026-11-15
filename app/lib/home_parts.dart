@@ -502,6 +502,11 @@ class ModeTabs<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sd = context.sd;
+    // Shrinks rather than overflows on the narrowest phones.
+    return FittedBox(fit: BoxFit.scaleDown, child: _tabs(sd));
+  }
+
+  Widget _tabs(SdColors sd) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -522,7 +527,7 @@ class ModeTabs<T> extends StatelessWidget {
                   onPressed: () => onSelected(tab),
                   style: TextButton.styleFrom(
                     minimumSize: const Size(44, 40),
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     backgroundColor: tab == selected
                         ? (isFit(tab) ? sd.amber : sd.accent)
@@ -530,7 +535,7 @@ class ModeTabs<T> extends StatelessWidget {
                     foregroundColor: tab == selected
                         ? (isFit(tab) ? sd.amberInk : sd.accentInk)
                         : sd.text2,
-                    textStyle: const TextStyle(fontWeight: FontWeight.w600),
+                    textStyle: const TextStyle(fontFamily: bodyFont, fontWeight: FontWeight.w600),
                   ),
                   child: Text(label),
                 ),

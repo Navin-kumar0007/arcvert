@@ -305,6 +305,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Make it fit'));
     await tester.pump();
+    await tester.ensureVisible(find.text('Form photo'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Form photo'));
     await tester.pumpAndSettle();
     await tester.enterText(find.widgetWithText(TextField, 'Width (pixels)'), '100');

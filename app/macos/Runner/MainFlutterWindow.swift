@@ -40,7 +40,9 @@ class MainFlutterWindow: NSWindow {
             guard let id = item["id"] as? String, let label = item["label"] as? String else {
               return nil
             }
-            return RadialSlice(id: id, label: label, choices: item["choices"] as? [String] ?? [])
+            return RadialSlice(
+              id: id, label: label, choices: item["choices"] as? [String] ?? [],
+              fit: item["fit"] as? Bool ?? false)
           })
       }
     }

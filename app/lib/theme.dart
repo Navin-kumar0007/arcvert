@@ -198,16 +198,19 @@ ThemeData shiftDropTheme(Brightness brightness) {
     shadow: Colors.black,
     scrim: Colors.black,
   );
-  final base = ThemeData(colorScheme: scheme, useMaterial3: true);
+  final base = ThemeData(colorScheme: scheme, useMaterial3: true, fontFamily: 'Inter');
   const radius12 = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)));
   const buttonSize = Size(44, 44);
   return base.copyWith(
     scaffoldBackgroundColor: sd.bg,
     extensions: [sd],
-    textTheme: base.textTheme.apply(
-      fontFamilyFallback: const ['NotoSansDevanagari'],
-      bodyColor: sd.text,
-      displayColor: sd.text,
+    textTheme: _withHeadings(
+      base.textTheme.apply(
+        fontFamily: 'Inter',
+        fontFamilyFallback: const ['NotoSansDevanagari'],
+        bodyColor: sd.text,
+        displayColor: sd.text,
+      ),
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: sd.bg,
@@ -231,7 +234,7 @@ ThemeData shiftDropTheme(Brightness brightness) {
       style: FilledButton.styleFrom(
         minimumSize: buttonSize,
         shape: radius12,
-        textStyle: const TextStyle(fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontFamily: bodyFont, fontWeight: FontWeight.w600),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -256,7 +259,7 @@ ThemeData shiftDropTheme(Brightness brightness) {
         selectedForegroundColor: sd.accentInk,
         side: BorderSide(color: sd.line),
         minimumSize: buttonSize,
-        textStyle: const TextStyle(fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontFamily: bodyFont, fontWeight: FontWeight.w600),
       ),
     ),
     switchTheme: SwitchThemeData(
@@ -276,12 +279,12 @@ ThemeData shiftDropTheme(Brightness brightness) {
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       backgroundColor: sd.text,
-      contentTextStyle: TextStyle(color: sd.bg),
+      contentTextStyle: TextStyle(fontFamily: bodyFont, color: sd.bg),
       shape: radius12,
     ),
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(color: sd.text, borderRadius: BorderRadius.circular(8)),
-      textStyle: TextStyle(color: sd.bg, fontSize: 12),
+      textStyle: TextStyle(fontFamily: bodyFont, color: sd.bg, fontSize: 12),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -302,6 +305,31 @@ ThemeData shiftDropTheme(Brightness brightness) {
     bannerTheme: MaterialBannerThemeData(backgroundColor: sd.surface2),
   );
 }
+
+/// Headlines in Space Grotesk, which only has the weight headings use.
+TextTheme _withHeadings(TextTheme theme) {
+  TextStyle? heading(TextStyle? style) => style?.copyWith(
+    fontFamily: headingFont,
+    fontFamilyFallback: const ['Inter', 'NotoSansDevanagari'],
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.3,
+  );
+  return theme.copyWith(
+    displayLarge: heading(theme.displayLarge),
+    displayMedium: heading(theme.displayMedium),
+    displaySmall: heading(theme.displaySmall),
+    headlineLarge: heading(theme.headlineLarge),
+    headlineMedium: heading(theme.headlineMedium),
+    headlineSmall: heading(theme.headlineSmall),
+  );
+}
+
+/// For titles and big numbers, such as the size in the middle of the dial.
+const headingFont = 'SpaceGrotesk';
+
+/// Everything else. Named wherever a style is built from scratch, as a button's own text style
+/// replaces the theme's rather than adding to it.
+const bodyFont = 'Inter';
 
 /// Section titles: small, spaced capitals in the muted colour.
 class SdSectionTitle extends StatelessWidget {

@@ -47,6 +47,8 @@ class ShiftDrag : public IDropTarget {
     std::wstring label;
     // Labels of its outer-ring choices, if it has any.
     std::vector<std::wstring> choices;
+    // Make it fit, drawn in amber as the window draws it.
+    bool fit = false;
   };
 
   // The slices in an answer to "menuFor".

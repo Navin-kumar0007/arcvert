@@ -53,6 +53,54 @@ struct RadialSlice {
   let id: String
   let label: String
   var choices: [String] = []
+  /// Make it fit, drawn in amber as the window draws it.
+  var fit = false
+}
+
+/// The app's colours, light and dark, as `theme.dart` has them, so the menu matches the window.
+struct MenuPalette {
+  let background: NSColor
+  let surface: NSColor
+  let raised: NSColor
+  let line: NSColor
+  let text: NSColor
+  let muted: NSColor
+  let accent: NSColor
+  let accentInk: NSColor
+  let amber: NSColor
+  let amberInk: NSColor
+  let amberText: NSColor
+  /// Amber faintly over [surface], for Make it fit slices not highlighted.
+  let amberSoft: NSColor
+
+  static func rgb(_ hex: UInt32, _ alpha: CGFloat = 1) -> NSColor {
+    return NSColor(
+      srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
+      blue: CGFloat(hex & 0xFF) / 255, alpha: alpha)
+  }
+
+  static let dark = MenuPalette(
+    background: rgb(0x0D1412), surface: rgb(0x141D1A), raised: rgb(0x1B2723),
+    line: rgb(0xFFFFFF, 0.13), text: rgb(0xE7EFEB), muted: rgb(0x9AACA5), accent: rgb(0x34C3A6),
+    accentInk: rgb(0x03231D), amber: rgb(0xF4B740), amberInk: rgb(0x2A1C00),
+    amberText: rgb(0xF4C76A), amberSoft: rgb(0x2A2C1E))
+
+  static let light = MenuPalette(
+    background: rgb(0xF4F7F5), surface: rgb(0xFFFFFF), raised: rgb(0xE9EFEC),
+    line: rgb(0x0F1A17, 0.16), text: rgb(0x0F1A17), muted: rgb(0x55665F), accent: rgb(0x0B6E5F),
+    accentInk: rgb(0xFFFFFF), amber: rgb(0xF4B740), amberInk: rgb(0x2A1C00),
+    amberText: rgb(0x8A5A00), amberSoft: rgb(0xFDF3E0))
+
+  /// What Settings chose, or the Mac's own appearance for "As the system".
+  static var current: MenuPalette {
+    switch NativeWords.word("theme", "system") {
+    case "light": return light
+    case "dark": return dark
+    default:
+      let match = NSApplication.shared.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua])
+      return match == .darkAqua ? dark : light
+    }
+  }
 }
 
 /// Slice at a point, for [count] slices: 0 is at the top, then clockwise. Nil is the centre, which
@@ -171,7 +219,8 @@ final class RadialDropView: NSView {
   }
 
   override func draw(_ dirtyRect: NSRect) {
-    drawRing()
+    let colours = MenuPalette.current
+    drawRing(colours)
     let span = 360 / CGFloat(max(slices.count, 1))
     for (index, slice) in slices.enumerated() {
       // AppKit's angles run anticlockwise from the right.
@@ -186,12 +235,14 @@ final class RadialDropView: NSView {
       path.close()
 
       let isOn = index == highlighted
+      let own = slice.fit ? colours.amber : colours.accent
       // Fainter while one of its choices is the one dropped on.
-      let accent = choice == nil ? NSColor.controlAccentColor : NSColor.controlAccentColor.withAlphaComponent(0.5)
-      let fill = isOn ? accent : NSColor.windowBackgroundColor.withAlphaComponent(0.95)
+      let accent = choice == nil ? own : own.withAlphaComponent(0.5)
+      let idle = slice.fit ? colours.amberSoft : colours.surface
+      let fill = isOn ? accent : idle.withAlphaComponent(0.97)
       fill.setFill()
       path.fill()
-      NSColor.separatorColor.setStroke()
+      colours.line.setStroke()
       path.lineWidth = 1
       path.stroke()
 
@@ -199,15 +250,20 @@ final class RadialDropView: NSView {
       let labelRadius = (innerRadius + outerRadius) / 2
       let point = NSPoint(
         x: centre.x + cos(radians) * labelRadius, y: centre.y + sin(radians) * labelRadius)
-      drawLabel(slice.label, at: point, color: isOn ? .white : .labelColor, size: 13, weight: .semibold)
+      let ink = slice.fit ? colours.amberInk : colours.accentInk
+      drawLabel(
+        slice.label, at: point, color: isOn ? ink : (slice.fit ? colours.amberText : colours.text),
+        size: 13, weight: .semibold)
     }
 
     let hubRadius = innerRadius - 4
     let hub = NSBezierPath(
       ovalIn: NSRect(
         x: centre.x - hubRadius, y: centre.y - hubRadius, width: hubRadius * 2, height: hubRadius * 2))
-    NSColor.windowBackgroundColor.withAlphaComponent(0.95).setFill()
+    colours.background.withAlphaComponent(0.97).setFill()
     hub.fill()
+    colours.line.setStroke()
+    hub.stroke()
     let cancel = NativeWords.word("cancel", "Cancel")
     let room = (hubRadius - 4) * 2
     // In Tools, the hub says so above whatever else it says.
@@ -216,28 +272,29 @@ final class RadialDropView: NSView {
       let tools = NativeWords.word("tools", "Tools")
       drawLabel(
         tools, at: NSPoint(x: centre.x, y: centre.y + (highlightedSize == nil ? 9 : 19)),
-        color: .controlAccentColor,
+        color: colours.accent,
         size: fittedFontSize(tools, width: room, largest: 9, smallest: 7, weight: .semibold),
         weight: .semibold)
     }
     guard let size = highlightedSize else {
       drawLabel(
-        cancel, at: NSPoint(x: centre.x, y: centre.y - lift), color: .secondaryLabelColor, size: 11,
+        cancel, at: NSPoint(x: centre.x, y: centre.y - lift), color: colours.muted, size: 11,
         weight: .regular)
       return
     }
     // The size above, Cancel below, both inside the hub.
     drawLabel(
-      size, at: NSPoint(x: centre.x, y: centre.y + 7 - lift / 2), color: .labelColor,
+      size, at: NSPoint(x: centre.x, y: centre.y + 7 - lift / 2), color: colours.text,
       size: fittedFontSize(size, width: room, largest: 11, smallest: 7, weight: .bold), weight: .bold)
     drawLabel(
-      cancel, at: NSPoint(x: centre.x, y: centre.y - 8 - lift / 2), color: .secondaryLabelColor,
+      cancel, at: NSPoint(x: centre.x, y: centre.y - 8 - lift / 2), color: colours.muted,
       size: 10, weight: .regular)
   }
 
   /// The highlighted slice's choices, around the menu next to it.
-  private func drawRing() {
+  private func drawRing(_ colours: MenuPalette) {
     guard let parent = highlighted, parent < slices.count else { return }
+    let fit = slices[parent].fit
     let choices = slices[parent].choices
     guard !choices.isEmpty else { return }
     let span = choiceSpan(count: slices.count, choices: choices.count)
@@ -256,17 +313,18 @@ final class RadialDropView: NSView {
         clockwise: true)
       path.close()
       let isOn = index == choice
-      (isOn ? NSColor.controlAccentColor : NSColor.windowBackgroundColor.withAlphaComponent(0.95))
+      (isOn ? (fit ? colours.amber : colours.accent) : colours.raised.withAlphaComponent(0.97))
         .setFill()
       path.fill()
-      NSColor.separatorColor.setStroke()
+      colours.line.setStroke()
       path.lineWidth = 1
       path.stroke()
       let reach = (inner + ringRadius) / 2
       let point = NSPoint(x: centre.x + sin(middle) * reach, y: centre.y + cos(middle) * reach)
       let width = 2 * reach * sin(span / 2) - 6
       drawLabel(
-        label, at: point, color: isOn ? .white : .labelColor,
+        label, at: point,
+        color: isOn ? (fit ? colours.amberInk : colours.accentInk) : colours.text,
         size: fittedFontSize(label, width: width, largest: 11, smallest: 8, weight: .semibold),
         weight: .semibold)
     }
@@ -635,10 +693,11 @@ private final class ResultChipView: NSView {
   override func acceptsFirstMouse(for event: NSEvent?) -> Bool { return true }
 
   override func draw(_ dirtyRect: NSRect) {
-    let shape = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: 12, yRadius: 12)
-    NSColor.windowBackgroundColor.withAlphaComponent(0.97).setFill()
+    let colours = MenuPalette.current
+    let shape = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: 14, yRadius: 14)
+    colours.surface.withAlphaComponent(0.98).setFill()
     shape.fill()
-    NSColor.separatorColor.setStroke()
+    colours.line.setStroke()
     shape.stroke()
 
     let side: CGFloat = 36
@@ -654,14 +713,14 @@ private final class ResultChipView: NSView {
       in: NSRect(x: textX, y: bounds.midY, width: width, height: 18),
       withAttributes: [
         .font: NSFont.systemFont(ofSize: 13, weight: .semibold),
-        .foregroundColor: NSColor.labelColor,
+        .foregroundColor: colours.text,
         .paragraphStyle: style,
       ])
     (NativeWords.word("dragToApp", "Drag to another app") as NSString).draw(
       in: NSRect(x: textX, y: bounds.midY - 18, width: width, height: 16),
       withAttributes: [
         .font: NSFont.systemFont(ofSize: 11),
-        .foregroundColor: NSColor.secondaryLabelColor,
+        .foregroundColor: colours.accent,
       ])
   }
 

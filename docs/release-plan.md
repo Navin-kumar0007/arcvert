@@ -104,17 +104,22 @@ Rules:
 - Tests cover every file kind's preview, its failures, the compare slider, the reorder list and every setting.
 - The user guide, privacy policy (previews stay on the device) and changelog say what changed.
 
-## 0.12.0: errors and polish
+## 0.12.0: new look, copy details
 
-Build from about 27 November, publish about 20 December 2026.
+**Done.** Built and tagged on 15 November 2026, ahead of plan; publish after 0.11.0, about 20 December 2026. The
+owner chose to ship the new look with Copy details and move the other planned items to 0.13.
 
-- **New look** (agreed 15 November 2026 from the canvas of concepts): light and dark colour sets (`theme.dart`), the
-  dial shown before any file as the drop target, Make it fit as its own amber tab, result cards with a size bar,
-  theme cards in Settings. **Done** in the window on every platform. Still to do: the phone's half dial within thumb
-  reach, and the native Shift-drag menus' colours on Mac and Windows.
-
+- **New look** (agreed 15 November 2026 from the canvas of concepts), light and dark: colour sets in `theme.dart`,
+  Inter and Space Grotesk bundled, the dial shown before any file as the drop target, Make it fit as its own amber
+  tab, result cards with a size bar, theme cards in Settings, the phone's half dial within thumb reach
+  (`thumb_arc.dart`), and the native Shift-drag menus and result chips on Mac and Windows in the same colours.
 - **Copy details** on every failed file: app version, platform, action, file kind and the error's key, ready to paste
-  into a bug report. Never file names or contents. **Done** (`failure_details.dart`, 15 November 2026).
+  into a bug report. Never file names or contents (`failure_details.dart`).
+
+## 0.13.0: menu and form polish
+
+Build from about 21 December 2026, publish about mid-January 2027.
+
 - **Live preview in the menu's centre**: resting on Rotate, Flip or Resize, or one of their choices, shows the
   picture already turned, flipped or smaller, without converting. Window menu only.
 - **Thumbnails on the Shift-drag result chip**, from the system's own thumbnails (Quick Look on a Mac, the shell on

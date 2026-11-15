@@ -44,6 +44,8 @@ Rest on a slice for a moment, in the window or while Shift-dragging, and the mid
 
 **On Android.** Share a file from any app and choose ShiftDrop, or open the app and choose files.
 
+**On a phone.** The menu is half a dial along the bottom of the screen. Tap a slice to choose it: the card above says how big the result will be, and choices such as Rotate's 180° appear as buttons. Then tap the big button in the middle to run it.
+
 ## After converting
 
 | Do this | How | Where |

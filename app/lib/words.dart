@@ -15,6 +15,10 @@ extension WordsOf on BuildContext {
 /// The language chosen in the app, or null to follow the device. Set by `main.dart`.
 Locale? chosenLocale;
 
+/// The theme chosen in Settings, "system", "light" or "dark", for the native menus, which draw
+/// their own colours.
+String chosenTheme = 'system';
+
 /// For code with no screen to ask, such as the Shift-drag menu and engines.
 Words get deviceWords => wordsFor(chosenLocale ?? PlatformDispatcher.instance.locale);
 

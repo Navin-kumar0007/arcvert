@@ -49,6 +49,8 @@ Map<String, Object> shiftDragSlice(RadialAction action, Words words) {
   return {
     'id': action.id,
     'label': actionLabel(words, action.label),
+    // Make it fit is drawn in amber, as in the window.
+    if (action.isFit) 'fit': true,
     if (choices.isNotEmpty)
       'choices': [for (final choice in choices) ringChoiceLabel(words, choice)],
   };
@@ -75,6 +77,8 @@ void sendNativeWords() {
         'trayHowToQuit': words.trayHowToQuit,
         'trayOpen': words.trayOpen,
         'trayQuit': words.trayQuit,
+        // Not a word: the theme rides along, so the menus need no message of their own for it.
+        'theme': chosenTheme,
       })
       .catchError((Object _) {
         // The native side keeps its English.

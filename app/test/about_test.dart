@@ -46,6 +46,7 @@ void main() {
         'mpl-2.0.txt': 'Mozilla Public License',
         'libarchive.txt': 'libarchive',
         'apache-2.0.txt': 'Apache License',
+        'ofl-1.1.txt': 'SIL OPEN FONT LICENSE Version 1.1',
       };
       for (final licence in bundledLicences) {
         final text = File('assets/licenses/${licence.file}').readAsStringSync();
@@ -66,7 +67,7 @@ void main() {
       await for (final entry in LicenseRegistry.licenses) {
         names.addAll(entry.packages);
       }
-      expect(names, containsAll(['FFmpeg', 'libheif', 'libarchive', 'Mediabunny']));
+      expect(names, containsAll(['FFmpeg', 'libheif', 'libarchive', 'Mediabunny', 'Inter']));
     });
   });
 
@@ -162,5 +163,19 @@ void main() {
       await tester.pump();
       expect(find.textContaining('Login Items'), findsOneWidget);
     });
+  });
+
+  test('every font the theme names is bundled, with its weights', () {
+    final pubspec = File('pubspec.yaml').readAsStringSync();
+    for (final asset in [
+      'Inter-Regular.ttf',
+      'Inter-Medium.ttf',
+      'Inter-SemiBold.ttf',
+      'Inter-Bold.ttf',
+      'SpaceGrotesk-SemiBold.ttf',
+    ]) {
+      expect(File('assets/fonts/$asset').existsSync(), isTrue, reason: asset);
+      expect(pubspec, contains('assets/fonts/$asset'), reason: asset);
+    }
   });
 }
