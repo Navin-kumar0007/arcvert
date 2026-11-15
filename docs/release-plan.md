@@ -11,15 +11,21 @@ Releases are prepared ahead and published one after another, with time to test e
    **draft** release that only the owner can see.
 2. Test the draft's downloads for about 10 days. A bug found then is fixed and the version tagged again, or it waits
    for a patch release.
-3. Publish the draft. Then move `main` to that tag only (`git push origin vX.Y.Z^{commit}:main`), never the whole
-   branch: every push to `main` redeploys the website and web app, and later versions may already be on the branch.
+3. Publish the draft. Then move `main` to that tag only, never the whole branch: every push to `main` redeploys the
+   website and web app, and later versions may already be on the branch. `main` holds merge commits the branch
+   doesn't, so make one more whose files are exactly the tag's, and push it:
+   ```sh
+   git fetch origin
+   C=$(git commit-tree 'vX.Y.Z^{tree}' -p origin/main -p 'vX.Y.Z^{commit}' -m 'Release X.Y.Z')
+   git push origin "${C}:refs/heads/main"
+   ```
 4. About two days later, update `docs/site/version.json`, so copies from the website offer the new version.
 
 Publish in version order, as GitHub's "latest" release, which the site's Download buttons use, follows commit date.
 
 ## 0.10.0: guide, update check, Tools in Shift-drag
 
-**Done.** Draft built on 11 November 2026 from `778461f`; publishing around 21 November.
+**Published** on 15 November 2026 from `778461f`, and `main` moved to it. `version.json` to follow about 17 November.
 
 - First-launch guide with a practice Shift-drag on a sample photo.
 - Daily check for a newer version on Mac and Windows copies from the website; a link to the download page on Android.
