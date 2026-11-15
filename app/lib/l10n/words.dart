@@ -255,6 +255,42 @@ abstract class Words {
   /// **'More actions'**
   String get moreActions;
 
+  /// No description provided for @ringRotateRight.
+  ///
+  /// In en, this message translates to:
+  /// **'90° right'**
+  String get ringRotateRight;
+
+  /// No description provided for @ringRotateLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'90° left'**
+  String get ringRotateLeft;
+
+  /// No description provided for @ringMirror.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirror'**
+  String get ringMirror;
+
+  /// No description provided for @ringUpsideDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Upside down'**
+  String get ringUpsideDown;
+
+  /// No description provided for @ringHalf.
+  ///
+  /// In en, this message translates to:
+  /// **'Half'**
+  String get ringHalf;
+
+  /// A choice on the outer ring, read out by screen readers, such as: Rotate, 180°
+  ///
+  /// In en, this message translates to:
+  /// **'{action}, {choice}'**
+  String ringChoice(String action, String choice);
+
   /// No description provided for @cancelFiles.
   ///
   /// In en, this message translates to:
@@ -266,6 +302,18 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Nothing fits'**
   String get nothingFits;
+
+  /// In the menu's centre: how big a result came out when tried, such as About 85 KB.
+  ///
+  /// In en, this message translates to:
+  /// **'About {size}'**
+  String sizeAbout(String size);
+
+  /// In the menu's centre: the most a size-limited result can be, such as Up to 100 KB.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {size}'**
+  String sizeUpTo(String size);
 
   /// No description provided for @trashMac.
   ///
@@ -1494,13 +1542,13 @@ abstract class Words {
   /// No description provided for @noteSomePictures.
   ///
   /// In en, this message translates to:
-  /// **'{count} of {total} pages are mostly pictures, so they came in that way. On the others, pictures, tables and exact layout aren\'t kept.'**
+  /// **'{count} of {total} pages are mostly pictures, so they came in that way. On the others, text, bold, simple tables and pictures came through, but not the exact layout.'**
   String noteSomePictures(Object count, Object total);
 
   /// No description provided for @noteTextEditable.
   ///
   /// In en, this message translates to:
-  /// **'The text can be edited. Pictures, tables and exact layout aren\'t kept.'**
+  /// **'Text, bold, simple tables and pictures came through, ready to edit. The exact layout isn\'t kept.'**
   String get noteTextEditable;
 
   /// No description provided for @trayStillRunning.
@@ -1556,6 +1604,186 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Allow ShiftDrop in System Settings, General, Login Items.'**
   String get openAtLoginApprove;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to ShiftDrop'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert, shrink and tidy files right here. Nothing is uploaded: every file stays on this device.'**
+  String get welcomeText;
+
+  /// No description provided for @welcomeSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get welcomeSkip;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get welcomeBack;
+
+  /// No description provided for @welcomeNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get welcomeNext;
+
+  /// No description provided for @welcomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get welcomeStart;
+
+  /// No description provided for @practiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it'**
+  String get practiceTitle;
+
+  /// No description provided for @practiceShiftDrag.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold Shift and drag the photo, then let go on a slice.'**
+  String get practiceShiftDrag;
+
+  /// No description provided for @practiceDrag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the photo, then let go on a slice.'**
+  String get practiceDrag;
+
+  /// No description provided for @practiceHoldShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold Shift while you drag.'**
+  String get practiceHoldShift;
+
+  /// No description provided for @practiceCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was chosen: the centre cancels. Try again, letting go on a slice.'**
+  String get practiceCancelled;
+
+  /// No description provided for @practiceDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: {name}, {size}.'**
+  String practiceDone(Object name, Object size);
+
+  /// No description provided for @practiceFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That didn\'t work this time. You can still carry on.'**
+  String get practiceFailed;
+
+  /// No description provided for @practicePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'A sample photo to practise on'**
+  String get practicePhoto;
+
+  /// No description provided for @tipMac.
+  ///
+  /// In en, this message translates to:
+  /// **'It works the same from Finder, over any app: Shift-drag a file and let go on a slice. Hold Option as well for tools such as Compress, Rotate and Resize.'**
+  String get tipMac;
+
+  /// No description provided for @tipWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'It works the same from File Explorer, over any app: Shift-drag a file and let go on a slice. Hold Alt as well for tools such as Compress, Rotate and Resize.'**
+  String get tipWindows;
+
+  /// No description provided for @tipAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'In other apps, tap Share, then ShiftDrop.'**
+  String get tipAndroid;
+
+  /// No description provided for @tipWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files on this page, or choose them. On an iPhone or iPad, open it in Safari, tap Share, then Add to Home Screen, and it works offline.'**
+  String get tipWeb;
+
+  /// No description provided for @choicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A few choices'**
+  String get choicesTitle;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @languageDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'As the device'**
+  String get languageDevice;
+
+  /// No description provided for @checkUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for new versions'**
+  String get checkUpdates;
+
+  /// No description provided for @checkUpdatesWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a day, ShiftDrop asks its website whether a newer version is out. Nothing about you or your files is sent.'**
+  String get checkUpdatesWhy;
+
+  /// No description provided for @getNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the newest version'**
+  String get getNewest;
+
+  /// No description provided for @getNewestWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens the download page in your browser. ShiftDrop itself can\'t use the internet.'**
+  String get getNewestWhy;
+
+  /// No description provided for @updateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'ShiftDrop {version} is out.'**
+  String updateReady(Object version);
+
+  /// No description provided for @updateGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get updateGet;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
+
+  /// No description provided for @pageFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the page. It\'s at {address}'**
+  String pageFailed(Object address);
+
+  /// No description provided for @showGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the guide again'**
+  String get showGuide;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

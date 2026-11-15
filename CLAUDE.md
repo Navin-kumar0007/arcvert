@@ -57,8 +57,8 @@ Headline features that make people switch:
 | Path | Contents |
 | --- | --- |
 | `spike/macos-shift-drag/` | Phase 0 prototype in Swift: Shift-drag detection + radial panel + `sips` conversion. Run with `bash spike/macos-shift-drag/run.sh`. **Works** (tested 2 Nov). |
-| `core/` | Dart package `radial_core`: file detection by bytes, 77-action catalogue, preset loader, never-overwrite naming, "under X KB" search, video bitrate maths, job queue, PDF writer, subtitles, and `portable_engine.dart` (images and subtitles in pure Dart, on every platform). `lib/engines.dart` (desktop only) runs engines as separate processes; `bin/radial.dart` is the command-line test tool. 588 tests; engine tests need `brew install vips qpdf ffmpeg` and skip otherwise. |
-| `app/` | Flutter app (`io.github.navinkumar0007.shiftdrop`): pick files, radial menu, real conversion, save. Same screen on all four platforms. 314 tests, plus 37 PDF ones needing `PDFIUM_PATH`. `tool/test_android_device.sh` runs the real Android engine and share menu on an emulator, in CI. |
+| `core/` | Dart package `radial_core`: file detection by bytes, 77-action catalogue, preset loader, never-overwrite naming, "under X KB" search, video bitrate maths, job queue, PDF writer, subtitles, and `portable_engine.dart` (images and subtitles in pure Dart, on every platform). `lib/engines.dart` (desktop only) runs engines as separate processes; `bin/radial.dart` is the command-line test tool. 632 tests; engine tests need `brew install vips qpdf ffmpeg` and skip otherwise. |
+| `app/` | Flutter app (`io.github.navinkumar0007.shiftdrop`): pick files, radial menu, real conversion, save. Same screen on all four platforms. 396 tests, plus 37 PDF ones needing `PDFIUM_PATH`. `tool/test_android_device.sh` runs the real Android engine and share menu on an emulator, in CI. |
 | `engines/` | Scripts that build or fetch the FFmpeg we ship. See its README. |
 | `core/lib/presets/` | Form presets, one JSON file per preset; the file name must equal the id. Inside `lib/` because that's the only way an app can ship a package's files, and each must also be listed in `app/pubspec.yaml`. A test catches a missed one. |
 | `test-files/` | Sample files for tests: `portrait.heic`, tiled and turned by a tag, as iPhone photos are; `locked.pdf` (password `open sesame`) and `restricted.pdf`, made with qpdf; `sample-*` 7z and RAR files, including a locked one and a bomb. |
@@ -125,6 +125,30 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   up to `maxFolderFiles` (200), without hidden files or links. The menu only offers what all files share, so a folder
   keeps its biggest family that this device can run (`pickFromFolder`) and says how many it left out. Windows reports a
   dropped folder as a file, so ask the disk, not the plugin.
+- Size on hover (`size_preview.dart`): resting 250 ms on a slice shows its size in the centre. One
+  picture the pure-Dart engine handles, up to 25 MB, is really converted (`SizePreviews`, last 4 kept), and choosing that
+  slice takes the trial's result (`take` in `_runTogether`), so nothing runs twice. Otherwise only a size limit is shown
+  ("Up to 20 MB"). The Shift-drag menus ask Dart over the channel (`sizeOf`) once a drag rests on a slice, and Dart keeps
+  the dragged file and its trials (`_dragged`) so the drop reuses them. Mac checked by `check_shift_drag.sh`, Windows
+  built by CI but untried. Video and sound aren't tried, as that takes minutes: the file is probed once (`readMedia`, the
+  trim screen's probe, now with codecs on web too), and `estimateMediaBytes` reads the size off the shared plan. Copied
+  streams weigh what they did, a set bitrate gives bitrate times length, a size limit stays "Up to". Anything else
+  (an encoder's own bitrate, a trim, sound copied out of a video) shows nothing rather than a guess. Checked against
+  real FFmpeg results: copies and mute match; compress came out under the estimate on a synthetic clip.
+- Outer ring (`ringChoices` in `core/lib/src/ring_choices.dart`, `onChoice` in `radial_menu.dart`): resting on Rotate,
+  Flip or Resize shows their choices around the slice (90° right, 180°, 90° left; Mirror, Upside down; Half, 1920, 1280,
+  640 px), using options every engine already honoured but nobody could pick. The first choice is what the slice does,
+  and runs as the slice, so its size trial is reused; others run with their options. A finger taps once to see the
+  choices; Tab goes in and out of them; screen readers get them as actions on the slice. A narrow screen narrows the ring,
+  then the menu, then drops the ring. Tried in Chrome. Quality levels for Compress need a new option in every engine.
+- Tools in Shift-drag: holding Option (Mac) or Alt (Windows) as well asks `menuFor` with `tools: true`, and pressing or
+  releasing it mid-drag asks again (the same file keeps its trials). Each slice comes with its ring choices' labels
+  (`shiftDragSlice`), and a drop on one sends its index as `choice` (`shiftDragOptions`; 0 or none is the slice itself).
+  Native rings: `radialChoice` in `ShiftDrag.swift` and `RadialChoiceAt` in `radial_slice.h` copy `choiceAt` in
+  `radial_geometry.dart`, checked by `check_shift_drag.sh`. The Mac panel grows to 412 px when a slice has choices; on
+  Windows the window's region is the menu plus the highlighted slice's choices, so drags elsewhere still reach the apps
+  below. Neither has been tried in a real drag. Alt+Shift is Windows' default shortcut for switching keyboard language,
+  so check in the VM whether a Tools drag also switches it.
 - Jobs run one file at a time from the screen unless the action combines them (`combinesFiles`), so a damaged file gets
   its own failed row and the rest still finish. Results carry the original they came from: don't match them by position.
   In a browser each file starts its own worker. Results still pile up in memory until saved.
@@ -158,9 +182,27 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
 - PDF to DOCX on every platform (`_toDocx`, `core/lib/src/docx_writer.dart`, `pdf_text_layout.dart`): pure Dart from
   PDFium's text and character positions. Text becomes editable paragraphs and headings, one PDF page to a Word page. A
   page that's mostly a picture comes in as one (`pageIsAPicture`), by comparing what its text covers with how much is
-  inked: a scanner app's stamp must not replace the page. Scans can't be edited until OCR. Pictures on text pages, tables
-  and exact layout aren't kept, and the result says so. Trust PDFium's spaces and line breaks: character boxes hug each
+  inked: a scanner app's stamp must not replace the page. Scans can't be edited until OCR. Pictures on text pages and
+  exact layout aren't kept, and the result says so. Trust PDFium's spaces and line breaks: character boxes hug each
   glyph, so gaps and box heights mislead. Tested on 53 real PDFs. Check real ones when changing this.
+- Tables in PDF to DOCX (`_tableAt` in `pdf_text_layout.dart`, `DocxTable`): lines split at gaps over about an em (soft
+  cells, narrower than the 2 em tab rule paragraphs use), whose starts line up over rows, become a Word table with the
+  PDF's column widths. Wrapped text under a later column joins its row; a heading cell spanning columns is split at the
+  word nearest each column. Not a table: two rows of two, justified text (5+ evenly spaced gaps of words), bullet lists,
+  prose in page columns (long cells filling their column), sentence pieces (mostly lower-case cells). Checked on the
+  owner's 54 Downloads PDFs: results, invoices, receipts, nutrition labels and report tables come through; a table whose
+  cells wrap with the rest centred beside them still breaks up, as rows can't be told apart without its ruling lines.
+- Bold and pictures in PDF to DOCX (`pdf_extras*.dart`, `web/pdf_extras_worker.js`): pdfrx exposes neither, so each
+  platform reads them from PDFium itself. Native: `pdfium_dart` (pdfrx's own bindings) inside
+  `PdfrxEntryFunctions.instance.compute`, pdfrx's PDFium thread, as PDFium can't run on two at once. Browser: a second
+  worker made like pdfrx's (`pdfiumWasmUrl` then `importScripts` of pdfrx's unmodified `pdfium_worker.js`), then our
+  file, which adds `readExtras` to its `functions`; `pdf_extras_worker_test.dart` fails if a pdfrx update renames what
+  that uses. Bold goes through layout as two private-use marks (`docxBoldOn`/`docxBoldOff`), so paragraph and table
+  logic stays as it was, and becomes bold runs. Trust font names, not PDFium's weight: it gave 630 for a regular face
+  and 380 for Helvetica-Bold (`isBoldFont`). Pictures are image objects over 24 pt and under 80% of the page, drawn as
+  on the page, as JPEGs at most 1600 px, placed before the first text below their top and shown at their width on the
+  page. Pictures inside form objects aren't reached yet. Any failure leaves pages as before, plain and without
+  pictures. Checked on the 54 Downloads PDFs (about a second at most) and in Chrome.
 - Passwords: a locked PDF or ZIP throws `PasswordNeeded`, and the screen asks and runs it again, so every action handles
   locked files with no code of its own. The right password is tried on the next file of a batch before asking, and lasts
   only for that job. Remove password runs on PDFs through PDFium; Add password runs on archives and always makes an AES
@@ -192,7 +234,21 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   zip, APKs, the web app, the LGPL source and checksums. See `docs/RELEASING.md`. The installer and disk image are also made
   and tried on every push. APKs say `TEST-KEY` until the owner sets up a signing key. `--no-shrink` is deliberate: R8 can't see
   what native code calls.
-- Languages: English and Hindi, following the device (`app/lib/l10n/app_*.arb`, `flutter gen-l10n` writes `words*.dart`,
+- First launch (`welcome_screen.dart`, shown by `app_home.dart` until `welcomed`): a hello, a practice drag on a sample
+  photo drawn in Dart (`samplePhoto`), then language, open at login and update checks. The practice uses the real
+  `RadialMenu`, following a drag that began outside it (`RadialMenuDrag`), and really converts the photo. A mouse on a
+  desktop must hold Shift; a finger just drags. Skipping counts as seen, and About shows it again.
+- Settings (`app_settings.dart`, `settings_store_*.dart`): `settings.json` beside the history, or localStorage. Read
+  before the first frame in `main()`. Damaged or missing reads as the defaults; failing to save never stops anything.
+- Update check (`update_check.dart`, `core/lib/src/update_info.dart`): Mac and Windows copies from the website fetch
+  `https://shiftdrop.pages.dev/version.json` (`docs/site/version.json`) at most once a day, 5 s after launch, and show a
+  banner whose Download opens the address in the browser (`openPage`, native `openPage`/`radial/pages`, https only).
+  Only github.com and shiftdrop.pages.dev addresses are kept from the file. The Store copy is built with
+  `--dart-define=SHIFTDROP_STORE=true` and never checks. Android keeps no internet permission, so About only opens the
+  releases page. Update `version.json` by hand after a release (`docs/RELEASING.md`); a test fails if it runs ahead of
+  `pubspec.yaml`. Sparkle and in-app APK downloads, as the plan has them, aren't done: both need more than a link.
+- Languages: English and Hindi, following the device unless one is picked in About (`chosenLocale` for `deviceWords`,
+  and `sendNativeWords` tells the native menus again) (`app/lib/l10n/app_*.arb`, `flutter gen-l10n` writes `words*.dart`,
   checked in). `context.words` on screen, `deviceWords` where there's no screen, such as the Shift-drag menu. Action
   labels stay English in `core/` and in history, and `actionLabel` translates them by their English text; a test fails
   if a catalogue label with words has no translation. Format and product names stay as they are. Android 13+ and macOS
@@ -265,10 +321,13 @@ Engine decisions that differ from the plan or are easy to get wrong:
 
 1. Run the Windows download from CI, and fix what it finds.
 2. Try a real iPhone HEIC photo, on every platform.
-3. Better PDF to DOCX: keep pictures on text pages, real tables, bold. Try the trim preview on real long videos: a seek far into one may be slow on a phone.
+3. PDF to DOCX: tables whose cells wrap, pictures inside form objects, italic. Try PDF to DOCX on a phone and on Windows. Try the trim preview on real long videos: a seek far into one may be slow on a phone.
 4. Try Shift-drag from Explorer in the Windows VM, and dragging results out on both desktops.
 5. Extract to a folder. Adding a password to a PDF, once qpdf is bundled. Multi-part RAR files.
-6. Menu: estimated size on hover, outer ring. A native speaker should review `app_hi.arb`.
+6. Menu: quality levels on Compress's ring. Try in a real Shift-drag on both desktops: size on hover, Option/Alt for
+   Tools, and the native rings. Try size on hover for video in a browser and on a phone. Try the first-launch guide and
+   the update banner on each platform. A native
+   speaker should review `app_hi.arb`.
 7. Android package name `io.github.navinkumar0007.shiftdrop`: register it with Google in Phase 5. It can't change after
    the first public release, as Android treats a new name as a different app.
 8. The owner is installing Xcode. Then: `sudo xcode-select -s /Applications/Xcode.app`,

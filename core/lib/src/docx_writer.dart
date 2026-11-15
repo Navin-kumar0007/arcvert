@@ -1,7 +1,15 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
+
+/// In a paragraph's or a cell's text, starts bold. Characters PDFs never hold: Unicode keeps them
+/// for private use.
+const docxBoldOn = '\uE000';
+
+/// Ends what [docxBoldOn] started.
+const docxBoldOff = '\uE001';
 
 /// Something a Word document holds.
 sealed class DocxBlock {
@@ -9,10 +17,33 @@ sealed class DocxBlock {
 
   /// Starts on a new page.
   final bool newPage;
+
+  /// The same, starting on a new page.
+  DocxBlock startingAPage() => switch (this) {
+    DocxParagraph(:final text, :final heading, :final centred) => DocxParagraph(
+      text,
+      heading: heading,
+      centred: centred,
+      newPage: true,
+    ),
+    DocxPicture(:final jpeg, :final width, :final height, :final displayWidth) => DocxPicture(
+      jpeg,
+      width: width,
+      height: height,
+      displayWidth: displayWidth,
+      newPage: true,
+    ),
+    DocxTable(:final rows, :final columnWidths) => DocxTable(
+      rows,
+      columnWidths: columnWidths,
+      newPage: true,
+    ),
+  };
 }
 
 /// A paragraph. [heading] is 0 for body text, 1 for a large heading and 2 for a smaller one. A tab
-/// in [text] stands for a wide gap, as between a table's columns.
+/// in [text] stands for a wide gap, as between a table's columns, and [docxBoldOn] and
+/// [docxBoldOff] mark what is bold.
 class DocxParagraph extends DocxBlock {
   const DocxParagraph(this.text, {this.heading = 0, this.centred = false, super.newPage});
 
@@ -21,13 +52,30 @@ class DocxParagraph extends DocxBlock {
   final bool centred;
 }
 
-/// A JPEG, drawn at most as large as a page's writing area, keeping its shape.
+/// A JPEG, keeping its shape. A whole page's picture fills the writing area; one from a page of
+/// text is [displayWidth] points wide, as on its page, if the writing area has room.
 class DocxPicture extends DocxBlock {
-  const DocxPicture(this.jpeg, {required this.width, required this.height, super.newPage});
+  const DocxPicture(
+    this.jpeg, {
+    required this.width,
+    required this.height,
+    this.displayWidth,
+    super.newPage,
+  });
 
   final Uint8List jpeg;
   final int width;
   final int height;
+  final double? displayWidth;
+}
+
+/// A table, row by row, each row holding a cell's text for every column. [columnWidths] are in any
+/// unit, as only their shares of the width count: the PDF's own measures do.
+class DocxTable extends DocxBlock {
+  const DocxTable(this.rows, {required this.columnWidths, super.newPage});
+
+  final List<List<String>> rows;
+  final List<double> columnWidths;
 }
 
 // A4 with one inch margins, in points.
@@ -94,11 +142,21 @@ String _escape(String text) {
 
 String _runs(String text) {
   final out = StringBuffer();
-  final parts = text.split('\t');
-  for (var i = 0; i < parts.length; i++) {
-    if (i > 0) out.write('<w:r><w:tab/></w:r>');
-    if (parts[i].isEmpty) continue;
-    out.write('<w:r><w:t xml:space="preserve">${_escape(parts[i])}</w:t></w:r>');
+  var bold = false;
+  for (final piece in RegExp(
+    '[\t$docxBoldOn$docxBoldOff]|[^\t$docxBoldOn$docxBoldOff]+',
+  ).allMatches(text).map((match) => match[0]!)) {
+    switch (piece) {
+      case docxBoldOn:
+        bold = true;
+      case docxBoldOff:
+        bold = false;
+      case '\t':
+        out.write('<w:r><w:tab/></w:r>');
+      default:
+        final style = bold ? '<w:rPr><w:b/></w:rPr>' : '';
+        out.write('<w:r>$style<w:t xml:space="preserve">${_escape(piece)}</w:t></w:r>');
+    }
   }
   return out.toString();
 }
@@ -117,6 +175,10 @@ String _document(List<DocxBlock> blocks, List<DocxPicture> pictures) {
         body.write(
           '<w:p><w:pPr>$newPage<w:jc w:val="center"/></w:pPr>${_picture(block, index)}</w:p>',
         );
+      case DocxTable():
+        // A table can't break a page itself, so an empty paragraph before it does.
+        if (block.newPage) body.write('<w:p><w:pPr><w:pageBreakBefore/></w:pPr></w:p>');
+        body.write(_table(block));
     }
   }
   return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -131,8 +193,47 @@ String _document(List<DocxBlock> blocks, List<DocxPicture> pictures) {
       '</w:body></w:document>';
 }
 
+/// Twentieths of a point, the unit Word measures tables in.
+const _twipsPerPoint = 20;
+
+String _table(DocxTable table) {
+  final total = table.columnWidths.fold<double>(0, (sum, width) => sum + width);
+  final widths = [
+    for (final width in table.columnWidths)
+      total <= 0
+          ? (_writingWidth * _twipsPerPoint / table.columnWidths.length).round()
+          : (width / total * _writingWidth * _twipsPerPoint).round(),
+  ];
+  const border = 'w:val="single" w:sz="4" w:space="0" w:color="999999"';
+  final out = StringBuffer(
+    '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/><w:tblBorders>'
+    '<w:top $border/><w:left $border/><w:bottom $border/><w:right $border/>'
+    '<w:insideH $border/><w:insideV $border/></w:tblBorders>'
+    '<w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid>',
+  );
+  for (final width in widths) {
+    out.write('<w:gridCol w:w="$width"/>');
+  }
+  out.write('</w:tblGrid>');
+  for (final row in table.rows) {
+    out.write('<w:tr>');
+    for (var i = 0; i < widths.length; i++) {
+      final text = i < row.length ? row[i] : '';
+      // Every cell needs a paragraph, even an empty one, or Word calls the file damaged.
+      out.write(
+        '<w:tc><w:tcPr><w:tcW w:w="${widths[i]}" w:type="dxa"/></w:tcPr>'
+        '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>${_runs(text)}</w:p></w:tc>',
+      );
+    }
+    out.write('</w:tr>');
+  }
+  out.write('</w:tbl>');
+  return out.toString();
+}
+
 String _picture(DocxPicture picture, int index) {
-  final byWidth = _writingWidth / picture.width;
+  final wide = picture.displayWidth;
+  final byWidth = (wide == null ? _writingWidth : math.min(wide, _writingWidth)) / picture.width;
   final byHeight = _writingHeight / picture.height;
   final scale = byWidth < byHeight ? byWidth : byHeight;
   final cx = (picture.width * scale * _emuPerPoint).round();

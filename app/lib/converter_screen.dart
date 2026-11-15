@@ -17,13 +17,15 @@ import 'presets.dart';
 import 'radial_menu.dart';
 import 'shared_files.dart';
 import 'shift_drag.dart';
+import 'size_preview.dart';
 import 'words.dart';
 
 typedef FilesPicker = Future<List<PickedFile>> Function();
 typedef DropReader = Future<DroppedFiles> Function(List<DropItem> items);
 typedef ShiftDragListener = void Function() Function({
-  required Future<List<RadialAction>> Function(List<String> paths) menuFor,
-  required void Function(RadialAction action, List<String> paths) chosen,
+  required Future<List<RadialAction>> Function(List<String> paths, ActionMode mode) menuFor,
+  required Future<String?> Function(RadialAction action, List<String> paths) sizeOf,
+  required void Function(RadialAction action, List<String> paths, ActionOptions options) chosen,
 });
 typedef KeepWorking = Future<void> Function(bool working);
 typedef FileSaver = Future<SavedAs?> Function(PortableFile file);
@@ -127,6 +129,7 @@ class ConverterScreen extends StatefulWidget {
     this.mediaAvailable,
     this.acceptsDrops,
     this.savesBeside,
+    this.showGuide,
   });
 
   final FilesPicker pickFiles;
@@ -174,6 +177,9 @@ class ConverterScreen extends StatefulWidget {
   /// copies sit in a cache nobody would look in, and a browser has no folders to write to.
   final bool? savesBeside;
 
+  /// Opens the first-launch guide again, from About.
+  final VoidCallback? showGuide;
+
   @override
   State<ConverterScreen> createState() => _ConverterScreenState();
 }
@@ -185,6 +191,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
   bool _menuOpen = false;
   List<_Job> _jobs = const [];
   ConvertControl? _control;
+  SizePreviews? _previews;
+
+  /// The one file being Shift-dragged and its menu's trials, so the slice it's dropped on can take
+  /// its trial. Kept until the next drag, as the native menu doesn't say when one is cancelled.
+  ({List<String> paths, PickedFile file, SizePreviews previews})? _dragged;
 
   /// Jobs still running, as an earlier one can still be finishing when the next starts.
   int _working = 0;
@@ -213,7 +224,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
   void initState() {
     super.initState();
     _shares = widget.sharedFiles().listen(_shared);
-    _stopShiftDrag = widget.shiftDrag(menuFor: _menuFor, chosen: _chosenFromShiftDrag);
+    _stopShiftDrag = widget.shiftDrag(
+      menuFor: _menuFor,
+      sizeOf: _sizeInShiftDrag,
+      chosen: _chosenFromShiftDrag,
+    );
     cleanUpHandedOver();
     _loadHistory();
   }
@@ -345,9 +360,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  /// What the Shift-drag menu offers. It has room for few slices, and a drag can't stop to ask
-  /// questions, so actions that ask first are left out.
-  Future<List<RadialAction>> _menuFor(List<String> paths) async {
+  /// What the Shift-drag menu offers: Convert, or Tools with Alt (Option on a Mac) held as well. It
+  /// has room for few slices, and a drag can't stop to ask questions, so actions that ask first are
+  /// left out.
+  Future<List<RadialAction>> _menuFor(List<String> paths, ActionMode mode) async {
+    // Switching to Tools mid-drag asks again about the same file, which keeps its trials.
+    final same = _draggedFor(paths);
+    _dragged = null;
     final List<PickedFile> files;
     try {
       files = (await _readDrop([for (final path in paths) DropItemFile(path)])).files;
@@ -355,27 +374,68 @@ class _ConverterScreenState extends State<ConverterScreen> {
       return const [];
     }
     final kinds = [for (final file in files) detectKind(file.head, fileName: file.name)];
+    // One file only, as the menu's centre has room for one size.
+    if (files.length == 1) {
+      _dragged =
+          same ??
+          (
+            paths: List.unmodifiable(paths),
+            file: files.single,
+            previews: SizePreviews(
+              files.single,
+              kinds.single,
+              _trial,
+              readMedia: widget.mediaProbe,
+            ),
+          );
+    }
     return availableActions(
       kinds,
-      ActionMode.convert,
+      mode,
       mediaAvailable: _mediaAvailable,
       mediaOutputs: mediaOutputsHere(),
     ).where((action) => !needsOptions(action)).take(_shiftDragSlices).toList();
   }
 
-  /// A slice was chosen outside the window, so results go straight beside the originals.
-  Future<void> _chosenFromShiftDrag(RadialAction action, List<String> paths) async {
+  /// A slice was chosen outside the window, so results go straight beside the originals. A choice
+  /// from the outer ring comes with its options.
+  Future<void> _chosenFromShiftDrag(
+    RadialAction action,
+    List<String> paths,
+    ActionOptions options,
+  ) async {
+    final dragged = _draggedFor(paths);
+    _dragged = null;
     final List<PickedFile> files;
-    try {
-      files = (await _readDrop([for (final path in paths) DropItemFile(path)])).files;
-    } catch (_) {
-      showAppWindow();
-      if (mounted) _say(_words.openFailed);
-      return;
+    if (dragged != null) {
+      // Read moments ago for the menu, and the same file keeps the trial its slice made.
+      files = [dragged.file];
+    } else {
+      try {
+        files = (await _readDrop([for (final path in paths) DropItemFile(path)])).files;
+      } catch (_) {
+        showAppWindow();
+        if (mounted) _say(_words.openFailed);
+        return;
+      }
     }
     if (!mounted) return;
     _open(files);
-    await _start(action, const ActionOptions(), saveBeside: true);
+    // Opening the menu again offers the same kind of actions.
+    setState(() => _mode = action.mode);
+    if (dragged != null) _previews = dragged.previews;
+    await _start(action, options, saveBeside: true);
+  }
+
+  /// What the Shift-drag menu's centre says while resting on a slice, or null if it can't tell.
+  Future<String?> _sizeInShiftDrag(RadialAction action, List<String> paths) async {
+    final guess = await _draggedFor(paths)?.previews.guess(action);
+    return guess?.describe(deviceWords);
+  }
+
+  ({List<String> paths, PickedFile file, SizePreviews previews})? _draggedFor(List<String> paths) {
+    final dragged = _dragged;
+    return dragged != null && listEquals(dragged.paths, paths) ? dragged : null;
   }
 
   /// Saves results held in memory next to what they came from. Video is already there.
@@ -623,12 +683,25 @@ class _ConverterScreenState extends State<ConverterScreen> {
       ];
     }
 
+    List<_Result> portable(List<PortableFile> outputs) {
+      return matched([
+        for (final output in outputs)
+          ConvertedFile(name: output.name, size: output.bytes.length, inMemory: output),
+      ]);
+    }
+
     final isPdf = kinds.every((kind) => canRunPdf(action, kind));
     if (!_inMemory(action, kinds)) {
       return matched(
         await widget.mediaConverter(action, files, kinds, onProgress, control, options),
       );
     }
+    // The menu may have tried this already, to show its size.
+    // Trials run with no options, so a ring's choice or a password needs its own run.
+    final tried = files.length == 1 && identical(options, const ActionOptions())
+        ? _previews?.take(action, files.single)
+        : null;
+    if (tried != null) return portable(await tried);
     final List<PortableFile> inputs;
     try {
       inputs = [
@@ -656,11 +729,25 @@ class _ConverterScreenState extends State<ConverterScreen> {
           ),
       ]);
     }
-    final outputs = await widget.converter(action, inputs, onProgress, options);
-    return matched([
-      for (final output in outputs)
-        ConvertedFile(name: output.name, size: output.bytes.length, inMemory: output),
-    ]);
+    return portable(await widget.converter(action, inputs, onProgress, options));
+  }
+
+  /// The menu's trials for one file, made again when another file is chosen. Only one file, as
+  /// the centre has room for one size.
+  SizePreviews? get _sizePreviews {
+    if (_files.length != 1) return _previews = null;
+    final current = _previews;
+    if (current != null && identical(current.file, _files.single)) return current;
+    return _previews = SizePreviews(
+      _files.single,
+      _kinds.single,
+      _trial,
+      readMedia: widget.mediaProbe,
+    );
+  }
+
+  Future<List<PortableFile>> _trial(RadialAction action, List<PortableFile> files) {
+    return widget.converter(action, files, (_) {}, const ActionOptions());
   }
 
   /// Asks anything the action needs to know, then starts it.
@@ -876,7 +963,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
           IconButton(
             tooltip: words.about,
             icon: const Icon(Icons.info_outline),
-            onPressed: () => showAbout(context),
+            onPressed: () => showAbout(context, onShowGuide: widget.showGuide),
           ),
           IconButton(
             tooltip: words.history,
@@ -1006,7 +1093,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
         RadialMenu(
           actions: actions,
           fileCount: _files.length,
+          sizeOf: _sizePreviews?.guess,
           onSelected: _choose,
+          // Ring choices are complete options, so nothing is asked first.
+          onChoice: (action, options) => _start(action, options),
           onCancelled: () => setState(() => _menuOpen = false),
         ),
         if (actions.isEmpty) ...[

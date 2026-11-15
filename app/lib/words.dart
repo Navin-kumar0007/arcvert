@@ -12,8 +12,11 @@ extension WordsOf on BuildContext {
   Words get words => Words.of(this);
 }
 
+/// The language chosen in the app, or null to follow the device. Set by `main.dart`.
+Locale? chosenLocale;
+
 /// For code with no screen to ask, such as the Shift-drag menu and engines.
-Words get deviceWords => wordsFor(PlatformDispatcher.instance.locale);
+Words get deviceWords => wordsFor(chosenLocale ?? PlatformDispatcher.instance.locale);
 
 /// English for any language there's no translation for.
 Words wordsFor(Locale locale) =>
@@ -50,6 +53,18 @@ String actionLabel(Words words, String label) {
     'Compress folder' => words.actionCompressFolder,
     'Change bitrate' => words.actionChangeBitrate,
     _ => label,
+  };
+}
+
+/// A choice on the outer ring, in [words]' language. Angles and pixel sizes read the same everywhere.
+String ringChoiceLabel(Words words, RingChoice choice) {
+  return switch (choice.key) {
+    'rotateRight' => words.ringRotateRight,
+    'rotateLeft' => words.ringRotateLeft,
+    'flipSideways' => words.ringMirror,
+    'flipUpsideDown' => words.ringUpsideDown,
+    'resizeHalf' => words.ringHalf,
+    _ => choice.label,
   };
 }
 

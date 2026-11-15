@@ -32,18 +32,27 @@ class MainFlutterWindow: NSWindow {
   /// `shift_drag_native.dart` on the other side, which decides what each file can become.
   private func connectShiftDrag(to messenger: FlutterBinaryMessenger, view: NSView) {
     let channel = FlutterMethodChannel(name: "radial/shift_drag", binaryMessenger: messenger)
-    shiftDrag.askForSlices = { paths, reply in
-      channel.invokeMethod("menuFor", arguments: ["paths": paths]) { answer in
-        let items = answer as? [[String: String]] ?? []
+    shiftDrag.askForSlices = { paths, tools, reply in
+      channel.invokeMethod("menuFor", arguments: ["paths": paths, "tools": tools]) { answer in
+        let items = answer as? [[String: Any]] ?? []
         reply(
           items.compactMap { item in
-            guard let id = item["id"], let label = item["label"] else { return nil }
-            return RadialSlice(id: id, label: label)
+            guard let id = item["id"] as? String, let label = item["label"] as? String else {
+              return nil
+            }
+            return RadialSlice(id: id, label: label, choices: item["choices"] as? [String] ?? [])
           })
       }
     }
-    shiftDrag.onChosen = { slice, paths in
-      channel.invokeMethod("chosen", arguments: ["id": slice.id, "paths": paths])
+    shiftDrag.askForSize = { slice, paths, reply in
+      channel.invokeMethod("sizeOf", arguments: ["id": slice.id, "paths": paths]) { answer in
+        reply(answer as? String)
+      }
+    }
+    shiftDrag.onChosen = { slice, paths, choice in
+      var arguments: [String: Any] = ["id": slice.id, "paths": paths]
+      if let choice = choice { arguments["choice"] = choice }
+      channel.invokeMethod("chosen", arguments: arguments)
     }
     channel.setMethodCallHandler { [weak self] call, result in
       guard let self = self else {
@@ -71,6 +80,14 @@ class MainFlutterWindow: NSWindow {
       case "setWords":
         NativeWords.set(call.arguments)
         result(nil)
+      case "openPage":
+        // Only web pages, as a page is all the app ever opens: the newest version's download.
+        let address = (call.arguments as? [String: Any])?["url"] as? String ?? ""
+        guard let url = URL(string: address), url.scheme == "https" else {
+          result(false)
+          return
+        }
+        result(NSWorkspace.shared.open(url))
       case "showInFolder":
         NSWorkspace.shared.activateFileViewerSelecting(paths.map { URL(fileURLWithPath: $0) })
         result(nil)
