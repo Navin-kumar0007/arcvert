@@ -921,6 +921,7 @@ void main() {
       final waiting = actionCatalogue.where((action) => !isActionWired(action)).map((a) => a.id);
       expect(waiting.toSet(), {
         'image-form',
+        'images-scan-pdf',
         'archive-add-password',
         'pdf-to-jpg',
         'pdf-to-png',

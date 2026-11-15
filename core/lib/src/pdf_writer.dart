@@ -32,10 +32,11 @@ JpegInfo? readJpegInfo(Uint8List bytes) {
 /// PDF pages cannot be larger than this many points on a side.
 const _maxPagePoints = 14400;
 
-/// Builds a PDF with one page per JPEG, each page the size of its picture.
+/// Builds a PDF with one page per JPEG, each page the size of its picture, or with its longer side
+/// [pageLongSide] points long when given, as A4's 842 makes a scan print at paper size.
 ///
 /// libvips has no PDF writer without ImageMagick, and JPEG data can go into a PDF as is.
-Uint8List buildImagePdf(List<Uint8List> jpegs) {
+Uint8List buildImagePdf(List<Uint8List> jpegs, {double? pageLongSide}) {
   if (jpegs.isEmpty) throw ArgumentError('A PDF needs at least one image');
   final images = <JpegInfo>[];
   for (final jpeg in jpegs) {
@@ -65,7 +66,11 @@ Uint8List buildImagePdf(List<Uint8List> jpegs) {
     final image = images[i];
     final page = pageObject(i);
     final longest = image.width > image.height ? image.width : image.height;
-    final scale = longest > _maxPagePoints ? _maxPagePoints / longest : 1.0;
+    final scale = pageLongSide != null
+        ? pageLongSide / longest
+        : longest > _maxPagePoints
+        ? _maxPagePoints / longest
+        : 1.0;
     final width = (image.width * scale).toStringAsFixed(2);
     final height = (image.height * scale).toStringAsFixed(2);
 

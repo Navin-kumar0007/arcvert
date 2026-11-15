@@ -126,7 +126,8 @@ Build from about 21 December 2026, publish about mid-January 2027.
   Windows).
 - **Signature cleanup**: crop to the ink, whiten the paper, darken the ink, then the form's size and KB limits.
   **Done** (`cleanSignature` in `portable_engine.dart`, 16 November 2026).
-- **Scanned document** preset: a greyscale PDF under a size limit.
+- **Scanned document** preset: a greyscale PDF under a size limit. **Done** (`images-scan-pdf`, `cleanPage`, 16 November
+  2026): Make it fit, pages in order first, under 1 MB, 500 KB or 200 KB, A4 pages.
 - **Quality levels on Compress's outer ring**: high, medium and small, honoured by every engine.
 
 ## Later, before 1.0

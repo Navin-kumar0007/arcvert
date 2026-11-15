@@ -50,6 +50,7 @@ String actionLabel(Words words, String label) {
     'Normalise volume' => words.actionNormaliseVolume,
     'Mute' => words.actionMute,
     'Form photo' => words.actionFormPhoto,
+    'Scanned document' => words.actionScannedDocument,
     'Flip' => words.actionFlip,
     'Extract pages' => words.actionExtractPages,
     'Extract' => words.actionExtract,
@@ -68,6 +69,7 @@ String ringChoiceLabel(Words words, RingChoice choice) {
     'flipSideways' => words.ringMirror,
     'flipUpsideDown' => words.ringUpsideDown,
     'resizeHalf' => words.ringHalf,
+    'scanUnder' => actionLabel(words, choice.label),
     _ => choice.label,
   };
 }
@@ -142,6 +144,7 @@ String failureText(Words words, EngineFailed failure) {
     'photoDamaged' => words.failPhotoDamaged,
     'pictureRotate' => words.failPictureRotate(blank('degrees')),
     'pictureTooBig' => words.failPictureTooBig(action),
+    'scanTooBig' => words.failScanTooBig(number('kb')),
     'pictureTooBigForForm' => words.failPictureTooBigForForm,
     'pointsOutside' => words.failPointsOutside(blank('name')),
     'shiftNeeded' => words.failShiftNeeded,

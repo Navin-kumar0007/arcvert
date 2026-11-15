@@ -1270,4 +1270,18 @@ class WordsEn extends Words {
   @override
   String get failNoSignature =>
       'No signature could be found. Sign in dark ink on plain paper, and frame just the signature.';
+
+  @override
+  String get actionScannedDocument => 'Scanned document';
+
+  @override
+  String get fitScan => 'Scanned document';
+
+  @override
+  String get fitScanNote => 'Photos of pages as one clean PDF';
+
+  @override
+  String failScanTooBig(int kb) {
+    return 'These pages could not be made smaller than $kb KB and still be read. Try fewer pages or a larger limit.';
+  }
 }

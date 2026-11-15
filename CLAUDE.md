@@ -192,6 +192,10 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   `cleanSignature`: paper is the median brightness, ink the darkest 0.05%, as Otsu fails when ink is a tiny share;
   isolated dust pixels are ignored; then the crop is fitted with white padding (`_containOnWhite`), never cut, and
   thin strokes darkened (`_deepenInk`).
+- Scanned document (`images-scan-pdf`, Make it fit, builtIn engine, so `isActionWired` leaves it out): `cleanPage`
+  makes each photo greyscale with paper white and print black, at 1754 px (A4 at 150 dpi), then `searchUnderSize`
+  finds a JPEG quality and scale (not below 0.45) whose PDF fits; pages print at A4 (`buildImagePdf(pageLongSide:)`).
+  Limits count 1,000,000 bytes as 1 MB, as forms may count either way; the ring offers 500 KB and 200 KB.
 - Presets must not pretend to be the rules: forms change them, and sources disagree. Each one fills in boxes that stay
   editable, shows its source, and tells people to check their notice. Only add numbers traced to an official document.
   SSC isn't included, as its notice couldn't be read: guides say 3.5 x 4.5 cm, 20-50 KB and 4 x 2 cm, 10-20 KB. UPSC isn't

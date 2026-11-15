@@ -275,6 +275,7 @@ class FitPanel extends StatelessWidget {
       (Icons.mail_outline, words.fitEmail, words.fitEmailNote),
       (Icons.track_changes, words.fitSize, words.fitSizeNote),
       (Icons.badge_outlined, words.fitForm, words.fitFormNote),
+      (Icons.document_scanner_outlined, words.fitScan, words.fitScanNote),
     ];
     return SdPanel(
       child: Column(

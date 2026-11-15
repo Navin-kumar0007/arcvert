@@ -8,6 +8,7 @@ IconData iconFor(RadialAction action) {
   if (id.startsWith('fit-email')) return Icons.mail_outline;
   if (id == 'fit-instagram') return Icons.crop_portrait;
   if (id == 'fit-web') return Icons.language;
+  if (id == 'images-scan-pdf') return Icons.document_scanner_outlined;
   if (id.startsWith('fit-')) return Icons.compress;
   if (id.endsWith('-compress')) return Icons.compress;
   if (id.endsWith('-crop')) return Icons.crop;

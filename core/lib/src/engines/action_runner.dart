@@ -27,6 +27,7 @@ bool isActionWired(RadialAction action) =>
     // These run in the portable engine alone. bsdtar here would make a "protected" file with no
     // password on it, which is far worse than saying it isn't available.
     action.id != 'image-form' &&
+    action.id != 'images-scan-pdf' &&
     action.id != 'archive-add-password';
 
 /// Actions that turn several inputs into one output.

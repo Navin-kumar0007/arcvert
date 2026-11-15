@@ -91,8 +91,8 @@ void main() {
       }
     });
 
-    test('there are about two dozen', () {
-      expect(portable.length, inInclusiveRange(20, 30));
+    test('there are about thirty', () {
+      expect(portable.length, inInclusiveRange(25, 35));
     });
 
     test('formats it cannot read or write are left out', () {
@@ -835,6 +835,83 @@ void main() {
       final before = Uint8List.fromList(input);
       await run(input, const FormTarget(width: 50, height: 50));
       expect(input, before);
+    });
+  });
+
+  group('scanned document', () {
+    final action = actionById('images-scan-pdf')!;
+
+    /// Like a phone photo of a printed page: warm grey paper, uneven light, rows of dark text.
+    Uint8List page(int seed) {
+      final image = img.Image(width: 1500, height: 2000);
+      var state = seed;
+      for (final pixel in image) {
+        state = (state * 1103515245 + 12345) & 0x7FFFFFFF;
+        final shade = 190 + pixel.y * 30 ~/ 2000 + state % 12;
+        pixel
+          ..r = shade + 4
+          ..g = shade
+          ..b = shade - 10;
+      }
+      for (var row = 0; row < 40; row++) {
+        for (var word = 0; word < 9; word++) {
+          img.fillRect(
+            image,
+            x1: 120 + word * 140,
+            y1: 150 + row * 44,
+            x2: 120 + word * 140 + 90 + (row * 7 + word * 13) % 30,
+            y2: 150 + row * 44 + 14,
+            color: img.ColorRgb8(40, 38, 35),
+          );
+        }
+      }
+      return img.encodeJpg(image, quality: 90);
+    }
+
+    test('is Make it fit, combines pages, and offers smaller limits on its ring', () {
+      expect(action.isFit, isTrue);
+      expect(combinesFiles(action), isTrue);
+      expect(keepsOrder(action), isTrue);
+      final ring = ringChoices(action);
+      expect(ring.map((choice) => choice.label), ['Under 1 MB', 'Under 500 KB', 'Under 200 KB']);
+      expect(ring.first.options.targetMb, isNull);
+    });
+
+    test('three pages become one PDF under 1 MB, printing at A4 size', () async {
+      final out = await runPortable(action, [
+        for (var i = 1; i <= 3; i++) PortableFile('page$i.jpg', page(i)),
+      ]);
+      expect(out.single.name, 'page1 (scan).pdf');
+      final pdf = out.single.bytes;
+      expect(pdf.length, lessThanOrEqualTo(1000 * 1000));
+      final text = latin1.decode(pdf);
+      expect(text, startsWith('%PDF'));
+      expect(text, contains('/Count 3'));
+      expect(text, contains('842.00]'));
+    });
+
+    test('a smaller limit from the ring is kept', () async {
+      final out = await runPortable(action, [
+        PortableFile('page.jpg', page(9)),
+      ], options: const ActionOptions(targetMb: 0.2));
+      expect(out.single.bytes.length, lessThanOrEqualTo(200 * 1000));
+    });
+
+    test('a limit no readable page could meet says so', () async {
+      expect(
+        () => runPortable(action, [
+          PortableFile('page.jpg', page(4)),
+        ], options: const ActionOptions(targetMb: 0.002)),
+        throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'scanTooBig')),
+      );
+    });
+
+    test('a cleaned page has white paper and black print', () {
+      final cleaned = cleanPage(img.decodeJpg(page(5))!);
+      expect(cleaned.getPixel(40, 40).r, 255);
+      expect(cleaned.getPixel(1450, 1950).r, 255);
+      expect(cleaned.getPixel(150, 157).r, lessThan(40));
+      expect(cleaned.getPixel(150, 157).r, cleaned.getPixel(150, 157).b);
     });
   });
 }

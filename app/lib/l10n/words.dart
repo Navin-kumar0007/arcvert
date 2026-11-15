@@ -2198,6 +2198,30 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'No signature could be found. Sign in dark ink on plain paper, and frame just the signature.'**
   String get failNoSignature;
+
+  /// No description provided for @actionScannedDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanned document'**
+  String get actionScannedDocument;
+
+  /// No description provided for @fitScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanned document'**
+  String get fitScan;
+
+  /// No description provided for @fitScanNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos of pages as one clean PDF'**
+  String get fitScanNote;
+
+  /// No description provided for @failScanTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'These pages could not be made smaller than {kb} KB and still be read. Try fewer pages or a larger limit.'**
+  String failScanTooBig(int kb);
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

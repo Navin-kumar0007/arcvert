@@ -801,5 +801,16 @@
   "keyArrows": "Arrows",
   "cleanSignature": "Clean up a signature",
   "cleanSignatureWhy": "Crops to the ink, makes the paper white and the ink darker. Only for signatures: forms refuse retouched photos.",
-  "failNoSignature": "No signature could be found. Sign in dark ink on plain paper, and frame just the signature."
+  "failNoSignature": "No signature could be found. Sign in dark ink on plain paper, and frame just the signature.",
+  "actionScannedDocument": "Scanned document",
+  "fitScan": "Scanned document",
+  "fitScanNote": "Photos of pages as one clean PDF",
+  "failScanTooBig": "These pages could not be made smaller than {kb} KB and still be read. Try fewer pages or a larger limit.",
+  "@failScanTooBig": {
+    "placeholders": {
+      "kb": {
+        "type": "int"
+      }
+    }
+  }
 }

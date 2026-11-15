@@ -124,6 +124,12 @@ abstract final class Fail {
     'This picture could not be made small enough for that size.',
     key: 'pictureTooBigForForm',
   );
+  static EngineFailed scanTooBig(int kb) => _say(
+    'scanTooBig',
+    'These pages could not be made smaller than $kb KB and still be read. Try fewer pages or a '
+        'larger limit.',
+    {'kb': '$kb'},
+  );
   static EngineFailed pictureTooBig(String action) => _say(
     'pictureTooBig',
     'This picture could not be made small enough for "$action".',

@@ -1272,4 +1272,18 @@ class WordsHi extends Words {
   @override
   String get failNoSignature =>
       'कोई हस्ताक्षर नहीं मिला। सादे काग़ज़ पर गहरी स्याही से हस्ताक्षर करें, और सिर्फ़ हस्ताक्षर को फ़्रेम में रखें।';
+
+  @override
+  String get actionScannedDocument => 'स्कैन किया दस्तावेज़';
+
+  @override
+  String get fitScan => 'स्कैन किया दस्तावेज़';
+
+  @override
+  String get fitScanNote => 'पन्नों की फ़ोटो से एक साफ़ PDF';
+
+  @override
+  String failScanTooBig(int kb) {
+    return 'इन पन्नों को $kb KB से छोटा करके पढ़ने लायक नहीं रखा जा सका। कम पन्ने या बड़ी सीमा आज़माएँ।';
+  }
 }

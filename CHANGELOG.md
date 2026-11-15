@@ -5,6 +5,8 @@
 - **Clean up a signature** in Form photo: a signature photographed or scanned on paper is cropped to the ink, the
   paper made white and the ink darker, then fitted to the form's size and KB limits without cutting into it. Blue ink
   stays blue. The signature presets turn it on; photos never get it, as forms refuse retouched ones.
+- **Scanned document** in Make it fit: photos of pages become one clean greyscale PDF, with white paper and black
+  print, under 1 MB, or 500 KB or 200 KB from the outer ring. Put the pages in order first. It prints at A4 size.
 
 ## 0.12.0 (beta, 15 November 2026)
 

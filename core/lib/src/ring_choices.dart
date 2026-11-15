@@ -34,6 +34,13 @@ final _resizes = [
     RingChoice('resizePixels', '$side px', ActionOptions(longSide: side)),
 ];
 
+/// Size limits for Scanned document. The first is the slice's own.
+const _scanLimits = [
+  RingChoice('scanUnder', 'Under 1 MB', ActionOptions()),
+  RingChoice('scanUnder', 'Under 500 KB', ActionOptions(targetMb: 0.5)),
+  RingChoice('scanUnder', 'Under 200 KB', ActionOptions(targetMb: 0.2)),
+];
+
 /// The choices [action] offers on the outer ring, or none. The first is what choosing the slice
 /// itself does, so the ring only adds ways to run it, using options every engine already honours.
 List<RingChoice> ringChoices(RadialAction action) {
@@ -41,6 +48,7 @@ List<RingChoice> ringChoices(RadialAction action) {
     'image-rotate' || 'video-rotate' || 'pdf-rotate' => _rotations,
     'image-flip' => _flips,
     'image-resize' || 'video-resize' => _resizes,
+    'images-scan-pdf' => _scanLimits,
     _ => const [],
   };
 }

@@ -78,7 +78,8 @@ List<RadialAction> actionsFor(Iterable<FileKind> kinds, ActionMode mode) {
 }
 
 /// Whether [action] makes one result from all its files, rather than one from each.
-bool combinesFiles(RadialAction action) => action.minFiles > 1 || action.id == 'images-to-pdf';
+bool combinesFiles(RadialAction action) =>
+    action.minFiles > 1 || action.id == 'images-to-pdf' || action.id == 'images-scan-pdf';
 
 /// Whether the result follows its files in order, as pages or clips one after another, so the
 /// user is shown the order first.
@@ -196,6 +197,17 @@ final List<RadialAction> actionCatalogue = List.unmodifiable([
     maxBytes: 500 * _kb,
   ),
   _fit('fit-image-1mb', 'Under 1 MB', Engine.vips, _images, 'under 1 MB', maxBytes: _mb),
+  // Photos of pages made into one clean greyscale PDF, under 1,000,000 bytes, as forms that ask for
+  // "under 1 MB" may count either way.
+  _fit(
+    'images-scan-pdf',
+    'Scanned document',
+    Engine.builtIn,
+    _images,
+    'scan',
+    output: FileKind.pdf,
+    maxBytes: 1000 * 1000,
+  ),
   _fit('fit-pdf-100kb', 'Under 100 KB', Engine.qpdf, _pdf, 'under 100 KB', maxBytes: 100 * _kb),
   _fit('fit-pdf-500kb', 'Under 500 KB', Engine.qpdf, _pdf, 'under 500 KB', maxBytes: 500 * _kb),
   _fit('fit-pdf-1mb', 'Under 1 MB', Engine.qpdf, _pdf, 'under 1 MB', maxBytes: _mb),

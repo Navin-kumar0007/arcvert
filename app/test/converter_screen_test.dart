@@ -1140,6 +1140,19 @@ void main() {
   });
 
   group('availableActions', () {
+    test('Scanned document runs everywhere, under Make it fit, with translated limits', () {
+      final fit = availableActions(
+        const [FileKind.jpg, FileKind.png],
+        ActionMode.convert,
+        mediaAvailable: false,
+      ).where((action) => action.isFit);
+      final scan = fit.singleWhere((action) => action.id == 'images-scan-pdf');
+      final hindi = wordsFor(const Locale('hi'));
+      expect(actionLabel(hindi, scan.label), isNot('Scanned document'));
+      final labels = [for (final choice in ringChoices(scan)) ringChoiceLabel(hindi, choice)];
+      expect(labels, everyElement(isNot(startsWith('Under'))));
+    });
+
     test('runs on every platform', () {
       final ids = availableActions(
         const [FileKind.jpg],

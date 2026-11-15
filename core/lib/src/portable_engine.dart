@@ -91,6 +91,12 @@ Future<List<PortableFile>> runPortable(
     }
   }
 
+  if (action.id == 'images-scan-pdf') {
+    final target = options.targetMb;
+    final limit = target == null ? action.maxBytes! : (target * 1000 * 1000).round();
+    final bytes = await _scanToPdf(files, limit, onProgress);
+    return [PortableFile(_outputName(action, files.first.name, FileKind.pdf), bytes)];
+  }
   if (combinesFiles(action)) {
     final bytes = await _imagesToPdf(files, onProgress);
     return [PortableFile(_outputName(action, files.first.name, FileKind.pdf), bytes)];
@@ -613,6 +619,90 @@ Future<Uint8List> _underBytes(
     throw tooBig;
   }
   return result;
+}
+
+/// A scanned page's longer side: A4 at 150 dots an inch, enough to read and print text.
+const _scanPageSide = 1754;
+
+/// Photos of pages made into one greyscale PDF under [maxBytes], each page cleaned as a scanner app
+/// would: paper white, text black. Pages print at A4 size.
+Future<Uint8List> _scanToPdf(
+  List<PortableFile> files,
+  int maxBytes,
+  void Function(double)? onProgress,
+) async {
+  final pages = <img.Image>[];
+  for (var i = 0; i < files.length; i++) {
+    await _yield();
+    final photo = _decode(files[i], keepsAnimationFormat: false);
+    pages.add(cleanPage(_longSide(photo, _scanPageSide)));
+    onProgress?.call(0.4 * (i + 1) / files.length);
+  }
+  Uint8List? fitting;
+  var tries = 0;
+  final best = await searchUnderSize(
+    maxBytes: maxBytes,
+    minQuality: 30,
+    maxQuality: 85,
+    // Below about half of 150 dots an inch, small print can't be read.
+    minScale: 0.45,
+    encode: (quality, scale) async {
+      await _yield();
+      tries++;
+      onProgress?.call(0.4 + 0.55 * (1 - 1 / (tries + 1)));
+      final jpegs = [
+        for (final page in pages)
+          _encode(
+            _longSide(
+              page,
+              ((page.width > page.height ? page.width : page.height) * scale).round(),
+            ),
+            FileKind.jpg,
+            quality: quality,
+          ),
+      ];
+      final pdf = buildImagePdf(jpegs, pageLongSide: 842);
+      if (pdf.length <= maxBytes) fitting = pdf;
+      return pdf.length;
+    },
+  );
+  final result = fitting;
+  if (best == null || result == null) throw Fail.scanTooBig(maxBytes ~/ 1000);
+  onProgress?.call(1);
+  return result;
+}
+
+/// A photo of a page, greyscale, with its paper made white and its print black, so it reads like
+/// a scan and compresses well. Most of a page is paper, so its brighter quarter sets white.
+img.Image cleanPage(img.Image photo) {
+  final counts = List<int>.filled(256, 0);
+  final levels = Uint8List(photo.width * photo.height);
+  var i = 0;
+  for (final pixel in photo) {
+    final max = pixel.maxChannelValue;
+    final level = ((0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b) / max * 255).round().clamp(
+      0,
+      255,
+    );
+    levels[i++] = level;
+    counts[level]++;
+  }
+  final total = photo.width * photo.height;
+  final paper = _levelAt(counts, total, 0.75);
+  final ink = _levelAt(counts, total, 0.01);
+  final span = (paper - ink).clamp(1, 255).toDouble();
+  final page = img.Image(width: photo.width, height: photo.height);
+  i = 0;
+  for (final pixel in page) {
+    var whiteness = ((levels[i++] - ink) / span).clamp(0.0, 1.0);
+    whiteness = whiteness >= 0.85 ? 1.0 : whiteness / 0.85;
+    final grey = (255 * whiteness * whiteness).round();
+    pixel
+      ..r = grey
+      ..g = grey
+      ..b = grey;
+  }
+  return page;
 }
 
 Future<Uint8List> _imagesToPdf(List<PortableFile> files, void Function(double)? onProgress) async {
