@@ -2180,6 +2180,24 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Arrows'**
   String get keyArrows;
+
+  /// No description provided for @cleanSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean up a signature'**
+  String get cleanSignature;
+
+  /// No description provided for @cleanSignatureWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops to the ink, makes the paper white and the ink darker. Only for signatures: forms refuse retouched photos.'**
+  String get cleanSignatureWhy;
+
+  /// No description provided for @failNoSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'No signature could be found. Sign in dark ink on plain paper, and frame just the signature.'**
+  String get failNoSignature;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

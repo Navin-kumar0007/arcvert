@@ -187,7 +187,11 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
 - Form photo (`image-form`, `FormDialog`, `_forForm`): what the form wants, then framing in a crop that keeps the shape,
   then a JPEG of exactly that size within the KB limits. Forms refuse files that are too small, so a plain signature
   gets empty JPEG comments up to the minimum. Limits are stored so they hold whether a site counts a KB as 1000 or 1024
-  bytes (`formMinBytes`, `formMaxBytes`). It only crops and scales: NTA warns "computer made" photos are rejected.
+  bytes (`formMinBytes`, `formMaxBytes`). Photos are only cropped and scaled: NTA warns "computer made" photos are rejected.
+  Signatures (`FormTarget.signature`, a preset's `"signature": true`, a switch in `FormDialog`) go through
+  `cleanSignature`: paper is the median brightness, ink the darkest 0.05%, as Otsu fails when ink is a tiny share;
+  isolated dust pixels are ignored; then the crop is fitted with white padding (`_containOnWhite`), never cut, and
+  thin strokes darkened (`_deepenInk`).
 - Presets must not pretend to be the rules: forms change them, and sources disagree. Each one fills in boxes that stay
   editable, shows its source, and tells people to check their notice. Only add numbers traced to an official document.
   SSC isn't included, as its notice couldn't be read: guides say 3.5 x 4.5 cm, 20-50 KB and 4 x 2 cm, 10-20 KB. UPSC isn't

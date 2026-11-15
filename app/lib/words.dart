@@ -106,6 +106,7 @@ String failureText(Words words, EngineFailed failure) {
     'fileUnreadable' => words.failFileUnreadable,
     'finishSavingFirst' => words.failFinishSavingFirst,
     'formNeeded' => words.failFormNeeded,
+    'noSignature' => words.failNoSignature,
     'formatNotYet' => words.failFormatNotYet,
     'goneBeforeSharing' => words.failGoneBeforeSharing(blank('name')),
     'heicCantStart' => words.failHeicCantStart,

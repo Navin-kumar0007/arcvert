@@ -14,6 +14,7 @@ class PresetOutput {
     this.maxBytes,
     this.background,
     this.crop = PresetCrop.none,
+    this.signature = false,
   });
 
   final FileKind format;
@@ -25,6 +26,9 @@ class PresetOutput {
   final int? maxBytes;
   final String? background;
   final PresetCrop crop;
+
+  /// A signature on paper, cleaned up before sizing (`FormTarget.signature`).
+  final bool signature;
 }
 
 /// A make-it-fit or form-ready preset, loaded from a JSON file in `presets/`.
@@ -141,6 +145,9 @@ class Preset {
     final crop = PresetCrop.values.where((value) => value.name == cropName).firstOrNull;
     if (crop == null) throw FormatException('Preset $id: "crop" must be none, user or auto');
 
+    final signature = output['signature'] ?? false;
+    if (signature is! bool) throw FormatException('Preset $id: "signature" must be true or false');
+
     final minBytes = positive('minBytes');
     final maxBytes = positive('maxBytes');
     if (minBytes != null && maxBytes != null && minBytes > maxBytes) {
@@ -155,6 +162,7 @@ class Preset {
       maxBytes: maxBytes,
       background: background as String?,
       crop: crop,
+      signature: signature,
     );
   }
 }

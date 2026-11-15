@@ -147,4 +147,11 @@ void main() {
     });
     expect(() => Preset.parse(json), throwsFormatException);
   });
+
+  test('signature presets ask for cleanup, photo presets never do', () {
+    for (final file in Directory('lib/presets').listSync().whereType<File>()) {
+      final preset = Preset.parse(file.readAsStringSync());
+      expect(preset.output.signature, preset.id.contains('signature'), reason: preset.id);
+    }
+  });
 }

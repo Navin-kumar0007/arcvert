@@ -99,6 +99,10 @@ abstract final class Fail {
     'That edit does not fit this picture.',
     key: 'editDoesntFit',
   );
+  static const noSignature = EngineFailed(
+    'No signature could be found. Sign in dark ink on plain paper, and frame just the signature.',
+    key: 'noSignature',
+  );
   static const formNeeded = EngineFailed(
     '"Form photo" needs to know what the form wants.',
     key: 'formNeeded',

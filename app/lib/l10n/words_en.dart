@@ -1259,4 +1259,15 @@ class WordsEn extends Words {
 
   @override
   String get keyArrows => 'Arrows';
+
+  @override
+  String get cleanSignature => 'Clean up a signature';
+
+  @override
+  String get cleanSignatureWhy =>
+      'Crops to the ink, makes the paper white and the ink darker. Only for signatures: forms refuse retouched photos.';
+
+  @override
+  String get failNoSignature =>
+      'No signature could be found. Sign in dark ink on plain paper, and frame just the signature.';
 }

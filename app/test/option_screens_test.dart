@@ -189,6 +189,53 @@ void main() {
       expect(form.maxBytes, 50000);
     });
 
+    testWidgets('a photo preset leaves signature cleanup off; it can be turned on', (tester) async {
+      final plain = await ask(tester, () async {
+        await choosePreset(tester);
+        expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value, isFalse);
+      });
+      expect(plain!.signature, isFalse);
+      final cleaned = await ask(tester, () async {
+        await tester.tap(find.text('Clean up a signature'));
+        await tester.pump();
+      });
+      expect(cleaned!.signature, isTrue);
+    });
+
+    testWidgets('a signature preset turns cleanup on', (tester) async {
+      final signature = Preset.parse(
+        '{"id":"sig","label":{"en":"Job signature"},"accepts":["image/*"],'
+        '"output":{"format":"jpg","width":140,"height":60,"signature":true}}',
+      );
+      FormTarget? chosen;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: Words.localizationsDelegates,
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () async {
+                chosen = await showDialog<FormTarget>(
+                  context: context,
+                  builder: (_) => FormDialog(loadPresets: () async => [signature]),
+                );
+              },
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButtonFormField<Preset?>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Job signature').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+      expect(chosen!.signature, isTrue);
+      expect(chosen!.width, 140);
+    });
+
     testWidgets('it says where the numbers came from, and to check them', (tester) async {
       await ask(tester, () async {
         expect(find.textContaining('check these against your form'), findsOneWidget);

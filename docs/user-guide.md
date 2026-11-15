@@ -74,7 +74,7 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **PDF to Word.** Text comes through as paragraphs and headings you can edit, with bold kept, simple tables as real Word tables, and pictures where they stood on the page. Merged table cells and exact layout aren't kept, and the result says so. Scanned pages come in as pictures, so their text can't be edited.
 
-**Form photos.** Pick a preset or type your own sizes. Rules change and differ between forms, so **always check against your form's own notice**. A file of the right size can still be refused for other reasons, such as what the photo shows.
+**Form photos.** Pick a preset or type your own sizes. For a signature, sign in dark ink on plain paper and photograph or scan it: **Clean up a signature**, on for the signature presets, crops to the ink, makes the paper white and the ink darker, and fits it to the form without cutting any of it off. Leave it off for photos. Rules change and differ between forms, so **always check against your form's own notice**. A file of the right size can still be refused for other reasons, such as what the photo shows.
 
 **Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet, and neither can a RAR in several parts. A password can be added to an archive, but not yet to a PDF.
 

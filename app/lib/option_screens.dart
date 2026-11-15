@@ -88,6 +88,7 @@ class _FormDialogState extends State<FormDialog> {
   final _atMost = TextEditingController();
   List<Preset> _presets = const [];
   Preset? _chosen;
+  bool _signature = false;
   String? _pixelsError;
   String? _sizeError;
 
@@ -120,6 +121,7 @@ class _FormDialogState extends State<FormDialog> {
   void _choose(Preset? preset) {
     setState(() {
       _chosen = preset;
+      _signature = preset?.output.signature ?? false;
       _pixelsError = null;
       _sizeError = null;
       final output = preset?.output;
@@ -156,6 +158,7 @@ class _FormDialogState extends State<FormDialog> {
         height: height,
         minBytes: atLeast == null || atLeast == 0 ? null : formMinBytes(atLeast),
         maxBytes: atMost == null ? null : formMaxBytes(atMost),
+        signature: _signature,
       ),
     );
   }
@@ -226,7 +229,15 @@ class _FormDialogState extends State<FormDialog> {
                   _number(_atMost, context.words.atMostKb),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(context.words.cleanSignature),
+                subtitle: Text(context.words.cleanSignatureWhy),
+                value: _signature,
+                onChanged: (on) => setState(() => _signature = on),
+              ),
+              const SizedBox(height: 8),
               if (chosen != null) ...[
                 if (chosen.note != null) Text(chosen.note!, style: styles.bodySmall),
                 const SizedBox(height: 4),

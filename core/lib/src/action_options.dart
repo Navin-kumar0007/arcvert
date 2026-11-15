@@ -1,11 +1,15 @@
 /// What a form wants a picture to be. Pixel sizes come as a pair or not at all.
 class FormTarget {
-  const FormTarget({this.width, this.height, this.minBytes, this.maxBytes});
+  const FormTarget({this.width, this.height, this.minBytes, this.maxBytes, this.signature = false});
 
   final int? width;
   final int? height;
   final int? minBytes;
   final int? maxBytes;
+
+  /// A signature on paper: crop to the ink, make the paper white and the ink darker, then fit the
+  /// form's size without cutting into it. Never for photos, as forms refuse retouched ones.
+  final bool signature;
 }
 
 /// Bytes that count as at least [kb] KB however a form's website counts a KB, 1000 or 1024 bytes.

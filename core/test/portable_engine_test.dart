@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -578,6 +579,42 @@ void main() {
       return img.encodePng(image);
     }
 
+    /// Like a phone photo of a signed page: grey, uneven paper with grain, a blue signature in
+    /// the middle and lots of empty paper around it.
+    Uint8List signedPage({bool ink = true}) {
+      final image = img.Image(width: 1200, height: 900);
+      var state = 3;
+      for (final pixel in image) {
+        state = (state * 1103515245 + 12345) & 0x7FFFFFFF;
+        final shade = 205 + pixel.x * 20 ~/ 1200 + state % 10;
+        pixel
+          ..r = shade
+          ..g = shade
+          ..b = shade - 6;
+      }
+      if (ink) {
+        for (var t = 0; t < 4; t++) {
+          img.drawLine(
+            image,
+            x1: 420,
+            y1: 470 + t,
+            x2: 780,
+            y2: 400 + t,
+            color: img.ColorRgb8(30, 40, 150),
+          );
+          img.drawLine(
+            image,
+            x1: 500 + t,
+            y1: 380,
+            x2: 560 + t,
+            y2: 500,
+            color: img.ColorRgb8(30, 40, 150),
+          );
+        }
+      }
+      return img.encodeJpg(image, quality: 92);
+    }
+
     Future<Uint8List> run(Uint8List input, FormTarget form, {ActionOptions? extra}) async {
       final out = await runPortable(action, [
         PortableFile('me.jpg', input),
@@ -585,6 +622,95 @@ void main() {
       expect(out.single.name, 'me (form).jpg');
       return out.single.bytes;
     }
+
+    group('signature cleanup', () {
+      test('crops to the ink, whitens the paper and keeps blue ink blue', () async {
+        final bytes = await run(
+          signedPage(),
+          FormTarget(
+            width: 140,
+            height: 60,
+            minBytes: formMinBytes(10),
+            maxBytes: formMaxBytes(20),
+            signature: true,
+          ),
+        );
+        final out = img.decodeJpg(bytes)!;
+        expect((out.width, out.height), (140, 60));
+        expect(bytes.length, inInclusiveRange(10 * 1024, 20000));
+        // The paper is white now, corners and edges included.
+        for (final (x, y) in [(0, 0), (139, 0), (0, 59), (139, 59), (70, 1)]) {
+          expect(out.getPixel(x, y).r, greaterThan(240), reason: '($x, $y)');
+        }
+        // The signature fills the width, so the empty paper around it was cropped away.
+        var leftmost = 140, rightmost = -1, blueish = 0, dark = 0;
+        for (final pixel in out) {
+          if (pixel.r < 120) {
+            dark++;
+            leftmost = math.min(leftmost, pixel.x);
+            rightmost = math.max(rightmost, pixel.x);
+            if (pixel.b > pixel.r + 20) blueish++;
+          }
+        }
+        expect(dark, greaterThan(20));
+        expect(rightmost - leftmost, greaterThan(90));
+        expect(blueish, greaterThan(dark ~/ 2));
+      });
+
+      test('nothing is cut from the signature, whatever the form\'s shape', () {
+        final page = img.decodeJpg(signedPage())!;
+        final cleaned = cleanSignature(page);
+        // The ink ran from x 420 to 780 and y 380 to 500, with a margin kept around it.
+        expect(cleaned.width, inInclusiveRange(360, 460));
+        expect(cleaned.height, inInclusiveRange(120, 220));
+      });
+
+      test('a signature framed tightly, so ink is a large share, still cleans up', () {
+        final page = img.decodeJpg(signedPage())!;
+        final tight = img.copyCrop(page, x: 410, y: 370, width: 380, height: 140);
+        final cleaned = cleanSignature(tight);
+        var white = 0;
+        for (final pixel in cleaned) {
+          if (pixel.r > 240 && pixel.g > 240) white++;
+        }
+        expect(white, greaterThan(cleaned.width * cleaned.height ~/ 2));
+      });
+
+      test('black ink on white paper, as a scanner makes it', () async {
+        final bytes = await run(
+          signature(),
+          const FormTarget(width: 300, height: 80, signature: true),
+        );
+        final out = img.decodeJpg(bytes)!;
+        expect((out.width, out.height), (300, 80));
+        var darkest = 255;
+        for (final pixel in out) {
+          darkest = math.min(darkest, pixel.r.toInt());
+        }
+        // A one-pixel pen line, shrunk to a third, still reads as ink.
+        expect(darkest, lessThan(110));
+      });
+
+      test('a page with no signature says so', () async {
+        expect(
+          () => run(
+            signedPage(ink: false),
+            const FormTarget(width: 140, height: 60, signature: true),
+          ),
+          throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'noSignature')),
+        );
+      });
+
+      test('photos are never cleaned up', () async {
+        final plain = await run(
+          photo(width: 400, height: 400),
+          const FormTarget(width: 100, height: 100),
+        );
+        final out = img.decodeJpg(plain)!;
+        // A photo's colours stay as they were: nothing is pushed to white.
+        expect(out.getPixel(50, 50).r, lessThan(240));
+      });
+    });
 
     test('the job form photo, exact and within limits', () async {
       final bytes = await run(

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.0 (unreleased)
+
+- **Clean up a signature** in Form photo: a signature photographed or scanned on paper is cropped to the ink, the
+  paper made white and the ink darker, then fitted to the form's size and KB limits without cutting into it. Blue ink
+  stays blue. The signature presets turn it on; photos never get it, as forms refuse retouched ones.
+
 ## 0.12.0 (beta, 15 November 2026)
 
 - A new look, in light and dark, following the device unless **Settings** says otherwise. The main screen shows the

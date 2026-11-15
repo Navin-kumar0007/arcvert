@@ -1261,4 +1261,15 @@ class WordsHi extends Words {
 
   @override
   String get keyArrows => 'तीर कुंजियाँ';
+
+  @override
+  String get cleanSignature => 'हस्ताक्षर साफ़ करें';
+
+  @override
+  String get cleanSignatureWhy =>
+      'स्याही तक काटता है, काग़ज़ को सफ़ेद और स्याही को गहरा करता है। सिर्फ़ हस्ताक्षर के लिए: फ़ॉर्म बदली हुई फ़ोटो नहीं लेते।';
+
+  @override
+  String get failNoSignature =>
+      'कोई हस्ताक्षर नहीं मिला। सादे काग़ज़ पर गहरी स्याही से हस्ताक्षर करें, और सिर्फ़ हस्ताक्षर को फ़्रेम में रखें।';
 }

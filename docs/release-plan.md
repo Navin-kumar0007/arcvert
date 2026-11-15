@@ -125,6 +125,7 @@ Build from about 21 December 2026, publish about mid-January 2027.
 - **Thumbnails on the Shift-drag result chip**, from the system's own thumbnails (Quick Look on a Mac, the shell on
   Windows).
 - **Signature cleanup**: crop to the ink, whiten the paper, darken the ink, then the form's size and KB limits.
+  **Done** (`cleanSignature` in `portable_engine.dart`, 16 November 2026).
 - **Scanned document** preset: a greyscale PDF under a size limit.
 - **Quality levels on Compress's outer ring**: high, medium and small, honoured by every engine.
 

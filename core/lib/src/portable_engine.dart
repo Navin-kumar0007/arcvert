@@ -332,6 +332,146 @@ img.Image _cropped(img.Image image, ({int left, int top, int width, int height})
 /// Without a pixel size a form takes any, and a phone photo has far more than one needs.
 const _formLongestSide = 1200;
 
+/// Signatures are cleaned at most this size, which keeps every stroke of a form's few hundred
+/// pixels.
+const _signatureWorkingSide = 1600;
+
+/// A signature photographed or scanned on paper, made ready for a form: cropped to the ink with a
+/// small margin, the paper made white and the ink darker. The ink keeps its own colour, so a blue
+/// signature stays blue. Throws [Fail.noSignature] if no ink stands out from the paper.
+img.Image cleanSignature(img.Image source) {
+  final width = source.width;
+  final height = source.height;
+  final light = Uint8List(width * height);
+  final counts = List<int>.filled(256, 0);
+  final red = Uint8List(width * height);
+  final green = Uint8List(width * height);
+  final blue = Uint8List(width * height);
+  var i = 0;
+  for (final pixel in source) {
+    // Clear parts count as paper.
+    final alpha = pixel.aNormalized.toDouble();
+    int onWhite(num value, num max) =>
+        (value / max * 255 * alpha + 255 * (1 - alpha)).round().clamp(0, 255);
+    final max = pixel.maxChannelValue;
+    final r = onWhite(pixel.r, max), g = onWhite(pixel.g, max), b = onWhite(pixel.b, max);
+    red[i] = r;
+    green[i] = g;
+    blue[i] = b;
+    final level = (0.299 * r + 0.587 * g + 0.114 * b).round().clamp(0, 255);
+    light[i] = level;
+    counts[level]++;
+    i++;
+  }
+
+  // A signature covers far less than half the picture, however tightly it's framed, so the median
+  // is paper, and the spread above it says how uneven the paper is. The darkest few pixels are
+  // ink, if there is any. A share-based split such as Otsu's fails when ink is a tiny share.
+  final total = width * height;
+  final median = _levelAt(counts, total, 0.5);
+  final paper = _levelAt(counts, total, 0.75);
+  final paperEdge = median - 3 * (paper - median) - 6;
+  final ink = _levelAt(counts, total, 0.0005);
+  final threshold = (ink + paperEdge) ~/ 2;
+  var inked = 0;
+  for (var level = 0; level <= threshold && level < 256; level++) {
+    inked += counts[level];
+  }
+  // No ink much darker than the paper is a blank page or a photo of a wall.
+  if (paperEdge - ink < 40 || inked < total * 0.0003) throw Fail.noSignature;
+
+  // Where the ink is, ignoring single stray dots of dust: an inked pixel counts only beside another.
+  bool inkAt(int x, int y) =>
+      x >= 0 && y >= 0 && x < width && y < height && light[y * width + x] <= threshold;
+  var top = height, bottom = -1, left = width, right = -1;
+  for (var y = 0; y < height; y++) {
+    for (var x = 0; x < width; x++) {
+      if (!inkAt(x, y)) continue;
+      final joined =
+          inkAt(x - 1, y) ||
+          inkAt(x + 1, y) ||
+          inkAt(x, y - 1) ||
+          inkAt(x, y + 1) ||
+          inkAt(x - 1, y - 1) ||
+          inkAt(x + 1, y + 1) ||
+          inkAt(x - 1, y + 1) ||
+          inkAt(x + 1, y - 1);
+      if (!joined) continue;
+      if (y < top) top = y;
+      if (y > bottom) bottom = y;
+      if (x < left) left = x;
+      if (x > right) right = x;
+    }
+  }
+  if (right < 0) throw Fail.noSignature;
+  final margin = ((right - left).clamp(bottom - top, width) * 0.06).round().clamp(4, 200);
+  final x0 = (left - margin).clamp(0, width - 1);
+  final y0 = (top - margin).clamp(0, height - 1);
+  final x1 = (right + margin).clamp(0, width - 1);
+  final y1 = (bottom + margin).clamp(0, height - 1);
+
+  final out = img.Image(width: x1 - x0 + 1, height: y1 - y0 + 1);
+  final span = (paper - ink).toDouble();
+  for (var y = y0; y <= y1; y++) {
+    for (var x = x0; x <= x1; x++) {
+      final at = y * width + x;
+      // 0 is the darkest ink, 1 the paper; anything near the paper becomes paper.
+      var whiteness = ((light[at] - ink) / span).clamp(0.0, 1.0);
+      whiteness = whiteness >= 0.8 ? 1.0 : whiteness / 0.8;
+      final cover = 1 - whiteness;
+      int mix(int channel) => (255 * whiteness + channel * 0.55 * cover).round().clamp(0, 255);
+      out.setPixelRgb(x - x0, y - y0, mix(red[at]), mix(green[at]), mix(blue[at]));
+    }
+  }
+  return out;
+}
+
+/// The level below which [share] of the pixels fall.
+int _levelAt(List<int> counts, int total, double share) {
+  final wanted = total * share;
+  var seen = 0;
+  for (var level = 0; level < 256; level++) {
+    seen += counts[level];
+    if (seen >= wanted) return level;
+  }
+  return 255;
+}
+
+/// Strokes thinned by shrinking come back darker: each channel is curved towards black, so white
+/// stays white and the ink keeps its colour.
+img.Image _deepenInk(img.Image image) {
+  for (final pixel in image) {
+    int deepen(num value) => (255 * (value / 255) * (value / 255)).round();
+    pixel
+      ..r = deepen(pixel.r)
+      ..g = deepen(pixel.g)
+      ..b = deepen(pixel.b);
+  }
+  return image;
+}
+
+/// [image] made as large as fits in [width] by [height], in the middle of white. Nothing is cut,
+/// which matters for a signature, unlike a photo that a form expects filled.
+img.Image _containOnWhite(img.Image image, int width, int height) {
+  final scale = width / image.width < height / image.height
+      ? width / image.width
+      : height / image.height;
+  final fitted = img.copyResize(
+    image,
+    width: (image.width * scale).round().clamp(1, width),
+    height: (image.height * scale).round().clamp(1, height),
+    interpolation: img.Interpolation.cubic,
+  );
+  final canvas = img.Image(width: width, height: height);
+  img.fill(canvas, color: img.ColorRgb8(255, 255, 255));
+  return img.compositeImage(
+    canvas,
+    fitted,
+    dstX: (width - fitted.width) ~/ 2,
+    dstY: (height - fitted.height) ~/ 2,
+  );
+}
+
 /// A JPEG the size a form asks for. It only crops and scales: forms may reject retouched photos.
 Future<Uint8List> _forForm(
   img.Image source,
@@ -352,9 +492,18 @@ Future<Uint8List> _forForm(
   }
 
   final crop = options.crop;
-  final framed = crop == null ? source : _cropped(source, crop);
+  var framed = crop == null ? source : _cropped(source, crop);
+  if (form.signature) {
+    // A phone photo of a page is far bigger than a signature needs, and this goes pixel by pixel.
+    framed = cleanSignature(_longSide(framed, _signatureWorkingSide));
+    await _yield();
+  }
   final exact = width != null && height != null;
-  final image = exact ? _coverExactly(framed, width, height) : _longSide(framed, _formLongestSide);
+  final image = !exact
+      ? _longSide(framed, _formLongestSide)
+      : form.signature
+      ? _deepenInk(_containOnWhite(framed, width, height))
+      : _coverExactly(framed, width, height);
   await _yield();
 
   final Uint8List best;
