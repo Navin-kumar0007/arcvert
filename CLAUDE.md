@@ -413,7 +413,8 @@ Compress levels are done. Everything planned before 1.0 is built: PDF passwords 
 3. Not yet tried in real use: Control as the trigger key, Undo on an extracted folder, photo details from a real phone
    photo, the learned order. Measure the menu opening within 100 ms of the key on both desktops: each menu now
    times itself (`onTiming` in `ShiftDrag.swift`, `SendTiming` in `shift_drag.cpp`, sent as `menuTiming` to
-   `MenuSpeed` in `menu_speed.dart`), and Settings shows the usual and slowest. Neither is measured yet.
+   `MenuSpeed` in `menu_speed.dart`), and Settings shows the usual and slowest. The owner measured both under 100 ms on 16 November 2026, and
+   tried PDF passwords, RAR in several parts and the Windows Shift-drag checks on real devices: all worked.
 4. Document conversions (`document-to-*`) wait on the optional LibreOffice and Pandoc add-ons. Web video has no MP3,
    FLAC, GIF or merge. Nothing plays video or sound while trimming.
 5. A native speaker should review `app_hi.arb`.

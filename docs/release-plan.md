@@ -169,9 +169,10 @@ release (16 November 2026):
 
 ## 1.0 checklist (launch 12 April 2027)
 
-- Windows tried in the VM: Shift-drag from Explorer, Alt for Tools (and whether Alt+Shift switches the keyboard
-  language), the native rings, dragging results out, open at login.
-- The menu opens within 100 ms of pressing Shift, measured on both desktops. Each menu now times itself (`menu_speed.dart`):
+- **Done** (owner, 16 November 2026): Windows tried: Shift-drag from Explorer, Alt for Tools, the native rings, dragging
+  results out, open at login.
+- **Done** (owner, 16 November 2026: under 100 ms on Mac and Windows): the menu opens within 100 ms of pressing Shift,
+  measured on both desktops. Each menu now times itself (`menu_speed.dart`):
   do about 20 Shift-drags of a photo, a PDF and a folder, then read the line under the key in **Settings**. Waiting is
   counted at its longest (the check runs 30 times a second), and the screen may take one more refresh to show the menu.
   If it's over, `flutter run` prints each drag's parts (wait, find, ask, draw) to say which to speed up.
