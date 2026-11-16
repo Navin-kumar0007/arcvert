@@ -947,4 +947,50 @@ void main() {
       expect(cleaned.getPixel(150, 157).r, cleaned.getPixel(150, 157).b);
     });
   });
+
+  group('photo details', () {
+    /// Like a phone photo: when and with what it was taken, where, and the camera's serial number.
+    Uint8List detailed() {
+      final image = img.Image(width: 400, height: 300);
+      image.exif.imageIfd['Make'] = img.IfdValueAscii('Pixel');
+      image.exif.imageIfd['Model'] = img.IfdValueAscii('Pixel 9');
+      image.exif.exifIfd[0x9003] = img.IfdValueAscii('2026:11:16 09:30:00');
+      image.exif.exifIfd[0xA431] = img.IfdValueAscii('SERIAL-123');
+      image.exif.gpsIfd['GPSLatitude'] = img.IfdValueRational(28, 1);
+      return img.encodeJpg(image);
+    }
+
+    img.ExifData detailsOf(Uint8List bytes) => img.decodeJpg(bytes)!.exif;
+
+    test('the sample has what a phone writes', () {
+      final exif = detailsOf(detailed());
+      expect(exif.gpsIfd.isEmpty, isFalse);
+      expect(exif.exifIfd[0xA431], isNotNull);
+    });
+
+    for (final id in ['image-to-jpg', 'image-compress', 'image-rotate', 'image-resize']) {
+      test('$id keeps when and with what, never where or the serial number', () async {
+        final exif = detailsOf((await run(id, detailed(), name: 'photo.png')).bytes);
+        expect(exif.imageIfd['Model']?.toString(), contains('Pixel 9'));
+        expect(exif.exifIfd[0x9003]?.toString(), contains('2026:11:16'));
+        expect(exif.gpsIfd.isEmpty, isTrue);
+        expect(exif.exifIfd[0xA431], isNull);
+      });
+    }
+
+    for (final id in ['fit-whatsapp-photo', 'fit-image-100kb', 'image-strip-metadata']) {
+      test('$id keeps no details at all', () async {
+        final result = await run(id, detailed());
+        expect(img.decodeImage(result.bytes)!.exif.isEmpty, isTrue);
+      });
+    }
+
+    test('which actions keep details', () {
+      expect(keepsPhotoDetails(actionById('image-to-png')!), isTrue);
+      expect(keepsPhotoDetails(actionById('image-crop')!), isTrue);
+      expect(keepsPhotoDetails(actionById('image-form')!), isFalse);
+      expect(keepsPhotoDetails(actionById('fit-email-image')!), isFalse);
+      expect(keepsPhotoDetails(actionById('image-strip-metadata')!), isFalse);
+    });
+  });
 }

@@ -169,7 +169,11 @@ Future<void> _yield() => Future<void>.delayed(Duration.zero);
 
 /// Decodes the first frame, upright and with all metadata gone except the colour profile:
 /// EXIF holds GPS, so it never reaches an output.
-img.Image _decode(PortableFile file, {required bool keepsAnimationFormat}) {
+img.Image _decode(
+  PortableFile file, {
+  required bool keepsAnimationFormat,
+  bool keepsDetails = false,
+}) {
   final unreadable = Fail.notAPicture(file.name);
   final decoder = img.findDecoderForData(file.bytes);
   if (decoder == null) throw unreadable;
@@ -208,8 +212,49 @@ img.Image _decode(PortableFile file, {required bool keepsAnimationFormat}) {
           noAnimation: true,
         );
   return plain
-    ..exif = img.ExifData()
+    ..exif = keepsDetails ? safePhotoDetails(decoded.exif) : img.ExifData()
     ..textData = null;
+}
+
+/// The photo details worth keeping, and nothing that says where it was or who has it: when it was
+/// taken, with what camera and lens, and how it was exposed. Location, serial numbers, the owner's
+/// name, maker notes, comments and the embedded thumbnail are left behind, and so is the turn, as
+/// the picture is already upright.
+img.ExifData safePhotoDetails(img.ExifData from) {
+  final to = img.ExifData();
+  void copy(img.IfdDirectory source, img.IfdDirectory target, List<int> tags) {
+    for (final tag in tags) {
+      final value = source[tag];
+      if (value != null) target[tag] = value;
+    }
+  }
+
+  copy(from.imageIfd, to.imageIfd, const [
+    0x010F, // Make
+    0x0110, // Model
+    0x0132, // DateTime
+    0x8298, // Copyright
+  ]);
+  copy(from.exifIfd, to.exifIfd, const [
+    0x9003, // DateTimeOriginal
+    0x9004, // DateTimeDigitized
+    0x9010, // OffsetTime
+    0x9011, // OffsetTimeOriginal
+    0x9012, // OffsetTimeDigitized
+    0x829A, // ExposureTime
+    0x829D, // FNumber
+    0x8822, // ExposureProgram
+    0x8827, // ISOSpeedRatings
+    0x9204, // ExposureBiasValue
+    0x9207, // MeteringMode
+    0x9209, // Flash
+    0x920A, // FocalLength
+    0xA403, // WhiteBalance
+    0xA405, // FocalLengthIn35mmFilm
+    0xA433, // LensMake
+    0xA434, // LensModel
+  ]);
+  return to;
 }
 
 /// JPEG has no transparency. Without this, transparent areas would turn black.
@@ -283,7 +328,11 @@ Future<Uint8List> _image(
   step(0.05);
   await _yield();
   final keepsAnimation = output == FileKind.gif || output == FileKind.webp;
-  final image = _decode(file, keepsAnimationFormat: keepsAnimation);
+  final image = _decode(
+    file,
+    keepsAnimationFormat: keepsAnimation,
+    keepsDetails: keepsPhotoDetails(action),
+  );
   step(0.4);
   await _yield();
 

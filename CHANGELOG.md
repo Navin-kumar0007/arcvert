@@ -4,6 +4,9 @@
 
 - **Extract pages** from a PDF, on every platform: pick pages from pictures of each, or type them, such as 1-3, 7.
   They come out as one PDF, in the order typed.
+- Pictures keep when they were taken, the camera and lens, and how they were exposed, when converted, compressed,
+  turned, flipped, resized or cropped. Where they were taken never comes along, nor serial numbers or the owner's
+  name. Make it fit and Strip metadata keep no details at all, as their files are made to be sent.
 
 ## 0.13.0 (beta, 16 November 2026)
 

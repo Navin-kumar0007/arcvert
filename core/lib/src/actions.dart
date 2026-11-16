@@ -78,6 +78,14 @@ List<RadialAction> actionsFor(Iterable<FileKind> kinds, ActionMode mode) {
 }
 
 /// Whether [action] makes one result from all its files, rather than one from each.
+/// True if a picture keeps its safe photo details, such as when it was taken: changing its format
+/// and the Tools that edit it do. Make it fit makes files to send or upload, and keeps none, nor does
+/// Strip metadata. Location never comes along (`safePhotoDetails`).
+bool keepsPhotoDetails(RadialAction action) {
+  if (action.id == 'image-strip-metadata' || action.isFit) return false;
+  return action.isFormatChange || action.mode == ActionMode.tools;
+}
+
 bool combinesFiles(RadialAction action) =>
     action.minFiles > 1 || action.id == 'images-to-pdf' || action.id == 'images-scan-pdf';
 

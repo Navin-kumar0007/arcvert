@@ -149,7 +149,8 @@ Started 16 November 2026, after the owner tried 0.13.0 on every platform.
 
 - **PDF page picker**: Extract pages with a grid of page pictures to tap, and the range typed, such as 1-3, 7.
   **Done** (`page_picker.dart`, `page_range.dart`, 16 November 2026), tried in Chrome.
-- **Keep photo details (EXIF) while removing location**, as the plan asks; outputs drop all of it today.
+- **Keep photo details (EXIF) while removing location**, as the plan asks; outputs drop all of it today. **Done**
+  (`safePhotoDetails`, `keepsPhotoDetails`, 16 November 2026), JPEG results; HEIC loses them in decoding still.
 - **Extract an archive to a folder** on a desktop, instead of one Save per file.
 - **Learned slice order**: the most-used actions move to the easiest slots, learned on the device only.
 - **Changing the trigger key** from Shift.

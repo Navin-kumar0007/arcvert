@@ -335,9 +335,11 @@ Engine decisions that differ from the plan or are easy to get wrong:
 - libvips has no PDF or ICO writer without ImageMagick: images to PDF uses our `buildImagePdf`, ICO
   goes through FFmpeg.
 - Hardware encoders have no second pass, so size targets aim low and retry until the file fits.
-- Plan says strip GPS but keep other metadata. The libvips command line can't remove one field, so
-  outputs keep only the colour profile for now (`keep=icc`), with rotation applied first. Video drops
-  all metadata. Revisit if users want EXIF kept.
+- Photo details: the portable engine keeps an allowlist (`safePhotoDetails`: date taken, make, model, lens,
+  exposure) for format changes and Tools (`keepsPhotoDetails`), and nothing for Make it fit or Strip metadata.
+  GPS, serial numbers, owner, maker notes and the thumbnail never come along. Only the JPEG encoder writes EXIF; a
+  HEIC photo loses its details when the platform decodes it to PNG. The libvips command line still keeps only the
+  colour profile (`keep=icc`). Video drops all metadata.
 - Lossless only for PDF (qpdf), so "under X KB" can fail on picture-heavy PDFs until PDFium arrives.
 - Passwords go to qpdf over stdin, never in arguments, which other processes can read.
 - The portable engine (`image` package, MIT) is the shared baseline; native engines add speed and
