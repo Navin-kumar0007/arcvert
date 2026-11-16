@@ -6,7 +6,7 @@ import 'words.dart';
 
 /// Shown to people, and checked against `pubspec.yaml` by a test.
 const appName = 'ShiftDrop';
-const appVersion = '0.14.0';
+const appVersion = '0.15.0';
 
 /// Where the app is running, as a bug report would say it.
 String get platformLabel {

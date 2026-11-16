@@ -159,13 +159,15 @@ after 0.13.0.
 - **Changing the trigger key** from Shift. **Done** (`AppSettings.triggerKey`, `TriggerKey` in Swift, `TriggerDown` in
   C++, 16 November 2026): Shift or Control.
 
-## Later, before 1.0
+## 0.15.0: PDF passwords, RAR in parts, menu speed
 
-Everything planned before 1.0 is done: the rest moved into 0.14, and these two were done after it, for the next
-release (16 November 2026):
+**Done.** Built 16 November 2026, and tried by the owner on real devices before tagging. Publish after 0.14.0. With it,
+everything planned before 1.0 is built; what remains is the checklist below.
 
 - **Add password to a PDF** (`lockPdf`), in pure Dart rather than by bundling qpdf, so it works on every platform.
 - **RAR files in several parts** (`archive_parts.dart`, `joinArchiveParts`): `part1.rar` or `.rar`, `.r00` names.
+- **Menu speed** in Settings on a Mac or Windows (`menu_speed.dart`): each Shift-drag menu times itself, for the
+  checklist's 100 ms.
 
 ## 1.0 checklist (launch 12 April 2027)
 

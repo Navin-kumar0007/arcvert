@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.15.0 (beta, 16 November 2026)
 
 - On a Mac or Windows, **Settings** says how fast the Shift-drag menu has opened over your last drags, counted from
   the key. Measured on your computer only.
