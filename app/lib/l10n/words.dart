@@ -2246,6 +2246,72 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'This picture is already as small as that level makes it. Try Balanced or Smallest.'**
   String get failPictureAsSmall;
+
+  /// No description provided for @choosePages.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose pages'**
+  String get choosePages;
+
+  /// No description provided for @pagesField.
+  ///
+  /// In en, this message translates to:
+  /// **'Pages, such as 1-3, 7'**
+  String get pagesField;
+
+  /// No description provided for @pagesAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get pagesAll;
+
+  /// No description provided for @pagesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get pagesNone;
+
+  /// No description provided for @pagesChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} chosen'**
+  String pagesChosen(int count, int total);
+
+  /// No description provided for @pageNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {number}'**
+  String pageNumber(int number);
+
+  /// No description provided for @pagesCantShow.
+  ///
+  /// In en, this message translates to:
+  /// **'The pages can\'t be shown here, but you can still type them.'**
+  String get pagesCantShow;
+
+  /// No description provided for @extractPagesGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract'**
+  String get extractPagesGo;
+
+  /// No description provided for @failNoPagesChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one page.'**
+  String get failNoPagesChosen;
+
+  /// No description provided for @failBadPageRange.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{part}\" isn\'t a page or a range. Write pages like 1-3, 7.'**
+  String failBadPageRange(Object part);
+
+  /// No description provided for @failPageOutOfRange.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no page {page}. This PDF has {total} pages.'**
+  String failPageOutOfRange(int page, int total);
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

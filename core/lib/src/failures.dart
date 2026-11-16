@@ -207,6 +207,17 @@ abstract final class Fail {
     'This picture is already as small as that level makes it. Try Balanced or Smallest.',
     key: 'pictureAsSmall',
   );
+  static const noPagesChosen = EngineFailed('Choose at least one page.', key: 'noPagesChosen');
+  static EngineFailed badPageRange(String part) => _say(
+    'badPageRange',
+    '"$part" isn\'t a page or a range. Write pages like 1-3, 7.',
+    {'part': part},
+  );
+  static EngineFailed pageOutOfRange(int page, int total) => _say(
+    'pageOutOfRange',
+    'There is no page $page. This PDF has $total pages.',
+    {'page': '$page', 'total': '$total'},
+  );
   static const pdfAsSmall = EngineFailed(
     'This PDF is already as small as it can usefully get.',
     key: 'pdfAsSmall',

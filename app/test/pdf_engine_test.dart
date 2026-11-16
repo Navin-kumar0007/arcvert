@@ -98,6 +98,7 @@ void main() {
         'pdf-to-docx',
         'pdf-merge',
         'pdf-split',
+        'pdf-extract-pages',
         'pdf-rotate',
         'pdf-compress',
         'fit-email-pdf',
@@ -111,10 +112,8 @@ void main() {
       expect(canRunPdf(actionById('pdf-remove-password')!, FileKind.pdf), isTrue);
     });
 
-    test('adding a password needs qpdf, and page picking needs a screen', () {
-      for (final id in ['pdf-add-password', 'pdf-extract-pages']) {
-        expect(canRunPdf(actionById(id)!, FileKind.pdf), isFalse, reason: id);
-      }
+    test('adding a password needs qpdf, which isn\'t bundled', () {
+      expect(canRunPdf(actionById('pdf-add-password')!, FileKind.pdf), isFalse);
     });
 
     test('only PDFs', () {
@@ -174,6 +173,32 @@ void main() {
       expect(archive.files, hasLength(3));
       for (final file in archive.files) {
         expect(await pagesIn(file.content), 1, reason: file.name);
+      }
+    });
+
+    test('extract takes the pages chosen, in the order typed', () async {
+      final out = (await run('pdf-extract-pages', [
+        pdf('doc.pdf', 5),
+      ], options: const ActionOptions(pages: '4, 1-2'))).single.file;
+      expect(out.name, 'doc (pages).pdf');
+      expect(await pagesIn(out.bytes), 3);
+    });
+
+    test('extract says so when a page isn\'t there', () async {
+      await expectLater(
+        run('pdf-extract-pages', [pdf('doc.pdf', 2)], options: const ActionOptions(pages: '3')),
+        throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'pageOutOfRange')),
+      );
+    });
+
+    test('the picker draws any page', () async {
+      final pictures = await PdfPagePictures.open(pdf('doc.pdf', 3).bytes, 'doc.pdf');
+      try {
+        expect(pictures.count, 3);
+        final png = await pictures.picture(3, width: 120);
+        expect(img.decodePng(png)!.width, 120);
+      } finally {
+        await pictures.close();
       }
     });
 

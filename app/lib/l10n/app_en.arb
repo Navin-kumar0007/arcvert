@@ -816,5 +816,48 @@
   "ringBalanced": "Balanced",
   "ringBestQuality": "Best quality",
   "ringSmallest": "Smallest",
-  "failPictureAsSmall": "This picture is already as small as that level makes it. Try Balanced or Smallest."
+  "failPictureAsSmall": "This picture is already as small as that level makes it. Try Balanced or Smallest.",
+  "choosePages": "Choose pages",
+  "pagesField": "Pages, such as 1-3, 7",
+  "pagesAll": "All",
+  "pagesNone": "None",
+  "pagesChosen": "{count} of {total} chosen",
+  "@pagesChosen": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "pageNumber": "Page {number}",
+  "@pageNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "pagesCantShow": "The pages can't be shown here, but you can still type them.",
+  "extractPagesGo": "Extract",
+  "failNoPagesChosen": "Choose at least one page.",
+  "failBadPageRange": "\"{part}\" isn't a page or a range. Write pages like 1-3, 7.",
+  "@failBadPageRange": {
+    "placeholders": {
+      "part": {}
+    }
+  },
+  "failPageOutOfRange": "There is no page {page}. This PDF has {total} pages.",
+  "@failPageOutOfRange": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

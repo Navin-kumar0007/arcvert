@@ -1297,4 +1297,45 @@ class WordsEn extends Words {
   @override
   String get failPictureAsSmall =>
       'This picture is already as small as that level makes it. Try Balanced or Smallest.';
+
+  @override
+  String get choosePages => 'Choose pages';
+
+  @override
+  String get pagesField => 'Pages, such as 1-3, 7';
+
+  @override
+  String get pagesAll => 'All';
+
+  @override
+  String get pagesNone => 'None';
+
+  @override
+  String pagesChosen(int count, int total) {
+    return '$count of $total chosen';
+  }
+
+  @override
+  String pageNumber(int number) {
+    return 'Page $number';
+  }
+
+  @override
+  String get pagesCantShow => 'The pages can\'t be shown here, but you can still type them.';
+
+  @override
+  String get extractPagesGo => 'Extract';
+
+  @override
+  String get failNoPagesChosen => 'Choose at least one page.';
+
+  @override
+  String failBadPageRange(Object part) {
+    return '\"$part\" isn\'t a page or a range. Write pages like 1-3, 7.';
+  }
+
+  @override
+  String failPageOutOfRange(int page, int total) {
+    return 'There is no page $page. This PDF has $total pages.';
+  }
 }

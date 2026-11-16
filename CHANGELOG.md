@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.0 (unreleased)
+
+- **Extract pages** from a PDF, on every platform: pick pages from pictures of each, or type them, such as 1-3, 7.
+  They come out as one PDF, in the order typed.
+
 ## 0.13.0 (beta, 16 November 2026)
 
 - **Clean up a signature** in Form photo: a signature photographed or scanned on paper is cropped to the ink, the

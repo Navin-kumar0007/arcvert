@@ -16,6 +16,7 @@ const _pdfActions = {
   'pdf-to-docx',
   'pdf-merge',
   'pdf-split',
+  'pdf-extract-pages',
   'pdf-rotate',
   'pdf-compress',
   'pdf-remove-password',
@@ -160,6 +161,16 @@ Future<PdfResult> _one(
       return _toDocx(action, file, document, step, options.password);
     case 'pdf-split':
       return _split(action, file, document, step);
+    case 'pdf-extract-pages':
+      final picked = parsePageRange(options.pages ?? '', document.pages.length);
+      final out = await PdfDocument.createNew(sourceName: _sourceName('pages'));
+      try {
+        out.pages = [for (final number in picked) document.pages[number - 1]];
+        final bytes = await out.encodePdf();
+        return PdfResult(PortableFile(_name(action, file.name, 'pdf'), bytes));
+      } finally {
+        await out.dispose();
+      }
     case 'pdf-rotate':
       final degrees = options.degrees ?? 90;
       final PdfPageRotation by = switch (degrees) {
@@ -506,32 +517,59 @@ Future<({Uint8List png, int pages})> pdfFirstPage(
   final document = await _open(PortableFile(name, bytes), password);
   try {
     if (document.pages.isEmpty) throw Fail.damaged(name);
-    final page = document.pages.first;
-    final scale = width / page.width;
-    final drawnWidth = width;
-    final drawnHeight = math.max(1, (page.height * scale).round());
-    final rendered = await page.render(
-      width: drawnWidth,
-      height: drawnHeight,
-      fullWidth: drawnWidth.toDouble(),
-      fullHeight: drawnHeight.toDouble(),
-      backgroundColor: 0xFFFFFFFF,
+    return (
+      png: await _pagePicture(document.pages.first, width, name),
+      pages: document.pages.length,
     );
-    if (rendered == null) throw Fail.damaged(name);
-    try {
-      final picture = img.Image.fromBytes(
-        width: rendered.width,
-        height: rendered.height,
-        bytes: rendered.pixels.buffer,
-        bytesOffset: rendered.pixels.offsetInBytes,
-        numChannels: 4,
-        order: img.ChannelOrder.bgra,
-      ).convert(numChannels: 3);
-      return (png: img.encodePng(picture, level: 1), pages: document.pages.length);
-    } finally {
-      rendered.dispose();
-    }
   } finally {
     await document.dispose();
   }
+}
+
+/// [page] drawn [width] wide on white, as a PNG.
+Future<Uint8List> _pagePicture(PdfPage page, int width, String name) async {
+  final scale = width / page.width;
+  final drawnHeight = math.max(1, (page.height * scale).round());
+  final rendered = await page.render(
+    width: width,
+    height: drawnHeight,
+    fullWidth: width.toDouble(),
+    fullHeight: drawnHeight.toDouble(),
+    backgroundColor: 0xFFFFFFFF,
+  );
+  if (rendered == null) throw Fail.damaged(name);
+  try {
+    final picture = img.Image.fromBytes(
+      width: rendered.width,
+      height: rendered.height,
+      bytes: rendered.pixels.buffer,
+      bytesOffset: rendered.pixels.offsetInBytes,
+      numChannels: 4,
+      order: img.ChannelOrder.bgra,
+    ).convert(numChannels: 3);
+    return img.encodePng(picture, level: 1);
+  } finally {
+    rendered.dispose();
+  }
+}
+
+/// A PDF held open while someone picks its pages, drawing them one at a time as they're shown.
+class PdfPagePictures {
+  PdfPagePictures._(this._document, this._name);
+
+  final PdfDocument _document;
+  final String _name;
+
+  static Future<PdfPagePictures> open(Uint8List bytes, String name, {String? password}) async {
+    return PdfPagePictures._(await _open(PortableFile(name, bytes), password), name);
+  }
+
+  int get count => _document.pages.length;
+
+  /// Page [number], counted from 1, as a small PNG.
+  Future<Uint8List> picture(int number, {int width = 160}) {
+    return _pagePicture(_document.pages[number - 1], width, _name);
+  }
+
+  Future<void> close() => _document.dispose();
 }

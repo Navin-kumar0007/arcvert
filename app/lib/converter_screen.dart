@@ -944,6 +944,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
       loadPicture: () => _pictureToShow(file, kind),
       loadPresets: widget.presetLoader,
       fileCount: _files.length,
+      openPdfPages: kind == FileKind.pdf
+          ? () async => PdfPagePictures.open(await file.read(), file.name)
+          : null,
       trimPreview: TrimPreview(
         seconds: () async => (await widget.mediaProbe(file)).seconds,
         frameAt: kind.family == FileFamily.video

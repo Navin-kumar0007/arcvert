@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:radial_core/radial_core.dart';
 
+import 'page_picker.dart';
+import 'pdf_engine.dart' show PdfPagePictures;
 import 'words.dart';
 
 const _askFirst = {
@@ -14,6 +16,7 @@ const _askFirst = {
   'audio-trim',
   'archive-add-password',
   'image-form',
+  'pdf-extract-pages',
 };
 
 /// True if the user must choose something before [action] can run.
@@ -28,7 +31,12 @@ Future<ActionOptions?> askForOptions(
   TrimPreview? trimPreview,
   Future<List<Preset>> Function()? loadPresets,
   int fileCount = 1,
+  Future<PdfPagePictures> Function()? openPdfPages,
 }) async {
+  if (action.id == 'pdf-extract-pages') {
+    final pages = await askForPages(context, open: openPdfPages);
+    return pages == null ? null : ActionOptions(pages: pages);
+  }
   if (action.id == 'image-form') {
     return _askForForm(context, loadPicture, loadPresets, fileCount);
   }

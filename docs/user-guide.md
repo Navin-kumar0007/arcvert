@@ -76,6 +76,8 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Form photos.** Pick a preset or type your own sizes. For a signature, sign in dark ink on plain paper and photograph or scan it: **Clean up a signature**, on for the signature presets, crops to the ink, makes the paper white and the ink darker, and fits it to the form without cutting any of it off. Leave it off for photos. Rules change and differ between forms, so **always check against your form's own notice**. A file of the right size can still be refused for other reasons, such as what the photo shows.
 
+**Extract pages.** Choose a PDF, then **Extract pages** in **Tools**. Tap the pages you want, or type them, such as `1-3, 7`, and press **Extract**: they come out as one PDF, in the order typed.
+
 **Scanned document.** Photograph each page flat and in good light, choose the photos together, and pick **Scanned document** in **Make it fit**. Put the pages in order, and they become one PDF with white paper and black print, under 1 MB. Rest on the slice for **Under 500 KB** or **Under 200 KB**. If the limit is too small for the pages to stay readable, it says so: try fewer pages or a larger limit.
 
 **Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet, and neither can a RAR in several parts. A password can be added to an archive, but not yet to a PDF.

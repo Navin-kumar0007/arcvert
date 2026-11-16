@@ -1299,4 +1299,45 @@ class WordsHi extends Words {
   @override
   String get failPictureAsSmall =>
       'यह तस्वीर उस स्तर पर पहले से ही इतनी छोटी है। संतुलित या सबसे छोटा आज़माएँ।';
+
+  @override
+  String get choosePages => 'पन्ने चुनें';
+
+  @override
+  String get pagesField => 'पन्ने, जैसे 1-3, 7';
+
+  @override
+  String get pagesAll => 'सभी';
+
+  @override
+  String get pagesNone => 'कोई नहीं';
+
+  @override
+  String pagesChosen(int count, int total) {
+    return '$total में से $count चुने';
+  }
+
+  @override
+  String pageNumber(int number) {
+    return 'पन्ना $number';
+  }
+
+  @override
+  String get pagesCantShow => 'पन्ने यहाँ दिखाए नहीं जा सकते, पर आप उन्हें लिख सकते हैं।';
+
+  @override
+  String get extractPagesGo => 'निकालें';
+
+  @override
+  String get failNoPagesChosen => 'कम से कम एक पन्ना चुनें।';
+
+  @override
+  String failBadPageRange(Object part) {
+    return '\"$part\" कोई पन्ना या दायरा नहीं है। पन्ने ऐसे लिखें: 1-3, 7।';
+  }
+
+  @override
+  String failPageOutOfRange(int page, int total) {
+    return 'पन्ना $page नहीं है। इस PDF में $total पन्ने हैं।';
+  }
 }

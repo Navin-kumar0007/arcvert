@@ -103,7 +103,9 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
 - PDF on every platform through `app/lib/pdf_engine.dart`, using pdfrx 2.9.0 (MIT) and PDFium (BSD): to JPG or
   PNG, merge, split, rotate, compress, under a size limit. Compress and size limits redraw pages as
   pictures, because that is the only way to shrink a scan, and the result says text can't be selected.
-  Page picking needs a screen. A page larger than A4 is drawn as A4 when shrinking, or a photo PDF, a page 55 inches
+  Extract pages (`pdf-extract-pages`) runs in PDFium too: `PagePickerDialog` (`page_picker.dart`) draws pages lazily
+  through `PdfPagePictures` and fills a range that `parsePageRange` (core) reads, such as `1-3, 7`, in the order typed.
+  If the PDF can't be opened (locked), the range can still be typed. A page larger than A4 is drawn as A4 when shrinking, or a photo PDF, a page 55 inches
   wide, could never fit a limit. These tests need real PDFium, which the `macos` CI job runs against what it just built.
   Size limits try a few sample pages first, because redrawing all of a long PDF per step takes minutes,
   and they stop at 72 dpi rather than produce something unreadable. It works on the page in a browser, so
