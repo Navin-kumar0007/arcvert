@@ -195,6 +195,9 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
 - Live look (`live_look.dart`, `RadialMenu.centreLook`): resting on Rotate, Flip or Resize, or a ring choice, the hub
   draws the file's preview picture turned (`RotatedBox`), flipped (`Transform.flip`) or smaller with its new size, from
   `liveLookFor(action, options)`. Window only, one picture, only where previews are on; nothing is converted.
+- Shift-drag result chip thumbnails: the Mac chip asks `QLThumbnailGenerator` for the first result and draws it when
+  it arrives, keeping the file icon if Quick Look has none; the Windows chip takes `IShellItemImageFactory`'s
+  thumbnail, or the icon, and draws it with `GdiAlphaBlend`. Neither tried in a real drag yet.
 - Compress levels (`CompressLevel` in `action_options.dart`, `ActionOptions.compress`, null is medium): pictures by
   `compressPictureQuality` (85/70/50, no palette at high) in the portable engine and the vips runner, video by
   `compressedVideoKbps` in the shared plan (so FFmpeg, Mediabunny and Media3 all follow), PDFs by `compressSteps` in

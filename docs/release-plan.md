@@ -118,13 +118,13 @@ owner chose to ship the new look with Copy details and move the other planned it
 
 ## 0.13.0: menu and form polish
 
-Build from about 21 December 2026, publish about mid-January 2027.
+**Done.** Built and tagged on 16 November 2026, ahead of plan; publish after 0.12.0, about mid-January 2027.
 
 - **Live preview in the menu's centre**: resting on Rotate, Flip or Resize, or one of their choices, shows the
   picture already turned, flipped or smaller, without converting. Window menu only. **Done** (`live_look.dart`,
   16 November 2026).
 - **Thumbnails on the Shift-drag result chip**, from the system's own thumbnails (Quick Look on a Mac, the shell on
-  Windows).
+  Windows). **Done** (`QLThumbnailGenerator` in `ShiftDrag.swift`, `ShellThumbnail` in `shift_drag.cpp`).
 - **Signature cleanup**: crop to the ink, whiten the paper, darken the ink, then the form's size and KB limits.
   **Done** (`cleanSignature` in `portable_engine.dart`, 16 November 2026).
 - **Scanned document** preset: a greyscale PDF under a size limit. **Done** (`images-scan-pdf`, `cleanPage`, 16 November

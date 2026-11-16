@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.13.0 (unreleased)
+## 0.13.0 (beta, 16 November 2026)
 
 - **Clean up a signature** in Form photo: a signature photographed or scanned on paper is cropped to the ink, the
   paper made white and the ink darker, then fitted to the form's size and KB limits without cutting into it. Blue ink
@@ -11,6 +11,8 @@
   or smaller in the middle of the menu, with its new size in pixels, before anything is converted.
 - **Compress** has three levels on its outer ring, for pictures, video and PDFs: **Balanced**, as before, **Best
   quality**, which keeps more detail, and **Smallest**, which makes the file as small as still looks right.
+- The chip after a Shift-drag shows the result's own picture, from Quick Look on a Mac and the shell on Windows,
+  where it used to show a file icon or nothing.
 
 ## 0.12.0 (beta, 15 November 2026)
 

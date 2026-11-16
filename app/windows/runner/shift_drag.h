@@ -94,6 +94,8 @@ class ShiftDrag : public IDropTarget {
   HWND panel_ = nullptr;
   HWND chip_ = nullptr;
   std::vector<std::wstring> chip_paths_;
+  // The first result's thumbnail from the shell, or its icon. Owned here.
+  HBITMAP chip_thumbnail_ = nullptr;
   // While our own files are being dragged out, Shift mustn't bring the menu up over them.
   bool dragging_out_ = false;
 

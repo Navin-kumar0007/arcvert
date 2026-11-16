@@ -75,6 +75,26 @@ const MenuPalette kLight = {
     RGB(0x0F, 0x1A, 0x17), RGB(0x55, 0x66, 0x5F), RGB(0x0B, 0x6E, 0x5F), RGB(0xFF, 0xFF, 0xFF),
     RGB(0xF4, 0xB7, 0x40), RGB(0x2A, 0x1C, 0x00), RGB(0x8A, 0x5A, 0x00), RGB(0xFD, 0xF3, 0xE0)};
 
+// The side of the chip's picture.
+const int kChipThumbnail = 36;
+
+// The shell's thumbnail of [path], the picture Explorer shows, or its icon where there's none.
+// Null if neither can be had.
+HBITMAP ShellThumbnail(const std::wstring& path) {
+  IShellItemImageFactory* factory = nullptr;
+  if (FAILED(::SHCreateItemFromParsingName(path.c_str(), nullptr, IID_PPV_ARGS(&factory)))) {
+    return nullptr;
+  }
+  const SIZE size = {kChipThumbnail, kChipThumbnail};
+  HBITMAP bitmap = nullptr;
+  if (FAILED(factory->GetImage(size, SIIGBF_RESIZETOFIT | SIIGBF_THUMBNAILONLY, &bitmap))) {
+    bitmap = nullptr;
+    if (FAILED(factory->GetImage(size, SIIGBF_RESIZETOFIT, &bitmap))) bitmap = nullptr;
+  }
+  factory->Release();
+  return bitmap;
+}
+
 // Whether Windows is set to dark mode for apps. Light if it can't tell, as older Windows is.
 bool SystemUsesDark() {
   DWORD light = 1;
@@ -420,6 +440,8 @@ void ShiftDrag::DragOut(const std::vector<std::wstring>& paths) {
 void ShiftDrag::ShowChip(std::vector<std::wstring> paths) {
   if (chip_ == nullptr || paths.empty()) return;
   chip_paths_ = std::move(paths);
+  if (chip_thumbnail_ != nullptr) ::DeleteObject(chip_thumbnail_);
+  chip_thumbnail_ = ShellThumbnail(chip_paths_[0]);
   POINT cursor = {};
   ::GetCursorPos(&cursor);
   const HMONITOR monitor = ::MonitorFromPoint(cursor, MONITOR_DEFAULTTONEAREST);
@@ -459,9 +481,26 @@ void ShiftDrag::PaintChip() {
   } else {
     title = std::to_wstring(chip_paths_.size()) + L" files";
   }
-  RECT top = {12, 8, kChipWidth - 12, 30};
+  int text_left = 12;
+  if (chip_thumbnail_ != nullptr) {
+    BITMAP info = {};
+    ::GetObject(chip_thumbnail_, sizeof(info), &info);
+    HDC picture = ::CreateCompatibleDC(dc);
+    HGDIOBJ old_picture = ::SelectObject(picture, chip_thumbnail_);
+    const int width = static_cast<int>(info.bmWidth);
+    const int height = static_cast<int>(info.bmHeight);
+    // Fitted, it may be any shape: centred in the square at the chip's left.
+    const int left = 10 + (kChipThumbnail - width) / 2;
+    const int top_edge = (kChipHeight - height) / 2;
+    BLENDFUNCTION blend = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+    ::GdiAlphaBlend(dc, left, top_edge, width, height, picture, 0, 0, width, height, blend);
+    ::SelectObject(picture, old_picture);
+    ::DeleteDC(picture);
+    text_left = 10 + kChipThumbnail + 10;
+  }
+  RECT top = {text_left, 8, kChipWidth - 12, 30};
   ::DrawTextW(dc, title.c_str(), -1, &top, DT_SINGLELINE | DT_PATH_ELLIPSIS | DT_NOPREFIX);
-  RECT bottom = {12, 30, kChipWidth - 12, 50};
+  RECT bottom = {text_left, 30, kChipWidth - 12, 50};
   ::SetTextColor(dc, colours.accent);
   ::DrawTextW(dc, NativeWord("dragToApp", L"Drag to another app").c_str(), -1, &bottom,
               DT_SINGLELINE | DT_NOPREFIX);
@@ -508,6 +547,7 @@ ShiftDrag::~ShiftDrag() {
     ::DestroyWindow(panel_);
   }
   if (chip_ != nullptr) ::DestroyWindow(chip_);
+  if (chip_thumbnail_ != nullptr) ::DeleteObject(chip_thumbnail_);
   ::OleUninitialize();
 }
 

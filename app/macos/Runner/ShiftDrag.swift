@@ -1,4 +1,5 @@
 import AppKit
+import QuickLookThumbnailing
 import ServiceManagement
 
 /// Opening at login, so Shift-drag works from the moment someone signs in. Uses the system's own
@@ -686,7 +687,17 @@ func chipTitle(for paths: [String]) -> String {
 }
 
 private final class ResultChipView: NSView {
-  var paths: [String] = [] { didSet { needsDisplay = true } }
+  var paths: [String] = [] {
+    didSet {
+      thumbnail = nil
+      needsDisplay = true
+      askForThumbnail()
+    }
+  }
+  /// The result's own picture from Quick Look, once it has made one. The file's icon until then,
+  /// and for files Quick Look can't draw.
+  private var thumbnail: NSImage?
+  private var askedFor: String?
   var dragger: FileDragger?
   var onDragged: (() -> Void)?
 
@@ -701,9 +712,20 @@ private final class ResultChipView: NSView {
     shape.stroke()
 
     let side: CGFloat = 36
-    if let first = paths.first {
-      NSWorkspace.shared.icon(forFile: first).draw(
-        in: NSRect(x: 10, y: (bounds.height - side) / 2, width: side, height: side))
+    let box = NSRect(x: 10, y: (bounds.height - side) / 2, width: side, height: side)
+    if let thumbnail {
+      // Fitted inside the square, as a result may be any shape.
+      let size = thumbnail.size
+      let scale = min(side / max(size.width, 1), side / max(size.height, 1))
+      let drawn = NSRect(
+        x: box.midX - size.width * scale / 2, y: box.midY - size.height * scale / 2,
+        width: size.width * scale, height: size.height * scale)
+      NSGraphicsContext.saveGraphicsState()
+      NSBezierPath(roundedRect: drawn, xRadius: 6, yRadius: 6).addClip()
+      thumbnail.draw(in: drawn)
+      NSGraphicsContext.restoreGraphicsState()
+    } else if let first = paths.first {
+      NSWorkspace.shared.icon(forFile: first).draw(in: box)
     }
     let textX: CGFloat = 54
     let width = bounds.width - textX - 10
@@ -722,6 +744,25 @@ private final class ResultChipView: NSView {
         .font: NSFont.systemFont(ofSize: 11),
         .foregroundColor: colours.accent,
       ])
+  }
+
+  /// Asks Quick Look for the first result's thumbnail, the same picture Finder shows. It arrives
+  /// later, and only if the chip still shows that file.
+  private func askForThumbnail() {
+    guard let first = paths.first else { return }
+    askedFor = first
+    let scale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
+    let request = QLThumbnailGenerator.Request(
+      fileAt: URL(fileURLWithPath: first), size: CGSize(width: 36, height: 36), scale: scale,
+      representationTypes: .thumbnail)
+    QLThumbnailGenerator.shared.generateBestRepresentation(for: request) { [weak self] made, _ in
+      guard let image = made?.nsImage else { return }
+      DispatchQueue.main.async {
+        guard let self, self.askedFor == first else { return }
+        self.thumbnail = image
+        self.needsDisplay = true
+      }
+    }
   }
 
   override func mouseDragged(with event: NSEvent) {
