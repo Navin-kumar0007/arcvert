@@ -392,15 +392,18 @@ What goes into each version, 0.11 to 1.0, is in `docs/release-plan.md`. 0.11 is 
 previews. Releases are drafted ahead and published in order; never merge the whole branch to `main`, only a published
 tag. The list below is older and finer-grained.
 
-1. Run the Windows download from CI, and fix what it finds.
+Updated 16 November 2026: 0.10 to 0.14 are built, Windows has been run by the owner, and Extract to a folder and
+Compress levels are done.
+
+1. Adding a password to a PDF, once qpdf is bundled. Multi-part RAR files.
 2. Try a real iPhone HEIC photo, on every platform.
-3. PDF to DOCX: tables whose cells wrap, pictures inside form objects, italic. Try PDF to DOCX on a phone and on Windows. Try the trim preview on real long videos: a seek far into one may be slow on a phone.
-4. Try Shift-drag from Explorer in the Windows VM, and dragging results out on both desktops.
-5. Extract to a folder. Adding a password to a PDF, once qpdf is bundled. Multi-part RAR files.
-6. Menu: quality levels on Compress's ring. Try in a real Shift-drag on both desktops: size on hover, Option/Alt for
-   Tools, and the native rings. Try size on hover for video in a browser and on a phone. Try the first-launch guide and
-   the update banner on each platform. A native
-   speaker should review `app_hi.arb`.
+3. PDF to DOCX: tables whose cells wrap, pictures inside form objects, italic; scans need OCR. Try the trim preview on
+   real long videos: a seek far into one may be slow on a phone.
+4. Not yet tried in real use: Control as the trigger key, Undo on an extracted folder, photo details from a real phone
+   photo, the learned order. Measure the menu opening within 100 ms of the key on both desktops.
+5. Document conversions (`document-to-*`) wait on the optional LibreOffice and Pandoc add-ons. Web video has no MP3,
+   FLAC, GIF or merge. Nothing plays video or sound while trimming.
+6. A native speaker should review `app_hi.arb`.
 7. Android package name `io.github.navinkumar0007.shiftdrop`: register it with Google in Phase 5. It can't change after
    the first public release, as Android treats a new name as a different app.
 8. The owner is installing Xcode. Then: `sudo xcode-select -s /Applications/Xcode.app`,
