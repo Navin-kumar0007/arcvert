@@ -297,4 +297,29 @@ void main() {
     await tester.pump();
     expect(find.textContaining('look'), findsNothing, reason: 'Strip metadata has nothing to show');
   });
+
+  testWidgets('a redraw with the same actions keeps the page and the highlight', (tester) async {
+    Widget menu() => MaterialApp(
+      localizationsDelegates: Words.localizationsDelegates,
+      home: Scaffold(
+        body: Center(
+          child: RadialMenu(
+            // A new list each time, as the screen makes one on every draw.
+            actions: List.of(tools),
+            onSelected: selected.add,
+            onCancelled: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpWidget(menu());
+    await tester.pump(const Duration(milliseconds: 200));
+    for (var i = 0; i <= rotate; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    }
+    await tester.pump();
+    await tester.pumpWidget(menu());
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(selected.single.id, 'image-rotate');
+  });
 }

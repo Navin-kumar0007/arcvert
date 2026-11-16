@@ -159,6 +159,53 @@ void main() {
     expect(find.byType(RadialMenu), findsNothing);
   });
 
+  testWidgets('a ring choice for pages that go together asks their order first', (tester) async {
+    toPick = [picked('page 1.jpg', jpeg()), picked('page 2.jpg', jpeg())];
+    final ran = <(String, double?)>[];
+    await pump(
+      tester,
+      converter: (action, files, onProgress, options) async {
+        ran.add((action.id, options.targetMb));
+        return runPortable(action, files, options: options, onProgress: onProgress);
+      },
+    );
+    await chooseFiles(tester);
+    await tester.tap(find.text('Make it fit'));
+    await tester.pump(const Duration(milliseconds: 300));
+    final fit = availableActions(
+      const [FileKind.jpg, FileKind.jpg],
+      ActionMode.convert,
+      mediaAvailable: false,
+    ).where((action) => action.isFit).toList();
+    final pages = menuPages(fit);
+    final page = pages.indexWhere((each) => each.any((action) => action.id == 'images-scan-pdf'));
+    // Turn to its page with "More", the last slice of each page before it.
+    for (var turn = 0; turn < page; turn++) {
+      for (var i = 0; i <= pages[turn].length; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      }
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+    }
+    final at = pages[page].indexWhere((action) => action.id == 'images-scan-pdf');
+    final steps = page == 0 ? at + 1 : at;
+    for (var i = 0; i < steps; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    }
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Put them in order'), findsOneWidget);
+    await tester.tap(find.descendant(of: find.byType(Dialog), matching: find.byType(FilledButton)));
+    await settleWork(tester);
+    await settleWork(tester);
+    expect(ran, [('images-scan-pdf', 0.2)]);
+  });
+
   testWidgets('Clear puts the screen back to the dial', (tester) async {
     await pump(tester);
     await chooseFiles(tester);

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -179,7 +180,9 @@ class _RadialMenuState extends State<RadialMenu> with SingleTickerProviderStateM
       widget.drag?.addListener(_followDrag);
     }
     if (oldWidget.sizeOf != widget.sizeOf) _sizes.clear();
-    if (oldWidget.actions != widget.actions) {
+    // The screen builds a fresh list each time it draws, so only a change of actions counts:
+    // otherwise any redraw would turn back to the first page and drop the highlight.
+    if (!listEquals(oldWidget.actions, widget.actions)) {
       _pages = menuPages(widget.actions);
       _page = 0;
       _setHighlight(null);

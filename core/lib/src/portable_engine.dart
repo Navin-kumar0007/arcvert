@@ -301,13 +301,19 @@ Future<Uint8List> _image(
       final side = options.longSide ?? (longest / 2).ceil();
       return _encode(_longSide(image, side), output);
     case 'image-compress':
-      return _encode(
+      final compressed = _encode(
         image,
         output,
         quality: compressPictureQuality(options.compress),
         // A palette costs colours, which Best quality keeps.
         reduceColours: options.compress != CompressLevel.high,
       );
+      // Saving a photo that was saved at high quality again, at Best quality, can come out larger.
+      // Compress must never hand back a bigger file of the same kind. A change of kind, as a HEIC
+      // photo decoded to PNG becoming a JPEG, can't be compared by size.
+      final same = detectKind(_head(file.bytes), fileName: file.name) == output;
+      if (same && compressed.length >= file.bytes.length) throw Fail.pictureAsSmall;
+      return compressed;
     case 'image-rotate':
       final degrees = options.degrees ?? 90;
       if (degrees != 90 && degrees != 180 && degrees != 270) {

@@ -203,6 +203,10 @@ abstract final class Fail {
       _say('pdfRotate', 'PDFs rotate by 90, 180 or 270, not $degrees.', {'degrees': '$degrees'});
   static EngineFailed noPasswordToRemove(String name) =>
       _say('noPasswordToRemove', '$name has no password to remove.', {'name': name});
+  static const pictureAsSmall = EngineFailed(
+    'This picture is already as small as that level makes it. Try Balanced or Smallest.',
+    key: 'pictureAsSmall',
+  );
   static const pdfAsSmall = EngineFailed(
     'This PDF is already as small as it can usefully get.',
     key: 'pdfAsSmall',

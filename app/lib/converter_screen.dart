@@ -889,8 +889,24 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   /// Asks anything the action needs to know, then starts it.
   Future<void> _choose(RadialAction action) async {
-    // Pages or clips go one after another, so the order is asked first. From a Shift-drag there's
-    // no screen to ask on, and they go in the order they were dragged.
+    if (!await _putInOrder(action)) return;
+    if (!needsOptions(action)) {
+      await _start(action, const ActionOptions());
+      return;
+    }
+    await _askThenStart(action);
+  }
+
+  /// A ring's choice, as Scanned document's Under 200 KB: its options are complete, but files
+  /// that go together are still put in order first.
+  Future<void> _chooseWith(RadialAction action, ActionOptions options) async {
+    if (!await _putInOrder(action)) return;
+    await _start(action, options);
+  }
+
+  /// Pages or clips go one after another, so their order is asked first. False if that was
+  /// cancelled. From a Shift-drag there's no screen to ask on, and they go in the order dragged.
+  Future<bool> _putInOrder(RadialAction action) async {
     if (keepsOrder(action) && _files.length > 1) {
       final files = _files;
       final kinds = _kinds;
@@ -903,16 +919,16 @@ class _ConverterScreenState extends State<ConverterScreen> {
             ? (i) => PreviewThumb(preview: _lookAt(files[i], kinds[i]), kind: kinds[i], size: 44)
             : null,
       );
-      if (order == null || !mounted) return;
+      if (order == null || !mounted) return false;
       setState(() {
         _files = [for (final i in order) _files[i]];
         _kinds = [for (final i in order) _kinds[i]];
       });
     }
-    if (!needsOptions(action)) {
-      await _start(action, const ActionOptions());
-      return;
-    }
+    return true;
+  }
+
+  Future<void> _askThenStart(RadialAction action) async {
     if (action.id == 'image-crop' || action.id == 'image-form') {
       final tooLarge = _tooLarge();
       if (tooLarge != null) {
@@ -1640,7 +1656,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
         fileCount: _files.length,
         sizeOf: _sizePreviews?.guess,
         onSelected: _choose,
-        onChoice: (action, options) => _start(action, options),
+        onChoice: _chooseWith,
         onCancelled: () => setState(() => _menuOpen = false),
       );
     }
@@ -1654,7 +1670,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
           sizeOf: _sizePreviews?.guess,
           onSelected: _choose,
           // Ring choices are complete options, so nothing is asked first.
-          onChoice: (action, options) => _start(action, options),
+          onChoice: _chooseWith,
           onCancelled: () => setState(() => _menuOpen = false),
         ),
         if (actions.isEmpty) ...[

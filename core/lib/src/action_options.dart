@@ -79,6 +79,77 @@ class ActionOptions {
   /// Compress's level, from its outer ring. Null is medium.
   final CompressLevel? compress;
 
+  /// Every choice as plain values, for crossing to a browser's worker, which can only be sent
+  /// maps, lists, text and numbers. [fromWire] reads it back; a test checks no choice is lost.
+  Map<String, Object?> toWire() {
+    final crop = this.crop;
+    final form = this.form;
+    return {
+      'longSide': longSide,
+      'crop': crop == null ? null : [crop.left, crop.top, crop.width, crop.height],
+      'degrees': degrees,
+      'flipVertical': flipVertical,
+      'startSeconds': startSeconds,
+      'endSeconds': endSeconds,
+      'pages': pages,
+      'password': password,
+      'newPassword': newPassword,
+      'audioKbps': audioKbps,
+      'targetMb': targetMb,
+      'shiftMs': shift?.inMilliseconds,
+      'form': form == null
+          ? null
+          : {
+              'width': form.width,
+              'height': form.height,
+              'minBytes': form.minBytes,
+              'maxBytes': form.maxBytes,
+              'signature': form.signature,
+            },
+      'compress': compress?.name,
+    };
+  }
+
+  /// The choices [toWire] wrote. Numbers may arrive as either kind, as a browser has only one.
+  static ActionOptions fromWire(Map<Object?, Object?> wire) {
+    int? whole(Object? value) => value is num ? value.toInt() : null;
+    double? real(Object? value) => value is num ? value.toDouble() : null;
+    final crop = wire['crop'];
+    final form = wire['form'];
+    final compress = wire['compress'];
+    return ActionOptions(
+      longSide: whole(wire['longSide']),
+      crop: crop is List && crop.length == 4
+          ? (
+              left: whole(crop[0])!,
+              top: whole(crop[1])!,
+              width: whole(crop[2])!,
+              height: whole(crop[3])!,
+            )
+          : null,
+      degrees: whole(wire['degrees']),
+      flipVertical: wire['flipVertical'] == true,
+      startSeconds: real(wire['startSeconds']),
+      endSeconds: real(wire['endSeconds']),
+      pages: wire['pages'] as String?,
+      password: wire['password'] as String?,
+      newPassword: wire['newPassword'] as String?,
+      audioKbps: whole(wire['audioKbps']),
+      targetMb: real(wire['targetMb']),
+      shift: wire['shiftMs'] == null ? null : Duration(milliseconds: whole(wire['shiftMs'])!),
+      form: form is Map
+          ? FormTarget(
+              width: whole(form['width']),
+              height: whole(form['height']),
+              minBytes: whole(form['minBytes']),
+              maxBytes: whole(form['maxBytes']),
+              signature: form['signature'] == true,
+            )
+          : null,
+      compress: CompressLevel.values.where((level) => level.name == compress).firstOrNull,
+    );
+  }
+
   /// These same choices, with what opens a locked file.
   ActionOptions withPassword(String value) {
     return ActionOptions(

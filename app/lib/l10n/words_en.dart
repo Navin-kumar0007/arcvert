@@ -1293,4 +1293,8 @@ class WordsEn extends Words {
 
   @override
   String get ringSmallest => 'Smallest';
+
+  @override
+  String get failPictureAsSmall =>
+      'This picture is already as small as that level makes it. Try Balanced or Smallest.';
 }

@@ -13,6 +13,12 @@
   quality**, which keeps more detail, and **Smallest**, which makes the file as small as still looks right.
 - The chip after a Shift-drag shows the result's own picture, from Quick Look on a Mac and the shell on Windows,
   where it used to show a file icon or nothing.
+- Fixed in the web app: Rotate's 180° and 90° left, Flip's upside down and Resize's sizes ran as their first choice,
+  as the worker that converts in a browser was never told the choice.
+- Fixed: the menu no longer turns back to its first page, and loses what's highlighted, while previews load.
+- Fixed: choosing a size from Scanned document's ring asks for the page order first, as the slice does.
+- Fixed: a PDF's preview in the web app showed "Can't preview this" until a PDF action had run.
+- Compress never hands back a larger file of the same kind; it says the picture is as small as that level makes it.
 
 ## 0.12.0 (beta, 15 November 2026)
 

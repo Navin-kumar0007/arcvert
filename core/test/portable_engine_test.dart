@@ -365,14 +365,26 @@ void main() {
       expect(small, lessThan(medium));
     });
 
-    test('best quality keeps a PNG\'s colours rather than a palette', () async {
-      final result = await run(
-        'image-compress',
-        png,
-        name: 'a.png',
-        options: const ActionOptions(compress: CompressLevel.high),
+    test('best quality keeps a PNG\'s colours, so it says it can\'t be made smaller', () async {
+      // PNG is lossless: without a palette there's nothing to give up, and Compress never hands
+      // back a file as big or bigger.
+      await expectLater(
+        run(
+          'image-compress',
+          png,
+          name: 'a.png',
+          options: const ActionOptions(compress: CompressLevel.high),
+        ),
+        throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'pictureAsSmall')),
       );
-      expect(img.decodePng(result.bytes)!.hasPalette, isFalse);
+    });
+
+    test('a photo saved at high quality already is never made bigger', () async {
+      final saved = img.encodeJpg(picture(width: 800, height: 600), quality: 70);
+      await expectLater(
+        run('image-compress', saved, options: const ActionOptions(compress: CompressLevel.high)),
+        throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'pictureAsSmall')),
+      );
     });
 
     test('compress reduces a PNG to a palette and still reads back', () async {

@@ -2240,6 +2240,12 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Smallest'**
   String get ringSmallest;
+
+  /// No description provided for @failPictureAsSmall.
+  ///
+  /// In en, this message translates to:
+  /// **'This picture is already as small as that level makes it. Try Balanced or Smallest.'**
+  String get failPictureAsSmall;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

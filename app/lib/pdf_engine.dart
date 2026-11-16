@@ -1,5 +1,6 @@
 import 'dart:math' as math;
-import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 
 import 'package:archive/archive.dart';
 import 'package:image/image.dart' as img;
@@ -84,6 +85,9 @@ int _sourceCounter = 0;
 String _sourceName(String name) => 'radial-${_sourceCounter++}-$name';
 
 Future<PdfDocument> _open(PortableFile file, String? password) async {
+  // Here, not only before actions: a preview may be the first thing to open a PDF, and in a browser
+  // PDFium isn't there until this has run. It does nothing once it has.
+  await pdfrxFlutterInitialize();
   // PDFium asks again after a wrong answer, and offering nothing is what ends that.
   var offered = false;
   try {
@@ -98,7 +102,8 @@ Future<PdfDocument> _open(PortableFile file, String? password) async {
     );
   } on PdfPasswordException {
     throw PasswordNeeded(file.name);
-  } catch (_) {
+  } catch (error) {
+    debugPrint('PDFium could not open ${file.name}: $error');
     throw Fail.damaged(file.name);
   }
 }

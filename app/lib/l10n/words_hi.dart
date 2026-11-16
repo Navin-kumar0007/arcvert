@@ -1295,4 +1295,8 @@ class WordsHi extends Words {
 
   @override
   String get ringSmallest => 'सबसे छोटा';
+
+  @override
+  String get failPictureAsSmall =>
+      'यह तस्वीर उस स्तर पर पहले से ही इतनी छोटी है। संतुलित या सबसे छोटा आज़माएँ।';
 }

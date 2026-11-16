@@ -140,6 +140,7 @@ String failureText(Words words, EngineFailed failure) {
     'passwordNeeded' => words.failPasswordNeeded(blank('name')),
     'passwordUnusable' => words.failPasswordUnusable,
     'pdfAsSmall' => words.failPdfAsSmall,
+    'pictureAsSmall' => words.failPictureAsSmall,
     'pdfRotate' => words.failPdfRotate(blank('degrees')),
     'pdfShrinksTo' => words.failPdfShrinksTo(blank('kb'), blank('limit')),
     'phoneCantMake' => words.failPhoneCantMake,

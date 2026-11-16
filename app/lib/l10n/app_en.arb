@@ -815,5 +815,6 @@
   },
   "ringBalanced": "Balanced",
   "ringBestQuality": "Best quality",
-  "ringSmallest": "Smallest"
+  "ringSmallest": "Smallest",
+  "failPictureAsSmall": "This picture is already as small as that level makes it. Try Balanced or Smallest."
 }
