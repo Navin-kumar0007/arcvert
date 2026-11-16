@@ -45,6 +45,16 @@ void main() {
 
   test('actions without choices have no ring', () {
     expect(ringChoices(actionById('image-to-jpg')!), isEmpty);
-    expect(ringChoices(actionById('video-compress')!), isEmpty);
+    expect(ringChoices(actionById('video-trim')!), isEmpty);
+  });
+
+  test('Compress offers its levels for pictures, video and PDFs, the slice itself first', () {
+    for (final id in ['image-compress', 'video-compress', 'pdf-compress']) {
+      final ring = ringChoices(actionById(id)!);
+      expect(ring.map((choice) => choice.label), ['Balanced', 'Best quality', 'Smallest']);
+      expect(ring.first.options.compress, isNull, reason: 'the slice does what it always did');
+      expect(ring[1].options.compress, CompressLevel.high);
+      expect(ring[2].options.compress, CompressLevel.small);
+    }
   });
 }

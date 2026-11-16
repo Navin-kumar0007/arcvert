@@ -195,6 +195,10 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
 - Live look (`live_look.dart`, `RadialMenu.centreLook`): resting on Rotate, Flip or Resize, or a ring choice, the hub
   draws the file's preview picture turned (`RotatedBox`), flipped (`Transform.flip`) or smaller with its new size, from
   `liveLookFor(action, options)`. Window only, one picture, only where previews are on; nothing is converted.
+- Compress levels (`CompressLevel` in `action_options.dart`, `ActionOptions.compress`, null is medium): pictures by
+  `compressPictureQuality` (85/70/50, no palette at high) in the portable engine and the vips runner, video by
+  `compressedVideoKbps` in the shared plan (so FFmpeg, Mediabunny and Media3 all follow), PDFs by `compressSteps` in
+  `pdf_engine.dart`. qpdf's lossless compress on the command line ignores the level.
 - Scanned document (`images-scan-pdf`, Make it fit, builtIn engine, so `isActionWired` leaves it out): `cleanPage`
   makes each photo greyscale with paper white and print black, at 1754 px (A4 at 150 dpi), then `searchUnderSize`
   finds a JPEG quality and scale (not below 0.45) whose PDF fits; pages print at A4 (`buildImagePdf(pageLongSide:)`).

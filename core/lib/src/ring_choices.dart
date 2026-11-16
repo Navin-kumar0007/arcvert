@@ -34,6 +34,13 @@ final _resizes = [
     RingChoice('resizePixels', '$side px', ActionOptions(longSide: side)),
 ];
 
+/// Compress's levels. The first is what Compress always did.
+const _compressLevels = [
+  RingChoice('compressBalanced', 'Balanced', ActionOptions()),
+  RingChoice('compressBest', 'Best quality', ActionOptions(compress: CompressLevel.high)),
+  RingChoice('compressSmallest', 'Smallest', ActionOptions(compress: CompressLevel.small)),
+];
+
 /// Size limits for Scanned document. The first is the slice's own.
 const _scanLimits = [
   RingChoice('scanUnder', 'Under 1 MB', ActionOptions()),
@@ -49,6 +56,7 @@ List<RingChoice> ringChoices(RadialAction action) {
     'image-flip' => _flips,
     'image-resize' || 'video-resize' => _resizes,
     'images-scan-pdf' => _scanLimits,
+    'image-compress' || 'video-compress' || 'pdf-compress' => _compressLevels,
     _ => const [],
   };
 }

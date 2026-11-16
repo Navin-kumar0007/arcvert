@@ -9,6 +9,8 @@
   print, under 1 MB, or 500 KB or 200 KB from the outer ring. Put the pages in order first. It prints at A4 size.
 - Resting on **Rotate**, **Flip** or **Resize**, or one of their choices, shows the picture already turned, flipped
   or smaller in the middle of the menu, with its new size in pixels, before anything is converted.
+- **Compress** has three levels on its outer ring, for pictures, video and PDFs: **Balanced**, as before, **Best
+  quality**, which keeps more detail, and **Smallest**, which makes the file as small as still looks right.
 
 ## 0.12.0 (beta, 15 November 2026)
 

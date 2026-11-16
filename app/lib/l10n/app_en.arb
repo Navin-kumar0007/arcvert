@@ -812,5 +812,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "ringBalanced": "Balanced",
+  "ringBestQuality": "Best quality",
+  "ringSmallest": "Smallest"
 }

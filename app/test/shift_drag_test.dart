@@ -140,7 +140,7 @@ void main() {
         'label': 'Rotate',
         'choices': ['90° right', '180°', '90° left'],
       });
-      expect((slices[1] as Map).containsKey('choices'), isFalse);
+      expect((slices[1] as Map)['choices'], ['Balanced', 'Best quality', 'Smallest']);
 
       for (final choice in [null, 0, 2, 9, 'x']) {
         await ask('chosen', {

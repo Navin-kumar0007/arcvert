@@ -231,7 +231,7 @@ List<MediaPlan> planMedia(
     case 'video-mute':
       return [MediaPlan(output: output, dropAudio: true, copyIfPossible: true)];
     case 'video-compress':
-      return [encode(kbps: _compressedKbps(info))];
+      return [encode(kbps: compressedVideoKbps(info, options.compress))];
     case 'video-resize':
       final side = options.longSide ?? ((_longest(info) ?? 2) / 2).ceil();
       final size = fitVideoSize(info, maxLongSide: side);
@@ -300,10 +300,17 @@ int? _longest(MediaInfo info) {
   return width == null || height == null ? null : math.max(width, height);
 }
 
-/// About half the bits of ordinary footage at this size.
-int _compressedKbps(MediaInfo info) {
+/// The bitrate Compress gives video at this size: about half the bits of ordinary footage for
+/// medium, more for high, less for small.
+int compressedVideoKbps(MediaInfo info, [CompressLevel? level]) {
   final pixels = (info.width ?? 1280) * (info.height ?? 720);
-  return (pixels * 30 * 0.05 / 1000).round().clamp(300, 8000);
+  final bitsPerPixel = switch (level) {
+    CompressLevel.high => 0.08,
+    CompressLevel.small => 0.03,
+    _ => 0.05,
+  };
+  final floor = level == CompressLevel.small ? 200 : 300;
+  return (pixels * 30 * bitsPerPixel / 1000).round().clamp(floor, 8000);
 }
 
 /// The size that fits both limits, never larger than the source and always even, which H.264

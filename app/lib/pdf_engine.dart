@@ -50,6 +50,14 @@ const _pictureDpi = 150.0;
 /// file that fits but is useless.
 const _shrinkSteps = [(150.0, 70), (120.0, 55), (96.0, 45), (72.0, 35)];
 
+/// Compress's steps at each level, sharpest first: Best quality keeps print sharp, Smallest goes
+/// straight to the lighter steps. Medium is what Compress always did.
+List<(double, int)> compressSteps(CompressLevel? level) => switch (level) {
+  CompressLevel.high => const [(200.0, 80), (150.0, 70)],
+  CompressLevel.small => const [(96.0, 45), (72.0, 35)],
+  _ => _shrinkSteps,
+};
+
 /// A few pages are tried first, because drawing every page for each step takes minutes.
 const _samplePages = 3;
 
@@ -159,7 +167,7 @@ Future<PdfResult> _one(
       final bytes = await document.encodePdf();
       return PdfResult(PortableFile(_name(action, file.name, 'pdf'), bytes));
     case 'pdf-compress':
-      return _compress(action, file, document, step);
+      return _compress(action, file, document, step, options.compress);
     case 'pdf-remove-password':
       if (!isPdfLocked(file.bytes)) throw Fail.noPasswordToRemove(file.name);
       final bytes = await document.encodePdf(removeSecurity: true);
@@ -175,9 +183,10 @@ Future<PdfResult> _compress(
   PortableFile file,
   PdfDocument document,
   void Function(double) step,
+  CompressLevel? level,
 ) async {
   final original = file.bytes.length;
-  for (final (dpi, quality) in _shrinkSteps) {
+  for (final (dpi, quality) in compressSteps(level)) {
     // Only worth losing selectable text for a real saving.
     if (await _estimateBytes(document, dpi, quality) > original * 0.9) continue;
     final bytes = await _asPictures(file, document, dpi, quality, step);

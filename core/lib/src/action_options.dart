@@ -22,6 +22,17 @@ int formMaxBytes(int kb) => kb * 1000;
 int formMinKb(int bytes) => bytes ~/ 1024;
 int formMaxKb(int bytes) => bytes ~/ 1000;
 
+/// How hard Compress works: keeping more detail, or making the file smaller. Null in
+/// [ActionOptions.compress] is [medium], what Compress always did.
+enum CompressLevel { high, medium, small }
+
+/// The JPEG or WebP quality Compress uses for pictures at [level].
+int compressPictureQuality(CompressLevel? level) => switch (level) {
+  CompressLevel.high => 85,
+  CompressLevel.small => 50,
+  _ => 70,
+};
+
 /// The choices an action may need from the user.
 class ActionOptions {
   const ActionOptions({
@@ -38,6 +49,7 @@ class ActionOptions {
     this.targetMb,
     this.shift,
     this.form,
+    this.compress,
   });
 
   final int? longSide;
@@ -64,6 +76,9 @@ class ActionOptions {
   final Duration? shift;
   final FormTarget? form;
 
+  /// Compress's level, from its outer ring. Null is medium.
+  final CompressLevel? compress;
+
   /// These same choices, with what opens a locked file.
   ActionOptions withPassword(String value) {
     return ActionOptions(
@@ -80,6 +95,7 @@ class ActionOptions {
       targetMb: targetMb,
       shift: shift,
       form: form,
+      compress: compress,
     );
   }
 }

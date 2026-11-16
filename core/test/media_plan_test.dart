@@ -403,4 +403,16 @@ void main() {
       );
     });
   });
+
+  test('Compress levels change the video bitrate every platform encodes with', () {
+    int kbps(CompressLevel? level) => planMedia(
+      actionById('video-compress')!,
+      FileKind.mp4,
+      hd,
+      options: ActionOptions(compress: level),
+    ).single.videoKbps!;
+    expect(kbps(null), compressedVideoKbps(hd));
+    expect(kbps(CompressLevel.high), greaterThan(kbps(null)));
+    expect(kbps(CompressLevel.small), lessThan(kbps(null)));
+  });
 }

@@ -1286,4 +1286,13 @@ class WordsHi extends Words {
   String failScanTooBig(int kb) {
     return 'इन पन्नों को $kb KB से छोटा करके पढ़ने लायक नहीं रखा जा सका। कम पन्ने या बड़ी सीमा आज़माएँ।';
   }
+
+  @override
+  String get ringBalanced => 'संतुलित';
+
+  @override
+  String get ringBestQuality => 'सबसे अच्छी क्वालिटी';
+
+  @override
+  String get ringSmallest => 'सबसे छोटा';
 }

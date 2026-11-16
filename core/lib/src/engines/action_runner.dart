@@ -278,7 +278,12 @@ class _Job {
       case 'image-resize':
         return _vipsSave(input, _temp, longSide: _need(options.longSide, 'a size'));
       case 'image-compress':
-        return _vipsSave(input, _temp, quality: 70, palette: true);
+        return _vipsSave(
+          input,
+          _temp,
+          quality: compressPictureQuality(options.compress),
+          palette: options.compress != CompressLevel.high,
+        );
       case 'image-crop':
         final crop = _need(options.crop, 'a crop area');
         return _vipsEdit([

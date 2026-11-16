@@ -2222,6 +2222,24 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'These pages could not be made smaller than {kb} KB and still be read. Try fewer pages or a larger limit.'**
   String failScanTooBig(int kb);
+
+  /// No description provided for @ringBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Balanced'**
+  String get ringBalanced;
+
+  /// No description provided for @ringBestQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Best quality'**
+  String get ringBestQuality;
+
+  /// No description provided for @ringSmallest.
+  ///
+  /// In en, this message translates to:
+  /// **'Smallest'**
+  String get ringSmallest;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

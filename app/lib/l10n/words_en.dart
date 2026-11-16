@@ -1284,4 +1284,13 @@ class WordsEn extends Words {
   String failScanTooBig(int kb) {
     return 'These pages could not be made smaller than $kb KB and still be read. Try fewer pages or a larger limit.';
   }
+
+  @override
+  String get ringBalanced => 'Balanced';
+
+  @override
+  String get ringBestQuality => 'Best quality';
+
+  @override
+  String get ringSmallest => 'Smallest';
 }

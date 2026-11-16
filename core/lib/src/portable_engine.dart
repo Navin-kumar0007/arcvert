@@ -301,7 +301,13 @@ Future<Uint8List> _image(
       final side = options.longSide ?? (longest / 2).ceil();
       return _encode(_longSide(image, side), output);
     case 'image-compress':
-      return _encode(image, output, quality: 70, reduceColours: true);
+      return _encode(
+        image,
+        output,
+        quality: compressPictureQuality(options.compress),
+        // A palette costs colours, which Best quality keeps.
+        reduceColours: options.compress != CompressLevel.high,
+      );
     case 'image-rotate':
       final degrees = options.degrees ?? 90;
       if (degrees != 90 && degrees != 180 && degrees != 270) {

@@ -354,6 +354,27 @@ void main() {
       expect((await run('image-compress', big)).bytes.length, lessThan(big.length));
     });
 
+    test('compress levels: best quality is larger, smallest is smaller', () async {
+      final big = img.encodeJpg(picture(width: 1200, height: 900), quality: 100);
+      Future<int> size(CompressLevel? level) async =>
+          (await run('image-compress', big, options: ActionOptions(compress: level))).bytes.length;
+      final high = await size(CompressLevel.high);
+      final medium = await size(null);
+      final small = await size(CompressLevel.small);
+      expect(high, greaterThan(medium));
+      expect(small, lessThan(medium));
+    });
+
+    test('best quality keeps a PNG\'s colours rather than a palette', () async {
+      final result = await run(
+        'image-compress',
+        png,
+        name: 'a.png',
+        options: const ActionOptions(compress: CompressLevel.high),
+      );
+      expect(img.decodePng(result.bytes)!.hasPalette, isFalse);
+    });
+
     test('compress reduces a PNG to a palette and still reads back', () async {
       final result = await run('image-compress', png, name: 'a.png');
       final decoded = img.decodePng(result.bytes)!;

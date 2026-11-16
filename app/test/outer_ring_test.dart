@@ -18,7 +18,7 @@ final tools = actionsFor(const [FileKind.jpg], ActionMode.tools);
 final page = menuPages(tools).first;
 final count = page.length + (menuPages(tools).length > 1 ? 1 : 0);
 final rotate = page.indexWhere((action) => action.id == 'image-rotate');
-final compress = page.indexWhere((action) => action.id == 'image-compress');
+final plain = page.indexWhere((action) => action.id == 'image-strip-metadata');
 
 void main() {
   late List<RadialAction> selected;
@@ -90,8 +90,8 @@ void main() {
 
   test('the tools these tests use have choices where expected', () {
     expect(rotate, isNot(-1));
-    expect(compress, isNot(-1));
-    expect(ringChoices(page[compress]), isEmpty);
+    expect(plain, isNot(-1));
+    expect(ringChoices(page[plain]), isEmpty);
   });
 
   testWidgets('resting on a slice with choices shows them around it', (tester) async {
@@ -105,7 +105,7 @@ void main() {
 
   testWidgets('a slice without choices shows no ring', (tester) async {
     await pump(tester);
-    await hover(tester, slicePoint(tester, compress));
+    await hover(tester, slicePoint(tester, plain));
     expect(find.text('180°'), findsNothing);
     expect(find.text('Half'), findsNothing);
   });
@@ -160,8 +160,8 @@ void main() {
 
   testWidgets('a finger tapping a slice without choices runs it at once', (tester) async {
     await pump(tester);
-    await tester.tapAt(slicePoint(tester, compress));
-    expect(selected.single.id, 'image-compress');
+    await tester.tapAt(slicePoint(tester, plain));
+    expect(selected.single.id, 'image-strip-metadata');
   });
 
   testWidgets('Tab goes into the choices, arrows move along them, Enter runs one', (tester) async {
@@ -293,8 +293,8 @@ void main() {
     await mouse.moveTo(choicePoint(tester, 1, 3));
     await tester.pump();
     expect(find.text('look 180'), findsOneWidget);
-    await mouse.moveTo(slicePoint(tester, compress));
+    await mouse.moveTo(slicePoint(tester, plain));
     await tester.pump();
-    expect(find.textContaining('look'), findsNothing, reason: 'Compress has nothing to show');
+    expect(find.textContaining('look'), findsNothing, reason: 'Strip metadata has nothing to show');
   });
 }

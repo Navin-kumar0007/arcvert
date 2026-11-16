@@ -70,6 +70,9 @@ String ringChoiceLabel(Words words, RingChoice choice) {
     'flipUpsideDown' => words.ringUpsideDown,
     'resizeHalf' => words.ringHalf,
     'scanUnder' => actionLabel(words, choice.label),
+    'compressBalanced' => words.ringBalanced,
+    'compressBest' => words.ringBestQuality,
+    'compressSmallest' => words.ringSmallest,
     _ => choice.label,
   };
 }
