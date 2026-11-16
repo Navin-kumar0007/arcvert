@@ -25,4 +25,5 @@ export 'src/preset.dart';
 export 'src/ring_choices.dart';
 export 'src/size_target.dart';
 export 'src/subtitles.dart';
+export 'src/support_links.dart';
 export 'src/update_info.dart';

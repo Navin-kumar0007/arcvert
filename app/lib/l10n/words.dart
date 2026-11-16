@@ -2372,6 +2372,354 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'The menu opened in {usual} ms, {slowest} ms at most, over the last {count} drags.'**
   String menuSpeed(int usual, int slowest, int count);
+
+  /// No description provided for @help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get help;
+
+  /// No description provided for @helpSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search help'**
+  String get helpSearch;
+
+  /// No description provided for @helpNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in help matches \"{query}\".'**
+  String helpNoMatch(Object query);
+
+  /// No description provided for @helpQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Common questions'**
+  String get helpQuestions;
+
+  /// No description provided for @helpShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get helpShortcuts;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get helpSupport;
+
+  /// No description provided for @helpOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Help works without the internet. Reporting a problem or suggesting an idea opens GitHub in your browser.'**
+  String get helpOffline;
+
+  /// No description provided for @faqConvertQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I convert a file?'**
+  String get faqConvertQ;
+
+  /// No description provided for @faqConvertA.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose or drop files, then pick a slice on the dial. Convert changes the format, Make it fit makes a file small enough for a purpose, and Tools has the rest. Results appear below, ready to save.'**
+  String get faqConvertA;
+
+  /// No description provided for @faqShiftDragQ.
+  ///
+  /// In en, this message translates to:
+  /// **'The menu doesn\'t appear when I drag a file.'**
+  String get faqShiftDragQ;
+
+  /// No description provided for @faqShiftDragA.
+  ///
+  /// In en, this message translates to:
+  /// **'ShiftDrop must be running, so turn on Open at login in Settings. Start dragging a file in Finder or Explorer, then hold {key}. Text and pictures inside other apps aren\'t files, so they bring no menu.'**
+  String faqShiftDragA(Object key);
+
+  /// No description provided for @faqAltShiftQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Alt with Shift changes my keyboard language.'**
+  String get faqAltShiftQ;
+
+  /// No description provided for @faqAltShiftA.
+  ///
+  /// In en, this message translates to:
+  /// **'That is Windows\' own shortcut. Choose Control as the key in Settings, or turn the shortcut off in Windows\' language settings.'**
+  String get faqAltShiftA;
+
+  /// No description provided for @faqWhereQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Where do my results go?'**
+  String get faqWhereQ;
+
+  /// No description provided for @faqWhereDesktopA.
+  ///
+  /// In en, this message translates to:
+  /// **'Beside the original, named so that nothing is ever replaced, or into the folder chosen in Settings.'**
+  String get faqWhereDesktopA;
+
+  /// No description provided for @faqWhereOtherA.
+  ///
+  /// In en, this message translates to:
+  /// **'You choose where to save each one, or Save all makes one ZIP of them.'**
+  String get faqWhereOtherA;
+
+  /// No description provided for @faqUndoQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I undo a conversion?'**
+  String get faqUndoQ;
+
+  /// No description provided for @faqUndoDesktopA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. History lists what was saved for 30 days, and Undo moves a result to the Trash or Recycle Bin. Originals are never changed.'**
+  String get faqUndoDesktopA;
+
+  /// No description provided for @faqUndoOtherA.
+  ///
+  /// In en, this message translates to:
+  /// **'Originals are never changed, so there is nothing to undo. History lists what was made, and a result you don\'t want can be deleted like any file.'**
+  String get faqUndoOtherA;
+
+  /// No description provided for @faqUploadQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Are my files uploaded anywhere?'**
+  String get faqUploadQ;
+
+  /// No description provided for @faqUploadA.
+  ///
+  /// In en, this message translates to:
+  /// **'No. Everything happens on this device, even in a browser, and ShiftDrop has no accounts, ads or tracking.'**
+  String get faqUploadA;
+
+  /// No description provided for @faqFormQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A form says my photo or signature is the wrong size.'**
+  String get faqFormQ;
+
+  /// No description provided for @faqFormA.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Form photo in Make it fit, choose the form or type its sizes, and check them against the form\'s notice, as forms change them. Some count a KB as 1000 bytes and some as 1024: ShiftDrop meets both.'**
+  String get faqFormA;
+
+  /// No description provided for @faqPdfTextQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Why can\'t I select text after compressing a PDF?'**
+  String get faqPdfTextQ;
+
+  /// No description provided for @faqPdfTextA.
+  ///
+  /// In en, this message translates to:
+  /// **'To shrink a scan, its pages are drawn again as pictures, which is the only way. The result says so. Keep the original if you need the text.'**
+  String get faqPdfTextA;
+
+  /// No description provided for @faqLockedQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A file asks for a password.'**
+  String get faqLockedQ;
+
+  /// No description provided for @faqLockedA.
+  ///
+  /// In en, this message translates to:
+  /// **'PDFs and ZIPs ask for theirs, and it is used only for that job. Locked 7z and RAR files can\'t be opened yet.'**
+  String get faqLockedA;
+
+  /// No description provided for @faqRarPartsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'My RAR is in several parts.'**
+  String get faqRarPartsQ;
+
+  /// No description provided for @faqRarPartsA.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose or drop all the parts together and they open as one archive. On a Mac or Windows one part is enough: the others are found beside it.'**
+  String get faqRarPartsA;
+
+  /// No description provided for @faqMacOpenQ.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS says the app can\'t be checked.'**
+  String get faqMacOpenQ;
+
+  /// No description provided for @faqMacOpenA.
+  ///
+  /// In en, this message translates to:
+  /// **'ShiftDrop isn\'t signed by Apple yet. Open System Settings, then Privacy & Security, and choose Open Anyway.'**
+  String get faqMacOpenA;
+
+  /// No description provided for @faqWindowsWarnQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows warns about the app when I open it.'**
+  String get faqWindowsWarnQ;
+
+  /// No description provided for @faqWindowsWarnA.
+  ///
+  /// In en, this message translates to:
+  /// **'Until the app is signed, Windows SmartScreen may warn. Choose More info, then Run anyway.'**
+  String get faqWindowsWarnA;
+
+  /// No description provided for @faqSlowQ.
+  ///
+  /// In en, this message translates to:
+  /// **'A video is taking a long time.'**
+  String get faqSlowQ;
+
+  /// No description provided for @faqSlowA.
+  ///
+  /// In en, this message translates to:
+  /// **'Video is the heaviest work, done by this device\'s own encoders. On a phone you can leave the app while it works, and Cancel stops it without leaving anything behind.'**
+  String get faqSlowA;
+
+  /// No description provided for @shortcutMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move between slices'**
+  String get shortcutMove;
+
+  /// No description provided for @shortcutRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Run the highlighted slice'**
+  String get shortcutRun;
+
+  /// No description provided for @shortcutChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Into a slice\'s choices and back, or the next page'**
+  String get shortcutChoices;
+
+  /// No description provided for @shortcutClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the menu'**
+  String get shortcutClose;
+
+  /// No description provided for @shortcutTools.
+  ///
+  /// In en, this message translates to:
+  /// **'During a Shift-drag: show Tools'**
+  String get shortcutTools;
+
+  /// No description provided for @shortcutCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the compare line on a preview'**
+  String get shortcutCompare;
+
+  /// No description provided for @reportProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get reportProblem;
+
+  /// No description provided for @reportProblemWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Fills in a new report on GitHub for you to read and send. Nothing is sent until you send it.'**
+  String get reportProblemWhy;
+
+  /// No description provided for @reportWhatHappened.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened?'**
+  String get reportWhatHappened;
+
+  /// No description provided for @reportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For a file that failed, paste its Copy details here. Leave out anything private.'**
+  String get reportHint;
+
+  /// No description provided for @reportIncludes.
+  ///
+  /// In en, this message translates to:
+  /// **'Also included:'**
+  String get reportIncludes;
+
+  /// No description provided for @reportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on GitHub'**
+  String get reportOpen;
+
+  /// No description provided for @reportCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy instead'**
+  String get reportCopy;
+
+  /// No description provided for @reportCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. Paste it into an email or a report.'**
+  String get reportCopied;
+
+  /// No description provided for @suggestFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest a feature'**
+  String get suggestFeature;
+
+  /// No description provided for @suggestFeatureWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens GitHub, where ideas are talked over in the open.'**
+  String get suggestFeatureWhy;
+
+  /// No description provided for @whatsNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in {version}'**
+  String whatsNewTitle(Object version);
+
+  /// No description provided for @whatsNewPdfPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Add password to a PDF, on every platform, with AES-256.'**
+  String get whatsNewPdfPassword;
+
+  /// No description provided for @whatsNewRarParts.
+  ///
+  /// In en, this message translates to:
+  /// **'RAR files in several parts open as one archive.'**
+  String get whatsNewRarParts;
+
+  /// No description provided for @whatsNewMenuSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings says how fast the Shift-drag menu opens.'**
+  String get whatsNewMenuSpeed;
+
+  /// No description provided for @whatsNewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help, with common questions, shortcuts and a way to report a problem.'**
+  String get whatsNewHelp;
+
+  /// No description provided for @whatsNewReady.
+  ///
+  /// In en, this message translates to:
+  /// **'ShiftDrop {version} is here. See what\'s new in Help.'**
+  String whatsNewReady(Object version);
+
+  /// No description provided for @whatsNewSee.
+  ///
+  /// In en, this message translates to:
+  /// **'See'**
+  String get whatsNewSee;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

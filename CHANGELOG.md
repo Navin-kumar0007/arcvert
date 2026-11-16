@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- **Help**, the new **?** at the top: common questions for your device, searchable, keyboard shortcuts, and what's
+  new. Works without the internet.
+- **Report a problem** fills in a report on GitHub, showing you everything it holds first, and **Suggest a feature**
+  opens GitHub for ideas. The app sends nothing: you send it, or copy it instead.
+- After an update, a short note says what's new, once.
+
 ## 0.15.0 (beta, 16 November 2026)
 
 - On a Mac or Windows, **Settings** says how fast the Shift-drag menu has opened over your last drags, counted from

@@ -8,7 +8,8 @@ the installers attached. Nothing is public until you press **Publish** on it.
 ## Each release
 
 1. Update `version` in `app/pubspec.yaml`, `appVersion` in `app/lib/about.dart` (a test checks they match), and
-   `CHANGELOG.md`, with a heading for the new version.
+   `CHANGELOG.md`, with a heading for the new version. Update `whatsNewVersion` and `whatsNew` in
+   `app/lib/help_screen.dart`, with their words in both ARB files: a test fails if they fall behind.
 2. Merge to `main`, then tag it:
    ```sh
    git tag v0.15.0 && git push origin v0.15.0

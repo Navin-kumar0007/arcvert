@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:radial_core/radial_core.dart';
 import 'package:shiftdrop/app_home.dart';
 import 'package:shiftdrop/app_settings.dart';
+import 'package:shiftdrop/help_screen.dart';
 import 'package:shiftdrop/update_check.dart';
 import 'package:shiftdrop/welcome_screen.dart';
 import 'package:shiftdrop/words.dart';
@@ -33,8 +34,11 @@ void main() {
         checkForUpdates: false,
         language: 'hi',
         lastUpdateCheck: DateTime.utc(2026, 11, 11, 9),
+        whatsNewSeen: '0.15.0',
       );
       final back = AppSettings.decode(settings.encode());
+      expect(back.whatsNewSeen, '0.15.0');
+      expect(AppSettings.decode('{"whatsNewSeen": 3}').whatsNewSeen, isNull);
       expect(back.welcomed, isTrue);
       expect(back.checkForUpdates, isFalse);
       expect(back.language, 'hi');
@@ -190,6 +194,33 @@ void main() {
       await tester.tap(find.text('main screen'));
       await tester.pumpAndSettle();
       expect(find.text('Welcome to ShiftDrop'), findsOneWidget);
+    });
+
+    testWidgets('after an update, a note says what\'s new, once, and opens Help', (tester) async {
+      final store = _store(const AppSettings(welcomed: true, whatsNewSeen: '0.1.0'));
+      await tester.pumpWidget(home(store, way: UpdateWay.none));
+      await tester.pump();
+      final note = 'ShiftDrop $whatsNewVersion is here. See what\'s new in Help.';
+      expect(find.text(note), findsOneWidget);
+      expect(store.value.whatsNewSeen, whatsNewVersion);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.text('See'));
+      await tester.pumpAndSettle();
+      expect(find.text('What\'s new in $whatsNewVersion'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(home(store, way: UpdateWay.none));
+      await tester.pump();
+      expect(find.text(note), findsNothing);
+    });
+
+    testWidgets('a new install has the guide instead, and no note', (tester) async {
+      final store = _store();
+      await tester.pumpWidget(home(store, way: UpdateWay.none));
+      await tester.pump();
+      expect(find.textContaining('See what\'s new'), findsNothing);
+      expect(store.value.whatsNewSeen, whatsNewVersion);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('a newer version shows a note, whose button opens its download', (tester) async {

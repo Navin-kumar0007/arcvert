@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'app_settings.dart';
 import 'conversion.dart' as conversion;
 import 'converter_screen.dart';
+import 'help_screen.dart';
 import 'open_page.dart';
 import 'platform_files.dart';
 import 'update_check.dart';
@@ -50,8 +51,12 @@ class _AppHomeState extends State<AppHome> {
   @override
   void initState() {
     super.initState();
-    if (!widget.settings.value.welcomed) {
+    final settings = widget.settings.value;
+    if (!settings.welcomed) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _showGuide());
+    }
+    if (settings.whatsNewSeen != whatsNewVersion) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _sayWhatsNew(settings.welcomed));
     }
     if ((widget.updateWay ?? updateWayHere) == UpdateWay.check) {
       _checking = Timer(widget.checkAfter, _check);
@@ -74,6 +79,23 @@ class _AppHomeState extends State<AppHome> {
           convert: widget.convert,
           onDone: () => Navigator.of(context).pop(),
         ),
+      ),
+    );
+  }
+
+  /// A new install has the guide, so only an update says what's new, and once.
+  void _sayWhatsNew(bool updated) {
+    if (!mounted) return;
+    widget.settings.change((old) => old.copyWith(whatsNewSeen: whatsNewVersion));
+    if (!updated) return;
+    final words = context.words;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 8),
+        // An action would otherwise keep it until dismissed.
+        persist: false,
+        content: Text(words.whatsNewReady(whatsNewVersion)),
+        action: SnackBarAction(label: words.whatsNewSee, onPressed: () => openHelp(context)),
       ),
     );
   }

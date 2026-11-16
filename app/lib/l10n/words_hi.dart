@@ -1380,4 +1380,203 @@ class WordsHi extends Words {
   String menuSpeed(int usual, int slowest, int count) {
     return 'पिछली $count बार मेनू आम तौर पर $usual ms में खुला, ज़्यादा से ज़्यादा $slowest ms में।';
   }
+
+  @override
+  String get help => 'मदद';
+
+  @override
+  String get helpSearch => 'मदद में खोजें';
+
+  @override
+  String helpNoMatch(Object query) {
+    return 'मदद में \"$query\" से जुड़ा कुछ नहीं मिला।';
+  }
+
+  @override
+  String get helpQuestions => 'आम सवाल';
+
+  @override
+  String get helpShortcuts => 'कीबोर्ड शॉर्टकट';
+
+  @override
+  String get helpSupport => 'सहायता';
+
+  @override
+  String get helpOffline =>
+      'मदद बिना इंटरनेट के चलती है। समस्या बताने या सुझाव देने पर आपके ब्राउज़र में GitHub खुलता है।';
+
+  @override
+  String get faqConvertQ => 'फ़ाइल कैसे बदलूँ?';
+
+  @override
+  String get faqConvertA =>
+      'फ़ाइलें चुनें या यहाँ छोड़ें, फिर डायल पर कोई हिस्सा चुनें। Convert फ़ॉर्मेट बदलता है, Make it fit फ़ाइल को किसी काम के लायक छोटा करता है, और Tools में बाकी सब है। नतीजे नीचे दिखते हैं, सेव करने के लिए तैयार।';
+
+  @override
+  String get faqShiftDragQ => 'फ़ाइल खींचने पर मेनू नहीं दिखता।';
+
+  @override
+  String faqShiftDragA(Object key) {
+    return 'ShiftDrop चालू होना चाहिए, इसलिए Settings में Open at login चालू करें। Finder या Explorer में कोई फ़ाइल खींचना शुरू करें, फिर $key दबाए रखें। दूसरे ऐप के अंदर का टेक्स्ट या तस्वीर फ़ाइल नहीं होती, इसलिए उनसे मेनू नहीं खुलता।';
+  }
+
+  @override
+  String get faqAltShiftQ => 'Alt और Shift साथ दबाने से कीबोर्ड की भाषा बदल जाती है।';
+
+  @override
+  String get faqAltShiftA =>
+      'यह Windows का अपना शॉर्टकट है। Settings में कुंजी के लिए Control चुनें, या Windows की भाषा सेटिंग में यह शॉर्टकट बंद करें।';
+
+  @override
+  String get faqWhereQ => 'मेरे नतीजे कहाँ जाते हैं?';
+
+  @override
+  String get faqWhereDesktopA =>
+      'मूल फ़ाइल के पास, ऐसे नाम से कि कभी कुछ न बदले, या Settings में चुने फ़ोल्डर में।';
+
+  @override
+  String get faqWhereOtherA =>
+      'हर एक को कहाँ सेव करना है, आप चुनते हैं, या Save all से सबकी एक ZIP बनती है।';
+
+  @override
+  String get faqUndoQ => 'क्या बदलाव वापस हो सकता है?';
+
+  @override
+  String get faqUndoDesktopA =>
+      'हाँ। History में 30 दिन तक सेव हुई चीज़ें दिखती हैं, और Undo नतीजे को Trash या Recycle Bin में भेज देता है। मूल फ़ाइलें कभी नहीं बदलतीं।';
+
+  @override
+  String get faqUndoOtherA =>
+      'मूल फ़ाइलें कभी नहीं बदलतीं, इसलिए वापस करने को कुछ नहीं है। History में बनी चीज़ें दिखती हैं, और न चाहिए तो नतीजा किसी भी फ़ाइल की तरह मिटाया जा सकता है।';
+
+  @override
+  String get faqUploadQ => 'क्या मेरी फ़ाइलें कहीं अपलोड होती हैं?';
+
+  @override
+  String get faqUploadA =>
+      'नहीं। सब कुछ इसी डिवाइस पर होता है, ब्राउज़र में भी, और ShiftDrop में न अकाउंट हैं, न विज्ञापन, न ट्रैकिंग।';
+
+  @override
+  String get faqFormQ => 'फ़ॉर्म कहता है कि मेरी फ़ोटो या हस्ताक्षर का आकार गलत है।';
+
+  @override
+  String get faqFormA =>
+      'Make it fit में Form photo लें, फ़ॉर्म चुनें या उसके माप लिखें, और उन्हें फ़ॉर्म की सूचना से मिलाएँ, क्योंकि फ़ॉर्म इन्हें बदलते रहते हैं। कुछ 1 KB को 1000 बाइट गिनते हैं और कुछ 1024: ShiftDrop दोनों पूरे करता है।';
+
+  @override
+  String get faqPdfTextQ => 'PDF छोटी करने के बाद टेक्स्ट क्यों नहीं चुना जाता?';
+
+  @override
+  String get faqPdfTextA =>
+      'स्कैन को छोटा करने के लिए उसके पन्ने तस्वीरों के रूप में दोबारा बनते हैं, यही एक तरीका है। नतीजे में यह लिखा होता है। टेक्स्ट चाहिए तो मूल फ़ाइल रखें।';
+
+  @override
+  String get faqLockedQ => 'फ़ाइल पासवर्ड माँगती है।';
+
+  @override
+  String get faqLockedA =>
+      'PDF और ZIP अपना पासवर्ड माँगती हैं, और वह सिर्फ़ उसी काम में इस्तेमाल होता है। लॉक की हुई 7z और RAR फ़ाइलें अभी नहीं खुल सकतीं।';
+
+  @override
+  String get faqRarPartsQ => 'मेरी RAR कई हिस्सों में है।';
+
+  @override
+  String get faqRarPartsA =>
+      'सारे हिस्से एक साथ चुनें या छोड़ें, तो वे एक आर्काइव की तरह खुलते हैं। Mac या Windows पर एक हिस्सा काफ़ी है: बाकी उसके पास ही मिल जाते हैं।';
+
+  @override
+  String get faqMacOpenQ => 'macOS कहता है कि ऐप की जाँच नहीं हो सकती।';
+
+  @override
+  String get faqMacOpenA =>
+      'ShiftDrop पर अभी Apple का साइन नहीं है। System Settings खोलें, फिर Privacy & Security, और Open Anyway चुनें।';
+
+  @override
+  String get faqWindowsWarnQ => 'ऐप खोलने पर Windows चेतावनी देता है।';
+
+  @override
+  String get faqWindowsWarnA =>
+      'जब तक ऐप साइन नहीं होता, Windows SmartScreen चेतावनी दे सकता है। More info चुनें, फिर Run anyway।';
+
+  @override
+  String get faqSlowQ => 'वीडियो में बहुत समय लग रहा है।';
+
+  @override
+  String get faqSlowA =>
+      'वीडियो सबसे भारी काम है, जो इस डिवाइस के अपने एन्कोडर करते हैं। फ़ोन पर काम चलते समय आप ऐप छोड़ सकते हैं, और Cancel बिना कुछ छोड़े उसे रोक देता है।';
+
+  @override
+  String get shortcutMove => 'हिस्सों के बीच जाएँ';
+
+  @override
+  String get shortcutRun => 'चुना हुआ हिस्सा चलाएँ';
+
+  @override
+  String get shortcutChoices => 'किसी हिस्से के विकल्पों में जाएँ और वापस आएँ, या अगला पन्ना';
+
+  @override
+  String get shortcutClose => 'मेनू बंद करें';
+
+  @override
+  String get shortcutTools => 'Shift-drag के दौरान: टूल दिखाएँ';
+
+  @override
+  String get shortcutCompare => 'प्रीव्यू पर तुलना की रेखा खिसकाएँ';
+
+  @override
+  String get reportProblem => 'समस्या बताएँ';
+
+  @override
+  String get reportProblemWhy =>
+      'GitHub पर एक नई रिपोर्ट भर देता है, जिसे आप पढ़कर भेजें। आपके भेजे बिना कुछ नहीं जाता।';
+
+  @override
+  String get reportWhatHappened => 'क्या हुआ?';
+
+  @override
+  String get reportHint =>
+      'जो फ़ाइल नहीं बदली, उसकी Copy details यहाँ चिपकाएँ। कोई निजी बात न लिखें।';
+
+  @override
+  String get reportIncludes => 'यह भी जुड़ेगा:';
+
+  @override
+  String get reportOpen => 'GitHub पर खोलें';
+
+  @override
+  String get reportCopy => 'इसकी जगह कॉपी करें';
+
+  @override
+  String get reportCopied => 'कॉपी हो गया। इसे ईमेल या रिपोर्ट में चिपकाएँ।';
+
+  @override
+  String get suggestFeature => 'कोई सुविधा सुझाएँ';
+
+  @override
+  String get suggestFeatureWhy => 'GitHub खोलता है, जहाँ सुझावों पर खुलकर बात होती है।';
+
+  @override
+  String whatsNewTitle(Object version) {
+    return '$version में नया क्या है';
+  }
+
+  @override
+  String get whatsNewPdfPassword => 'हर प्लेटफ़ॉर्म पर PDF में पासवर्ड जोड़ें, AES-256 के साथ।';
+
+  @override
+  String get whatsNewRarParts => 'कई हिस्सों वाली RAR फ़ाइलें एक आर्काइव की तरह खुलती हैं।';
+
+  @override
+  String get whatsNewMenuSpeed => 'Settings बताता है कि Shift-drag मेनू कितनी जल्दी खुलता है।';
+
+  @override
+  String get whatsNewHelp => 'मदद, जिसमें आम सवाल, शॉर्टकट और समस्या बताने का तरीका है।';
+
+  @override
+  String whatsNewReady(Object version) {
+    return 'ShiftDrop $version आ गया है। मदद में देखें कि नया क्या है।';
+  }
+
+  @override
+  String get whatsNewSee => 'देखें';
 }

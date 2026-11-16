@@ -40,7 +40,9 @@ Headline features that make people switch:
   Web: ffmpeg.wasm, wasm-vips, pdf-lib. FFmpegKit is retired; use our own FFmpeg builds.
 - **Licence**: our code MPL-2.0. Only LGPL or permissive engines inside the app. No GPL parts
   (e.g. x264), never Ghostscript (AGPL).
-- **Privacy**: no analytics, ads or accounts; no network calls during conversion.
+- **Privacy**: no analytics, ads or accounts; no network calls during conversion. The owner asked about login and
+  signup on 16 Nov 2026 and decided against them after weighing it: no accounts, at least for 1.0. Sync, if ever wanted,
+  would be export and import of a settings file, or optional sign-in only for sync.
 
 ## Developer machine
 
@@ -271,6 +273,12 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   name `bodyFont` in any built from scratch. Phones (Android or iOS, under 600 px) get `ThumbArc`, a half dial, instead
   of `RadialMenu`. The native menus draw `MenuPalette` (Swift) and `MenuPalette` (C++) copied from `SdColors`; the
   theme choice reaches them as `theme` among the words in `setWords`, and each slice carries `fit`.
+- Help (`help_screen.dart`, the ? in the top bar, `openHelp`): questions by place (`HelpPlace`: Mac, Windows, phone,
+  browser; `helpTopics`), search, shortcuts (`helpShortcuts`), What's new (`whatsNewVersion` must equal `appVersion`, a
+  test checks), Report a problem and Suggest a feature (`core/lib/src/support_links.dart`: a prefilled GitHub issue
+  address opened with `openPage`, or copied; facts are version, platform and language only). After an update,
+  `AppHome` says what's new once (`AppSettings.whatsNewSeen`); a new install has the guide instead. A SnackBar with an
+  action persists unless `persist: false`.
 - Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
   an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.

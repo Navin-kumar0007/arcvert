@@ -15,6 +15,7 @@ import 'drop_files.dart';
 import 'file_chip.dart';
 import 'history_screen.dart';
 import 'history_store.dart';
+import 'help_screen.dart';
 import 'home_parts.dart';
 import 'live_look.dart';
 import 'keep_going.dart';
@@ -1328,6 +1329,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
             Icons.tune,
             () => openSettings(context, onShowGuide: widget.showGuide),
           ),
+        IconButton(
+          tooltip: words.help,
+          icon: const Icon(Icons.help_outline),
+          onPressed: () => openHelp(context),
+        ),
         IconButton(
           tooltip: words.about,
           icon: const Icon(Icons.info_outline),

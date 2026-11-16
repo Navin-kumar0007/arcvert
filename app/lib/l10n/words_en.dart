@@ -1379,4 +1379,204 @@ class WordsEn extends Words {
   String menuSpeed(int usual, int slowest, int count) {
     return 'The menu opened in $usual ms, $slowest ms at most, over the last $count drags.';
   }
+
+  @override
+  String get help => 'Help';
+
+  @override
+  String get helpSearch => 'Search help';
+
+  @override
+  String helpNoMatch(Object query) {
+    return 'Nothing in help matches \"$query\".';
+  }
+
+  @override
+  String get helpQuestions => 'Common questions';
+
+  @override
+  String get helpShortcuts => 'Keyboard shortcuts';
+
+  @override
+  String get helpSupport => 'Support';
+
+  @override
+  String get helpOffline =>
+      'Help works without the internet. Reporting a problem or suggesting an idea opens GitHub in your browser.';
+
+  @override
+  String get faqConvertQ => 'How do I convert a file?';
+
+  @override
+  String get faqConvertA =>
+      'Choose or drop files, then pick a slice on the dial. Convert changes the format, Make it fit makes a file small enough for a purpose, and Tools has the rest. Results appear below, ready to save.';
+
+  @override
+  String get faqShiftDragQ => 'The menu doesn\'t appear when I drag a file.';
+
+  @override
+  String faqShiftDragA(Object key) {
+    return 'ShiftDrop must be running, so turn on Open at login in Settings. Start dragging a file in Finder or Explorer, then hold $key. Text and pictures inside other apps aren\'t files, so they bring no menu.';
+  }
+
+  @override
+  String get faqAltShiftQ => 'Alt with Shift changes my keyboard language.';
+
+  @override
+  String get faqAltShiftA =>
+      'That is Windows\' own shortcut. Choose Control as the key in Settings, or turn the shortcut off in Windows\' language settings.';
+
+  @override
+  String get faqWhereQ => 'Where do my results go?';
+
+  @override
+  String get faqWhereDesktopA =>
+      'Beside the original, named so that nothing is ever replaced, or into the folder chosen in Settings.';
+
+  @override
+  String get faqWhereOtherA =>
+      'You choose where to save each one, or Save all makes one ZIP of them.';
+
+  @override
+  String get faqUndoQ => 'Can I undo a conversion?';
+
+  @override
+  String get faqUndoDesktopA =>
+      'Yes. History lists what was saved for 30 days, and Undo moves a result to the Trash or Recycle Bin. Originals are never changed.';
+
+  @override
+  String get faqUndoOtherA =>
+      'Originals are never changed, so there is nothing to undo. History lists what was made, and a result you don\'t want can be deleted like any file.';
+
+  @override
+  String get faqUploadQ => 'Are my files uploaded anywhere?';
+
+  @override
+  String get faqUploadA =>
+      'No. Everything happens on this device, even in a browser, and ShiftDrop has no accounts, ads or tracking.';
+
+  @override
+  String get faqFormQ => 'A form says my photo or signature is the wrong size.';
+
+  @override
+  String get faqFormA =>
+      'Use Form photo in Make it fit, choose the form or type its sizes, and check them against the form\'s notice, as forms change them. Some count a KB as 1000 bytes and some as 1024: ShiftDrop meets both.';
+
+  @override
+  String get faqPdfTextQ => 'Why can\'t I select text after compressing a PDF?';
+
+  @override
+  String get faqPdfTextA =>
+      'To shrink a scan, its pages are drawn again as pictures, which is the only way. The result says so. Keep the original if you need the text.';
+
+  @override
+  String get faqLockedQ => 'A file asks for a password.';
+
+  @override
+  String get faqLockedA =>
+      'PDFs and ZIPs ask for theirs, and it is used only for that job. Locked 7z and RAR files can\'t be opened yet.';
+
+  @override
+  String get faqRarPartsQ => 'My RAR is in several parts.';
+
+  @override
+  String get faqRarPartsA =>
+      'Choose or drop all the parts together and they open as one archive. On a Mac or Windows one part is enough: the others are found beside it.';
+
+  @override
+  String get faqMacOpenQ => 'macOS says the app can\'t be checked.';
+
+  @override
+  String get faqMacOpenA =>
+      'ShiftDrop isn\'t signed by Apple yet. Open System Settings, then Privacy & Security, and choose Open Anyway.';
+
+  @override
+  String get faqWindowsWarnQ => 'Windows warns about the app when I open it.';
+
+  @override
+  String get faqWindowsWarnA =>
+      'Until the app is signed, Windows SmartScreen may warn. Choose More info, then Run anyway.';
+
+  @override
+  String get faqSlowQ => 'A video is taking a long time.';
+
+  @override
+  String get faqSlowA =>
+      'Video is the heaviest work, done by this device\'s own encoders. On a phone you can leave the app while it works, and Cancel stops it without leaving anything behind.';
+
+  @override
+  String get shortcutMove => 'Move between slices';
+
+  @override
+  String get shortcutRun => 'Run the highlighted slice';
+
+  @override
+  String get shortcutChoices => 'Into a slice\'s choices and back, or the next page';
+
+  @override
+  String get shortcutClose => 'Close the menu';
+
+  @override
+  String get shortcutTools => 'During a Shift-drag: show Tools';
+
+  @override
+  String get shortcutCompare => 'Move the compare line on a preview';
+
+  @override
+  String get reportProblem => 'Report a problem';
+
+  @override
+  String get reportProblemWhy =>
+      'Fills in a new report on GitHub for you to read and send. Nothing is sent until you send it.';
+
+  @override
+  String get reportWhatHappened => 'What happened?';
+
+  @override
+  String get reportHint =>
+      'For a file that failed, paste its Copy details here. Leave out anything private.';
+
+  @override
+  String get reportIncludes => 'Also included:';
+
+  @override
+  String get reportOpen => 'Open on GitHub';
+
+  @override
+  String get reportCopy => 'Copy instead';
+
+  @override
+  String get reportCopied => 'Copied. Paste it into an email or a report.';
+
+  @override
+  String get suggestFeature => 'Suggest a feature';
+
+  @override
+  String get suggestFeatureWhy => 'Opens GitHub, where ideas are talked over in the open.';
+
+  @override
+  String whatsNewTitle(Object version) {
+    return 'What\'s new in $version';
+  }
+
+  @override
+  String get whatsNewPdfPassword => 'Add password to a PDF, on every platform, with AES-256.';
+
+  @override
+  String get whatsNewRarParts => 'RAR files in several parts open as one archive.';
+
+  @override
+  String get whatsNewMenuSpeed => 'Settings says how fast the Shift-drag menu opens.';
+
+  @override
+  String get whatsNewHelp =>
+      'Help, with common questions, shortcuts and a way to report a problem.';
+
+  @override
+  String whatsNewReady(Object version) {
+    return 'ShiftDrop $version is here. See what\'s new in Help.';
+  }
+
+  @override
+  String get whatsNewSee => 'See';
 }

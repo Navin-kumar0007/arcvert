@@ -17,6 +17,7 @@ class AppSettings {
     this.learnOrder = true,
     this.uses = const {},
     this.triggerKey = 'shift',
+    this.whatsNewSeen,
   });
 
   /// Whether the first-launch guide has been seen, or skipped.
@@ -48,6 +49,9 @@ class AppSettings {
   /// The key held while dragging that opens the menu over other apps: "shift" or "control".
   final String triggerKey;
 
+  /// The version whose What's new has been announced, so each update says so once.
+  final String? whatsNewSeen;
+
   static const triggerKeys = {'shift', 'control'};
 
   /// The most actions [uses] remembers, so the file stays small whatever happens.
@@ -64,6 +68,7 @@ class AppSettings {
     bool? learnOrder,
     Map<String, int>? uses,
     String? triggerKey,
+    String? whatsNewSeen,
   }) {
     return AppSettings(
       welcomed: welcomed ?? this.welcomed,
@@ -76,6 +81,7 @@ class AppSettings {
       learnOrder: learnOrder ?? this.learnOrder,
       uses: uses ?? this.uses,
       triggerKey: triggerKey ?? this.triggerKey,
+      whatsNewSeen: whatsNewSeen ?? this.whatsNewSeen,
     );
   }
 
@@ -104,6 +110,7 @@ class AppSettings {
     final folder = json['resultsFolder'];
     final uses = json['uses'];
     final trigger = json['triggerKey'];
+    final seen = json['whatsNewSeen'];
     return AppSettings(
       welcomed: json['welcomed'] == true,
       checkForUpdates: json['checkForUpdates'] != false,
@@ -120,6 +127,7 @@ class AppSettings {
             }
           : const {},
       triggerKey: trigger is String && triggerKeys.contains(trigger) ? trigger : 'shift',
+      whatsNewSeen: seen is String ? seen : null,
     );
   }
 
@@ -134,6 +142,7 @@ class AppSettings {
     'learnOrder': learnOrder,
     if (uses.isNotEmpty) 'uses': uses,
     'triggerKey': triggerKey,
+    'whatsNewSeen': ?whatsNewSeen,
   });
 
   Locale? get locale => language == null ? null : Locale(language!);
