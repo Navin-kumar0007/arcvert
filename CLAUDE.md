@@ -273,7 +273,7 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   It rewrites the file itself, following xref tables and streams, object streams and updates; a locked PDF, or one it
   can't follow (`FormatException`), goes through PDFium's `encodePdf(removeSecurity: true)` first (`_locked` in
   `pdf_engine.dart`). Checked on the 57 Downloads PDFs with qpdf, PDFium and PDFKit; `pdf_lock_web_test.dart` makes CI
-  compare its bytes in Chrome. Merging only takes one password. Results
+  compare its bytes in Chrome. The owner tried it on every device on 16 November 2026: it works. Merging only takes one password. Results
   redrawn or rebuilt (Compress, Split, Merge) have no password; Rotate keeps it. PDFium leaves the old encryption
   details behind as an unused object after removing a password, so hashes of it stay in the file.
 - Never use pdfrx's `isEncrypted`: in a browser it's false for nearly all locked PDFs. `isPdfLocked` reads the file.
