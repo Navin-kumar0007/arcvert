@@ -44,4 +44,4 @@ Where the web app is hosted, the hosting company handles requests as any website
 
 ## Changes and contact
 
-Any change will be recorded here and in the project's history, which is public. Questions can be asked in the project's [issues](https://github.com/Navin-kumar0007/shiftdrop/issues).
+Any change will be recorded here and in the project's history, which is public. Questions can be emailed to [shiftdrop.support@gmail.com](mailto:shiftdrop.support@gmail.com) or asked in the project's [issues](https://github.com/Navin-kumar0007/shiftdrop/issues). Emails are read only by the people who make ShiftDrop and are never shared or used for anything else.

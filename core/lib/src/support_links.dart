@@ -6,7 +6,7 @@ library;
 
 /// The address reports and ideas are emailed to, or null until there is one: the app then offers
 /// GitHub and copying only. Shown in the app and on the website.
-const String? supportEmail = null;
+const String? supportEmail = 'shiftdrop.support@gmail.com';
 
 const _newIssue = 'https://github.com/Navin-kumar0007/shiftdrop/issues/new';
 
