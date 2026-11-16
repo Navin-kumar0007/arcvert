@@ -1370,4 +1370,14 @@ class WordsHi extends Words {
   @override
   String get triggerKeyWhy =>
       'फ़ाइल खींचते समय इसे दबाए रखें तो मेनू खुलता है। Option या Alt से अब भी टूल मिलते हैं।';
+
+  @override
+  String menuSpeedNone(Object key) {
+    return '$key दबाकर कोई फ़ाइल खींचें, तो पता चलेगा कि मेनू कितनी जल्दी खुलता है।';
+  }
+
+  @override
+  String menuSpeed(int usual, int slowest, int count) {
+    return 'पिछली $count बार मेनू आम तौर पर $usual ms में खुला, ज़्यादा से ज़्यादा $slowest ms में।';
+  }
 }

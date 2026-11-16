@@ -161,6 +161,8 @@ let radialRingWidth: CGFloat = 56
 /// because it floats over other apps during their drag, outside this app's window.
 final class RadialDropView: NSView {
   var slices: [RadialSlice] = [] { didSet { needsDisplay = true } }
+  /// Called once, after the next drawing, to time how long the menu took to appear.
+  var onNextDraw: (() -> Void)?
   var highlighted: Int? {
     didSet {
       guard oldValue != highlighted else { return }
@@ -227,6 +229,11 @@ final class RadialDropView: NSView {
   }
 
   override func draw(_ dirtyRect: NSRect) {
+    defer {
+      let drawn = onNextDraw
+      onNextDraw = nil
+      drawn?()
+    }
     let colours = MenuPalette.current
     drawRing(colours)
     let span = 360 / CGFloat(max(slices.count, 1))
@@ -425,6 +432,11 @@ final class ShiftDragWatcher: NSObject {
   var onChosen: ((RadialSlice, [String], Int?) -> Void)?
   /// While our own files are being dragged out, holding Shift mustn't bring the menu up over them.
   var isPaused: () -> Bool = { false }
+  /// How long the menu took, in milliseconds: waiting for a check to notice the key (counted from
+  /// the check before, so at its longest), asking what to offer, and drawing.
+  var onTiming: ((Double, Double, Double) -> Void)?
+  /// When the last check ran, as the key may have been pressed any time since.
+  private var lastTick: TimeInterval = 0
 
   private let panel: NSPanel
   private let radial: RadialDropView
@@ -505,6 +517,9 @@ final class ShiftDragWatcher: NSObject {
   }
 
   @objc private func tick() {
+    let now = ProcessInfo.processInfo.systemUptime
+    let previous = lastTick > 0 ? lastTick : now - 1.0 / 30.0
+    lastTick = now
     let pasteboard = NSPasteboard(name: .drag)
     if isPaused() {
       seenChange = pasteboard.changeCount
@@ -534,14 +549,20 @@ final class ShiftDragWatcher: NSObject {
 
     isAsking = true
     let tools = wantsTools
+    let waited = now - previous
     askForSlices?(paths, tools) { [weak self] slices in
       guard let self = self else { return }
       self.isAsking = false
+      let answered = ProcessInfo.processInfo.systemUptime
       // The drag may have ended while waiting, and a file nothing can convert shows no menu.
       guard !slices.isEmpty, NSEvent.pressedMouseButtons & 1 == 1 else {
         // Don't ask again about the same drag.
         self.seenChange = pasteboard.changeCount
         return
+      }
+      self.radial.onNextDraw = { [weak self] in
+        let drawn = ProcessInfo.processInfo.systemUptime
+        self?.onTiming?(waited * 1000, (answered - now) * 1000, (drawn - answered) * 1000)
       }
       self.show(slices, for: paths, at: NSEvent.mouseLocation, tools: tools)
     }

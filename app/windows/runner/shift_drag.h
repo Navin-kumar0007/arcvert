@@ -7,6 +7,7 @@
 #include <oleidl.h>
 #include <windows.h>
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <set>
@@ -123,6 +124,18 @@ class ShiftDrag : public IDropTarget {
   ULONGLONG hide_at_ = 0;
   // Each drag gets a number, so a late answer about an old drag is ignored.
   unsigned int drag_ = 0;
+
+  // How long the menu takes to appear, sent to Dart as "menuTiming" once it is drawn: waiting for a
+  // check to notice the key (counted from the check before, so at its longest), Windows finding the
+  // drag over the invisible window, asking what to offer, and drawing.
+  using Clock = std::chrono::steady_clock;
+  Clock::time_point last_tick_ = {};
+  Clock::time_point placed_at_ = {};
+  Clock::time_point entered_at_ = {};
+  Clock::time_point answered_at_ = {};
+  double waited_ms_ = 0;
+  bool timing_ = false;
+  void SendTiming();
 };
 
 #endif  // RUNNER_SHIFT_DRAG_H_

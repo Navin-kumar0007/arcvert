@@ -10,6 +10,7 @@ import 'update_check.dart';
 import 'home_parts.dart' show triggerKeyName;
 import 'theme.dart';
 import 'words.dart';
+import 'menu_speed.dart';
 
 /// Opens Settings over the current screen.
 Future<void> openSettings(BuildContext context, {VoidCallback? onShowGuide}) {
@@ -579,6 +580,20 @@ class TriggerKeyChoice extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(words.triggerKeyWhy, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 6),
+            ValueListenableBuilder(
+              valueListenable: MenuSpeed.instance,
+              builder: (context, _, _) {
+                final speed = MenuSpeed.instance.summary;
+                return Text(
+                  speed == null
+                      ? words.menuSpeedNone(triggerKeyName(value.triggerKey))
+                      : words.menuSpeed(speed.usual, speed.slowest, speed.count),
+                  key: const ValueKey('menu speed'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                );
+              },
+            ),
           ],
         ),
       ),

@@ -878,5 +878,19 @@
   "learnOrderForget": "Forget what was learned",
   "learnOrderForgotten": "The menus go back to their usual order when the app next opens.",
   "triggerKey": "Key for dragging from other apps",
-  "triggerKeyWhy": "Hold it while dragging a file to open the menu. Option or Alt still adds Tools."
+  "triggerKeyWhy": "Hold it while dragging a file to open the menu. Option or Alt still adds Tools.",
+  "menuSpeedNone": "Drag a file with {key} held to measure how fast the menu opens.",
+  "@menuSpeedNone": {
+    "placeholders": {
+      "key": {}
+    }
+  },
+  "menuSpeed": "The menu opened in {usual} ms, {slowest} ms at most, over the last {count} drags.",
+  "@menuSpeed": {
+    "placeholders": {
+      "usual": {"type": "int"},
+      "slowest": {"type": "int"},
+      "count": {"type": "int"}
+    }
+  }
 }

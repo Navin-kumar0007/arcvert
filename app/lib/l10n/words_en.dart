@@ -1369,4 +1369,14 @@ class WordsEn extends Words {
   @override
   String get triggerKeyWhy =>
       'Hold it while dragging a file to open the menu. Option or Alt still adds Tools.';
+
+  @override
+  String menuSpeedNone(Object key) {
+    return 'Drag a file with $key held to measure how fast the menu opens.';
+  }
+
+  @override
+  String menuSpeed(int usual, int slowest, int count) {
+    return 'The menu opened in $usual ms, $slowest ms at most, over the last $count drags.';
+  }
 }

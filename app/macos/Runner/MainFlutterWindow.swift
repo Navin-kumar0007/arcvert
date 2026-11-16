@@ -51,6 +51,9 @@ class MainFlutterWindow: NSWindow {
         reply(answer as? String)
       }
     }
+    shiftDrag.onTiming = { wait, ask, draw in
+      channel.invokeMethod("menuTiming", arguments: ["wait": wait, "find": 0.0, "ask": ask, "draw": draw])
+    }
     shiftDrag.onChosen = { slice, paths, choice in
       var arguments: [String: Any] = ["id": slice.id, "paths": paths]
       if let choice = choice { arguments["choice"] = choice }

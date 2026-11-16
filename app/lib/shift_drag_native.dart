@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
 
 import 'words.dart';
+import 'menu_speed.dart';
 
 /// `MainFlutterWindow.swift` or `shift_drag.cpp` on the other side.
 const shiftDragChannel = MethodChannel('radial/shift_drag');
@@ -22,6 +23,11 @@ void Function() listenForShiftDrag({
 }) {
   if (!Platform.isMacOS && !Platform.isWindows) return () {};
   shiftDragChannel.setMethodCallHandler((call) async {
+    if (call.method == 'menuTiming') {
+      final timing = MenuTiming.fromWire(call.arguments);
+      if (timing != null) MenuSpeed.instance.add(timing);
+      return null;
+    }
     final arguments = call.arguments as Map;
     final paths = (arguments['paths'] as List).cast<String>();
     if (call.method == 'menuFor') {

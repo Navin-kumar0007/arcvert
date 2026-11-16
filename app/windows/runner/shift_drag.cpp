@@ -595,6 +595,10 @@ LRESULT CALLBACK ShiftDrag::PanelProc(HWND window, UINT message, WPARAM wparam, 
 }
 
 void ShiftDrag::Tick() {
+  const Clock::time_point now = Clock::now();
+  const Clock::time_point previous =
+      last_tick_ == Clock::time_point{} ? now - std::chrono::milliseconds(kCheckEveryMs) : last_tick_;
+  last_tick_ = now;
   if (dragging_out_) return;
   if (!LeftButtonDown()) {
     button_was_down_ = false;
@@ -624,6 +628,8 @@ void ShiftDrag::Tick() {
     return;
   }
   Place(cursor);
+  placed_at_ = now;
+  waited_ms_ = std::chrono::duration<double, std::milli>(now - previous).count();
 }
 
 double ShiftDrag::Scale() const { return ::GetDpiForWindow(app_window_) / 96.0; }
@@ -712,6 +718,7 @@ void ShiftDrag::Shape() {
 
 void ShiftDrag::Hide() {
   ::ShowWindow(panel_, SW_HIDE);
+  timing_ = false;
   placed_ = false;
   revealed_ = false;
   hide_at_ = 0;
@@ -771,6 +778,8 @@ void ShiftDrag::AskForSlices(bool tools) {
     if (slices.empty()) {
       Hide();
     } else {
+      answered_at_ = Clock::now();
+      timing_ = true;
       Reveal(std::move(slices), tools);
     }
   };
@@ -903,7 +912,10 @@ HRESULT ShiftDrag::DragEnter(IDataObject* data, DWORD, POINTL point, DWORD* effe
   }
   // Still over the menu, so not time to hide.
   hide_at_ = 0;
-  if (!revealed_) AskForSlices(AltDown());
+  if (!revealed_) {
+    entered_at_ = Clock::now();
+    AskForSlices(AltDown());
+  }
   *effect = DROPEFFECT_COPY;
   return S_OK;
 }
@@ -941,6 +953,21 @@ HRESULT ShiftDrag::Drop(IDataObject* data, DWORD, POINTL point, DWORD* effect) {
   if (choice >= 0) arguments[EncodableValue("choice")] = EncodableValue(choice);
   channel_->InvokeMethod("chosen", std::make_unique<EncodableValue>(arguments));
   return S_OK;
+}
+
+void ShiftDrag::SendTiming() {
+  timing_ = false;
+  const auto ms = [](Clock::time_point from, Clock::time_point to) {
+    return std::chrono::duration<double, std::milli>(to - from).count();
+  };
+  const Clock::time_point drawn = Clock::now();
+  EncodableMap timing = {
+      {EncodableValue("wait"), EncodableValue(waited_ms_)},
+      {EncodableValue("find"), EncodableValue(ms(placed_at_, entered_at_))},
+      {EncodableValue("ask"), EncodableValue(ms(entered_at_, answered_at_))},
+      {EncodableValue("draw"), EncodableValue(ms(answered_at_, drawn))},
+  };
+  channel_->InvokeMethod("menuTiming", std::make_unique<EncodableValue>(timing));
 }
 
 void ShiftDrag::Paint() {
@@ -1104,4 +1131,5 @@ void ShiftDrag::Paint() {
   ::DeleteObject(raised_brush);
   ::DeleteObject(hub_brush);
   ::EndPaint(panel_, &paint);
+  if (timing_) SendTiming();
 }

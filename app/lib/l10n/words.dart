@@ -2360,6 +2360,18 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Hold it while dragging a file to open the menu. Option or Alt still adds Tools.'**
   String get triggerKeyWhy;
+
+  /// No description provided for @menuSpeedNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a file with {key} held to measure how fast the menu opens.'**
+  String menuSpeedNone(Object key);
+
+  /// No description provided for @menuSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'The menu opened in {usual} ms, {slowest} ms at most, over the last {count} drags.'**
+  String menuSpeed(int usual, int slowest, int count);
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

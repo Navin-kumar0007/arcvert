@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- On a Mac or Windows, **Settings** says how fast the Shift-drag menu has opened over your last drags, counted from
+  the key. Measured on your computer only.
 - **RAR files in several parts** open as one archive, on every platform: choose or drop all the parts together
   (`photos.part1.rar`, `photos.part2.rar`, or `photos.rar`, `photos.r00`). On a Mac or Windows one part is enough,
   even in a Shift-drag: the rest are found beside it. A missing part is named.
