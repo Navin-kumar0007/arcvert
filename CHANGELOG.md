@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **RAR files in several parts** open as one archive, on every platform: choose or drop all the parts together
+  (`photos.part1.rar`, `photos.part2.rar`, or `photos.rar`, `photos.r00`). On a Mac or Windows one part is enough,
+  even in a Shift-drag: the rest are found beside it. A missing part is named.
 - **Add password** to a PDF, on every platform: typed twice, then only that password opens the result, in any PDF
   reader. AES-256, the strongest PDF encryption. A PDF that already has a password asks for it first, and the result
   opens with the new one only. The original is never changed.

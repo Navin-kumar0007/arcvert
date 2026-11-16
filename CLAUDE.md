@@ -94,6 +94,14 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   vcpkg in CI and placed beside the program, as Windows looks there for its own libraries. Android: Kotlin in
   `MediaEngine.kt`, with `me.zhanghai.android.libarchive` (Apache). Web: `archive_worker.js` and our own WebAssembly.
   libarchive can't decrypt 7z or RAR, so locked ones say so rather than ask for a password that can't help.
+- RAR in several parts (`core/lib/src/archive_parts.dart`): names say which files belong together and in what order
+  (`findPartSets`: `x.part1.rar`... or `x.rar`, `x.r00`...), the first header says whether a lone file is a part
+  (`rarSplitOf`). `joinArchiveParts` (in `picked_file.dart`, called by `_open` and `_menuFor`) makes each set one
+  `PickedFile` named `x.rar` with `moreParts` and any `missingPart`. Desktops look beside a lone part (`_partsBeside` in
+  `convert_native.dart`). Engines read the parts in order: `archive_read_open_filenames` (`_w` on Windows) through FFI,
+  `readOpenFileNames` on Android, `radial_open_parts` in `wrapper.c`, with libarchive's callbacks over memory. A part
+  read alone ends early, and RAR 5 then gives a short last file without an error: the declared-size check catches it,
+  and `_unpack` says to choose all the parts.
 - Don't use the libarchive.js package: it ignores how many bytes a read returned, so a damaged RAR came out at the right
   size holding whatever was in memory. The recipe is `engines/build_libarchive_wasm.sh`, run by
   `.github/workflows/libarchive-wasm.yml` when it changes. Download its artifact into `app/web/vendor/libarchive/`,
@@ -397,20 +405,19 @@ previews. Releases are drafted ahead and published in order; never merge the who
 tag. The list below is older and finer-grained.
 
 Updated 16 November 2026: 0.10 to 0.14 are built, Windows has been run by the owner, and Extract to a folder and
-Compress levels are done.
+Compress levels are done. Everything planned before 1.0 is built: PDF passwords and RAR in several parts came last.
 
-1. Multi-part RAR files.
-2. Try a real iPhone HEIC photo, on every platform.
-3. PDF to DOCX: tables whose cells wrap, pictures inside form objects, italic; scans need OCR. Try the trim preview on
+1. Try a real iPhone HEIC photo, on every platform, and a RAR in several parts made by WinRAR.
+2. PDF to DOCX: tables whose cells wrap, pictures inside form objects, italic; scans need OCR. Try the trim preview on
    real long videos: a seek far into one may be slow on a phone.
-4. Not yet tried in real use: Control as the trigger key, Undo on an extracted folder, photo details from a real phone
+3. Not yet tried in real use: Control as the trigger key, Undo on an extracted folder, photo details from a real phone
    photo, the learned order. Measure the menu opening within 100 ms of the key on both desktops.
-5. Document conversions (`document-to-*`) wait on the optional LibreOffice and Pandoc add-ons. Web video has no MP3,
+4. Document conversions (`document-to-*`) wait on the optional LibreOffice and Pandoc add-ons. Web video has no MP3,
    FLAC, GIF or merge. Nothing plays video or sound while trimming.
-6. A native speaker should review `app_hi.arb`.
-7. Android package name `io.github.navinkumar0007.shiftdrop`: register it with Google in Phase 5. It can't change after
+5. A native speaker should review `app_hi.arb`.
+6. Android package name `io.github.navinkumar0007.shiftdrop`: register it with Google in Phase 5. It can't change after
    the first public release, as Android treats a new name as a different app.
-8. The owner is installing Xcode. Then: `sudo xcode-select -s /Applications/Xcode.app`,
+7. The owner is installing Xcode. Then: `sudo xcode-select -s /Applications/Xcode.app`,
    `sudo xcodebuild -license accept`, `sudo xcodebuild -runFirstLaunch`, `flutter doctor`.
 
 ## Roadmap (one developer, full time, no buffer)

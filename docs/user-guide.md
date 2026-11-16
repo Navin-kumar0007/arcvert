@@ -86,7 +86,9 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Photo details.** Converting, compressing, turning, flipping, resizing or cropping a photo keeps when it was taken, the camera and lens, and how it was exposed. Where it was taken is always removed, along with serial numbers and the owner's name. **Make it fit** and **Strip metadata** remove every detail, as those files are made to be sent.
 
-**Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet, and neither can a RAR in several parts. A password can be added to an archive or a PDF (**Add password** in Tools): type it twice, as nobody can open the result without it. A PDF gets AES-256, which every current PDF reader opens with the password. Adding one to a PDF that already has a password replaces it.
+**RAR files in several parts**, such as `photos.part1.rar`, `photos.part2.rar` or `photos.rar`, `photos.r00`, open as one archive: choose or drop all the parts together, and they show as one file. On a Mac or Windows, choosing or Shift-dragging any one part is enough, as the others are found beside it. If a part is missing, ShiftDrop names it.
+
+**Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet. A password can be added to an archive or a PDF (**Add password** in Tools): type it twice, as nobody can open the result without it. A PDF gets AES-256, which every current PDF reader opens with the password. Adding one to a PDF that already has a password replaces it.
 
 **Limits.** Pictures, PDFs and archives work in memory, up to 1 GB across a job, and folders open up to 200 files. Very large videos work, as they're read piece by piece.
 

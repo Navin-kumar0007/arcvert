@@ -161,12 +161,11 @@ after 0.13.0.
 
 ## Later, before 1.0
 
-The rest moved into 0.14 and is done. Still open:
+Everything planned before 1.0 is done: the rest moved into 0.14, and these two were done after it, for the next
+release (16 November 2026):
 
-- RAR files in several parts.
-
-Done since 0.14, for the next release: **Add password to a PDF** (`lockPdf`, 16 November 2026), in pure Dart rather than
-by bundling qpdf, so it works on every platform.
+- **Add password to a PDF** (`lockPdf`), in pure Dart rather than by bundling qpdf, so it works on every platform.
+- **RAR files in several parts** (`archive_parts.dart`, `joinArchiveParts`): `part1.rar` or `.rar`, `.r00` names.
 
 ## 1.0 checklist (launch 12 April 2027)
 
