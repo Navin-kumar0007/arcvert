@@ -30,7 +30,8 @@ A patch built after later versions were tagged, as 0.10.1 was, is newer by date 
 Patch on `main` (branch `release-0.10.1`), 16 November 2026: the browser's conversion worker was never told ring
 choices, so in the web app Rotate 180° and 90° left, Flip upside down and Resize's sizes ran as the first choice.
 Published at once, as the live web app had it. 0.13.0 carries the same fix (`ActionOptions.toWire`); the 0.11.0 and
-0.12.0 drafts were tagged before it and don't, so they need the fix before they are published.
+0.12.0 drafts were tagged before it and don't. The owner chose (16 November 2026) not to publish 0.11 and 0.12 on
+their own: 0.13.0, which holds all of them and the fix, is the next release after 0.10.1.
 
 ## 0.10.0: guide, update check, Tools in Shift-drag
 
@@ -43,7 +44,7 @@ Published at once, as the live web app had it. 0.13.0 carries the same fix (`Act
 
 ## 0.11.0: Settings, reorder before merging, previews
 
-**Done.** Built and tagged on 11 November 2026, ahead of plan; publish after 0.10.0, about 6 December 2026.
+**Done**, tagged 11 November 2026. Not published on its own: it ships within 0.13.0.
 
 ### 1. Settings screen
 
@@ -115,7 +116,7 @@ Rules:
 
 ## 0.12.0: new look, copy details
 
-**Done.** Built and tagged on 15 November 2026, ahead of plan; publish after 0.11.0, about 20 December 2026. The
+**Done**, tagged 15 November 2026. Not published on its own: it ships within 0.13.0. The
 owner chose to ship the new look with Copy details and move the other planned items to 0.13.
 
 - **New look** (agreed 15 November 2026 from the canvas of concepts), light and dark: colour sets in `theme.dart`,
@@ -127,7 +128,8 @@ owner chose to ship the new look with Copy details and move the other planned it
 
 ## 0.13.0: menu and form polish
 
-**Done.** Built and tagged on 16 November 2026, ahead of plan; publish after 0.12.0, about mid-January 2027.
+**Done.** Built and tagged on 16 November 2026. The next release after 0.10.1: test the draft, then publish, about
+6 December 2026.
 
 - **Live preview in the menu's centre**: resting on Rotate, Flip or Resize, or one of their choices, shows the
   picture already turned, flipped or smaller, without converting. Window menu only. **Done** (`live_look.dart`,
