@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/foundation.dart';
@@ -586,6 +587,31 @@ class _ConverterScreenState extends State<ConverterScreen> {
     return saved;
   }
 
+  /// Each archive's files written into one folder beside it, named after it, with the archive's own
+  /// folders inside. The folder is then the result: shown, dragged on, or undone as one.
+  Future<List<_Result>> _extractToFolders(List<_Result> results, String? folder) async {
+    final byArchive = LinkedHashMap<PickedFile, List<_Result>>.identity();
+    for (final result in results) {
+      (byArchive[result.from] ??= []).add(result);
+    }
+    final folders = <_Result>[];
+    for (final MapEntry(key: archive, value: extracted) in byArchive.entries) {
+      final files = [for (final result in extracted) result.output.inMemory!];
+      final stem = splitFileName(archive.name).stem;
+      final path = await saveFolderBesideOriginal(
+        archive.path!,
+        '${stem.endsWith('.tar') ? stem.substring(0, stem.length - 4) : stem} (extracted)',
+        files,
+        folder: folder,
+      );
+      final size = files.fold<int>(0, (sum, file) => sum + file.bytes.length);
+      folders.add(
+        _Result(ConvertedFile(name: p.basename(path), size: size, savedPath: path), archive, null),
+      );
+    }
+    return folders;
+  }
+
   ConvertedFile _savedAt(ConvertedFile output, String path) {
     return ConvertedFile(
       name: output.name,
@@ -977,6 +1003,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
     final before = _files.fold<int>(0, (sum, file) => sum + file.size);
     final files = _files;
     final kinds = _kinds;
+    // On a desktop an archive extracts into a folder beside it, keeping its own folders.
+    final toFolders =
+        action.id == 'archive-extract' && _savesBeside && files.every((file) => file.path != null);
+    if (toFolders) options = ActionOptions(keepFolders: true, password: options.password);
     final jobs = [_Job(_workingName(), before)];
     final control = ConvertControl()..outputFolder = folder;
     _stopRunningJob();
@@ -1002,8 +1032,12 @@ class _ConverterScreenState extends State<ConverterScreen> {
         wanted: () => mounted && identical(_jobs, jobs),
         outsideTheWindow: saveBeside,
       );
-      if (saveBeside) {
+      if (toFolders) {
+        results = await _extractToFolders(results, folder);
+      } else if (saveBeside) {
         results = await _saveBeside(results, folder);
+      }
+      if (saveBeside) {
         if (failed.isNotEmpty) showAppWindow();
         // Ready at the cursor to drag straight on, as the window may be behind other apps.
         showChipAtCursor([

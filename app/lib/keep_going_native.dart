@@ -104,9 +104,18 @@ String trashName(Words words) => Platform.isWindows ? words.trashWindows : words
 /// Moves a result to the Trash, where it can still be got back. Never deletes anything itself. It
 /// refuses if the file isn't the size it was left at, as that means it isn't what was made any more.
 Future<void> moveResultToTrash(String path, int expectedSize) async {
-  final file = File(path);
-  if (!file.existsSync()) throw EngineFailed(deviceWords.noLongerThere(p.basename(path)));
-  if (file.lengthSync() != expectedSize) {
+  final type = FileSystemEntity.typeSync(path);
+  if (type == FileSystemEntityType.notFound) {
+    throw EngineFailed(deviceWords.noLongerThere(p.basename(path)));
+  }
+  // A folder, from Extract, counts all the files in it.
+  final size = type == FileSystemEntityType.directory
+      ? Directory(path)
+            .listSync(recursive: true)
+            .whereType<File>()
+            .fold<int>(0, (sum, file) => sum + file.lengthSync())
+      : File(path).lengthSync();
+  if (size != expectedSize) {
     throw EngineFailed(deviceWords.changedSince(p.basename(path)));
   }
   final moved = await shiftDragChannel.invokeMethod<bool>('moveToTrash', {
@@ -119,7 +128,9 @@ Future<void> moveResultToTrash(String path, int expectedSize) async {
 
 /// Opens the folder holding a result, with it selected.
 Future<void> showResultInFolder(String path) async {
-  if (!File(path).existsSync()) throw EngineFailed(deviceWords.noLongerThere(p.basename(path)));
+  if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
+    throw EngineFailed(deviceWords.noLongerThere(p.basename(path)));
+  }
   await shiftDragChannel.invokeMethod<void>('showInFolder', {
     'paths': [path],
   });

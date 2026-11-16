@@ -139,6 +139,39 @@ void main() {
       expect(utf8.decode(out.last.bytes), 'two');
     });
 
+    group('keeping folders, for a desktop', () {
+      Future<List<PortableFile>> keeping(PortableFile file) => runPortable(
+        actionById('archive-extract')!,
+        [file],
+        options: const ActionOptions(keepFolders: true),
+      );
+
+      test('names are the paths inside the archive', () async {
+        final out = await keeping(
+          zipOf({'a.txt': 'one', 'deep/down/b.txt': 'two', 'x/same.txt': '1', 'y/same.txt': '2'}),
+        );
+        expect(out.map((f) => f.name), ['a.txt', 'deep/down/b.txt', 'x/same.txt', 'y/same.txt']);
+        expect(utf8.decode(out[1].bytes), 'two');
+      });
+
+      test('more files than one would save by hand is fine', () async {
+        final many = {for (var i = 0; i < maxExtractedFiles + 10; i++) 'f/$i.txt': '$i'};
+        expect(await keeping(zipOf(many)), hasLength(maxExtractedFiles + 10));
+      });
+
+      test('a path out of the folder is still refused', () async {
+        await expectLater(
+          keeping(zipOf({'../escape.txt': 'x'})),
+          throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'pointsOutside')),
+        );
+      });
+
+      test('tar\'s ./ and macOS clutter are left out', () async {
+        final out = await keeping(tarOf({'./docs/a.txt': 'one', '__MACOSX/._a.txt': 'x'}));
+        expect(out.single.name, 'docs/a.txt');
+      });
+    });
+
     test('leaves out what macOS adds', () async {
       final out = await run(
         'archive-extract',

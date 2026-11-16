@@ -7,6 +7,9 @@
 - Pictures keep when they were taken, the camera and lens, and how they were exposed, when converted, compressed,
   turned, flipped, resized or cropped. Where they were taken never comes along, nor serial numbers or the owner's
   name. Make it fit and Strip metadata keep no details at all, as their files are made to be sent.
+- On a Mac or Windows, **Extract** puts everything into one new folder beside the archive, named after it, with the
+  archive's own folders inside and no limit of 50 files. Show in folder, drag on or Undo it as one. Phones and
+  browsers still give each file its own Save.
 
 ## 0.13.0 (beta, 16 November 2026)
 

@@ -50,6 +50,7 @@ class ActionOptions {
     this.shift,
     this.form,
     this.compress,
+    this.keepFolders = false,
   });
 
   final int? longSide;
@@ -79,6 +80,10 @@ class ActionOptions {
   /// Compress's level, from its outer ring. Null is medium.
   final CompressLevel? compress;
 
+  /// Extract keeps the archive's own folders, as paths in the results' names, for a desktop to
+  /// write into a folder. Otherwise each file comes out flat, to be saved one by one.
+  final bool keepFolders;
+
   /// Every choice as plain values, for crossing to a browser's worker, which can only be sent
   /// maps, lists, text and numbers. [fromWire] reads it back; a test checks no choice is lost.
   Map<String, Object?> toWire() {
@@ -107,6 +112,7 @@ class ActionOptions {
               'signature': form.signature,
             },
       'compress': compress?.name,
+      'keepFolders': keepFolders,
     };
   }
 
@@ -147,6 +153,7 @@ class ActionOptions {
             )
           : null,
       compress: CompressLevel.values.where((level) => level.name == compress).firstOrNull,
+      keepFolders: wire['keepFolders'] == true,
     );
   }
 
@@ -167,6 +174,7 @@ class ActionOptions {
       shift: shift,
       form: form,
       compress: compress,
+      keepFolders: keepFolders,
     );
   }
 }

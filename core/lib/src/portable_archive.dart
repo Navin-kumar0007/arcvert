@@ -41,9 +41,10 @@ List<PortableFile> runArchive(
   int limit = maxOpenedBytes,
   String? password,
   String? newPassword,
+  bool keepFolders = false,
 }) {
   final entries = _open(file, kind, limit, password);
-  if (action.id == 'archive-extract') return _extract(file, entries);
+  if (action.id == 'archive-extract') return _extract(file, entries, keepFolders: keepFolders);
   final locking = action.id == 'archive-add-password';
   if (locking && (newPassword == null || newPassword.isEmpty)) {
     throw Fail.addPasswordNeedsOne;
@@ -180,24 +181,37 @@ class _LimitedOutput extends OutputMemoryStream {
   }
 }
 
-/// Every file, on its own. A flat list of results has no folders, so names may need telling apart.
+/// Every file, on its own. Flat, a list of results has no folders, so names may need telling
+/// apart, and only [maxExtractedFiles] are given, as each is saved by hand. With [keepFolders],
+/// names are the paths inside the archive, with `/` between folders, for writing into a folder:
+/// [_entries] has already refused any that would leave it, and the size limit still holds.
 /// Links are left out, as a link alone is no use, and so is what macOS adds to its ZIPs.
-List<PortableFile> _extract(PortableFile file, List<ArchiveFile> entries) {
+List<PortableFile> _extract(
+  PortableFile file,
+  List<ArchiveFile> entries, {
+  bool keepFolders = false,
+}) {
   final files = [
     for (final entry in entries)
       if (entry.isFile && !entry.isSymbolicLink && !_isMacClutter(entry.name)) entry,
   ];
   if (files.isEmpty) throw Fail.emptyArchive(file.name);
-  if (files.length > maxExtractedFiles) {
+  if (!keepFolders && files.length > maxExtractedFiles) {
     throw Fail.tooManyToSave(file.name, files.length, maxExtractedFiles);
   }
   final used = <String>{};
+  String nameOf(ArchiveFile entry) {
+    if (!keepFolders) return _lastPart(entry.name);
+    return entry.name
+        .replaceAll(r'\', '/')
+        .split('/')
+        .where((part) => part.isNotEmpty && part != '.')
+        .join('/');
+  }
+
   return [
     for (final entry in files)
-      PortableFile(
-        _freeName(_lastPart(entry.name), used, 'extracted'),
-        entry.readBytes() ?? Uint8List(0),
-      ),
+      PortableFile(_freeName(nameOf(entry), used, 'extracted'), entry.readBytes() ?? Uint8List(0)),
   ];
 }
 

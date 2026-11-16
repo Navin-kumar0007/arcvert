@@ -72,6 +72,7 @@ void main() {
       shift: Duration(milliseconds: -1500),
       form: FormTarget(width: 140, height: 60, minBytes: 10240, maxBytes: 20000, signature: true),
       compress: CompressLevel.small,
+      keepFolders: true,
     );
 
     test('every choice comes back as it went', () {
@@ -84,9 +85,9 @@ void main() {
     });
 
     test('a new choice has to be added here too', () {
-      // ActionOptions has 14 choices. One added without toWire and fromWire would reach every
+      // ActionOptions has 15 choices. One added without toWire and fromWire would reach every
       // engine but a browser's, as Rotate's and Resize's ring choices once did.
-      expect(everything.toWire().keys, hasLength(14));
+      expect(everything.toWire().keys, hasLength(15));
       expect(everything.toWire().values.where((value) => value == null), isEmpty);
     });
 

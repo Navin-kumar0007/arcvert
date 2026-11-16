@@ -85,6 +85,38 @@ void sendNativeWords() {
       });
 }
 
+/// Writes [files], whose names are paths inside an archive with `/` between folders, into a new
+/// folder named [name] beside [originalPath], or in [folder]. A name already there gets a number.
+/// It's built under a `.part` name and renamed at the end, so a half-written folder never looks
+/// finished. Returns where the folder is.
+Future<String> saveFolderBesideOriginal(
+  String originalPath,
+  String name,
+  List<PortableFile> files, {
+  String? folder,
+}) async {
+  final into = folder ?? p.dirname(originalPath);
+  var target = p.join(into, name);
+  for (var n = 2; FileSystemEntity.typeSync(target) != FileSystemEntityType.notFound; n++) {
+    target = p.join(into, '$name $n');
+  }
+  final part = Directory('$target.part');
+  try {
+    for (final file in files) {
+      final path = p.joinAll([part.path, ...file.name.split('/')]);
+      // The archive engine already refused paths that leave the folder; this makes sure.
+      if (!p.isWithin(part.path, path)) throw Fail.pointsOutside(name);
+      await Directory(p.dirname(path)).create(recursive: true);
+      await File(path).writeAsBytes(file.bytes);
+    }
+    await part.rename(target);
+  } on FileSystemException {
+    if (part.existsSync()) part.deleteSync(recursive: true);
+    throw Fail.cantSaveBeside(name);
+  }
+  return target;
+}
+
 /// Writes [file] next to the file it came from, or into [folder] if given, under a free name.
 /// Returns where. Originals and anything else already there are never replaced.
 Future<String> saveBesideOriginal(String originalPath, PortableFile file, {String? folder}) async {

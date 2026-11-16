@@ -83,8 +83,10 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   phone's encoders, saving through the system dialog. It writes only MP4 and M4A (`phoneMediaOutputs`), so the
   phone's menu leaves out WebM, MOV, WAV and Opus.
 - Archives on every platform through `core/lib/src/portable_archive.dart` (pure Dart, `archive` package, MIT):
-  ZIP, TAR, TAR.GZ and GZ to ZIP or TAR.GZ, and Extract. Extract gives each file its own Save button, flat, up to
-  50 files, since a browser or phone can't simply save a folder. Saving a whole folder needs screens per platform.
+  ZIP, TAR, TAR.GZ and GZ to ZIP or TAR.GZ, and Extract. On a phone or in a browser Extract gives each file its own
+  Save button, flat, up to 50 files. On a desktop (`_savesBeside`) it asks for `keepFolders`, so names are paths,
+  and `saveFolderBesideOriginal` writes `name (extracted)` beside the archive (numbered if taken, built as `.part`
+  and renamed); that folder is the result, and Undo and Show in folder take folders.
   It refuses `../` paths and stops past 1 GB opened, counting what really comes out.
 - 7z and RAR are read but never written: each platform unpacks them into a ZIP, as HEIC becomes a PNG, then the archive
   engine takes over (`canRunUnpacked`). All use libarchive (BSD). macOS: its own, through `dart:ffi`

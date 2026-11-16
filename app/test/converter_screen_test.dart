@@ -572,6 +572,46 @@ void main() {
       expect(ZipDecoder().decodeBytes(saved.last.bytes).files, hasLength(2));
     });
 
+    testWidgets('on a desktop Extract makes a folder beside the archive, folders and all', (
+      tester,
+    ) async {
+      final folder = Directory.systemTemp.createTempSync('radial_extract_');
+      addTearDown(() => folder.deleteSync(recursive: true));
+      final archive = Archive()
+        ..addFile(ArchiveFile.string('docs/a.txt', 'one'))
+        ..addFile(ArchiveFile.string('b.txt', 'two'));
+      final bytes = Uint8List.fromList(ZipEncoder().encodeBytes(archive));
+      final path = p.join(folder.path, 'box.zip');
+      File(path).writeAsBytesSync(bytes);
+      // A folder already named that is never touched: the new one gets a number.
+      Directory(p.join(folder.path, 'box (extracted)')).createSync();
+      toPick = [
+        PickedFile(
+          name: 'box.zip',
+          size: bytes.length,
+          head: bytes.sublist(0, 64),
+          read: () async => bytes,
+          path: path,
+        ),
+      ];
+      await pump(tester, savesBeside: true);
+      await chooseFiles(tester);
+      await tester.tap(find.text('Tools'));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('Extract'));
+      final made = Directory(p.join(folder.path, 'box (extracted) 2'));
+      for (var i = 0; i < 250 && !made.existsSync(); i++) {
+        await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await tester.pump();
+      }
+      await settleWork(tester);
+      expect(File(p.join(made.path, 'docs', 'a.txt')).readAsStringSync(), 'one');
+      expect(File(p.join(made.path, 'b.txt')).readAsStringSync(), 'two');
+      expect(Directory(p.join(folder.path, 'box (extracted)')).listSync(), isEmpty);
+      expect(find.text('box (extracted) 2'), findsOneWidget);
+      expect(Directory('${made.path}.part').existsSync(), isFalse);
+    });
+
     testWidgets('on a desktop each goes beside its own original, with no question', (tester) async {
       final folder = Directory.systemTemp.createTempSync('radial_save_all_');
       addTearDown(() => folder.deleteSync(recursive: true));

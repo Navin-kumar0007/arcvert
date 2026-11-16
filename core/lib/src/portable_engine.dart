@@ -113,6 +113,7 @@ Future<List<PortableFile>> runPortable(
           kinds[i],
           password: options.password,
           newPassword: options.newPassword,
+          keepFolders: options.keepFolders,
         ),
       );
       step(1);

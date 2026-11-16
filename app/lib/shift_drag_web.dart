@@ -17,6 +17,16 @@ Future<String> saveBesideOriginal(String originalPath, PortableFile file, {Strin
   throw UnsupportedError('No folders in a browser');
 }
 
+/// Only a desktop has a folder to save beside.
+Future<String> saveFolderBesideOriginal(
+  String originalPath,
+  String name,
+  List<PortableFile> files, {
+  String? folder,
+}) {
+  throw UnsupportedError('No folders in a browser');
+}
+
 /// Only a desktop has a window to bring forward from behind other apps.
 void showAppWindow() {}
 
