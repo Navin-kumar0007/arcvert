@@ -108,6 +108,8 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   Size limits try a few sample pages first, because redrawing all of a long PDF per step takes minutes,
   and they stop at 72 dpi rather than produce something unreadable. It works on the page in a browser, so
   long PDFs stutter; moving JPEG encoding into the worker would fix that.
+- The owner tried the 0.13.0 draft on a Mac, Windows, an Android phone and an iPhone with the web app (16 Nov 2026) and
+  reports everything worked, Windows included: the first time the Windows app was run.
 - The owner has tried the apps on a MacBook, an Android phone and an iPhone (5 Nov 2026) and reports they work, including
   on the Mac Shift-drag from Finder, dragging results out, history and undo. Windows is still to come. Not yet tried:
   a form photo on a real form, a real iPhone HEIC photo.

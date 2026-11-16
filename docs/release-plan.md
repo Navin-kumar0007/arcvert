@@ -143,6 +143,16 @@ owner chose to ship the new look with Copy details and move the other planned it
 - **Quality levels on Compress's outer ring**: high, medium and small, honoured by every engine. **Done**
   (`CompressLevel`, 16 November 2026): Balanced, Best quality, Smallest.
 
+## 0.14.0: pages, details and habits
+
+Started 16 November 2026, after the owner tried 0.13.0 on every platform.
+
+- **PDF page picker**: Extract pages with a grid of page pictures to tap, and the range typed, such as 1-3, 7.
+- **Keep photo details (EXIF) while removing location**, as the plan asks; outputs drop all of it today.
+- **Extract an archive to a folder** on a desktop, instead of one Save per file.
+- **Learned slice order**: the most-used actions move to the easiest slots, learned on the device only.
+- **Changing the trigger key** from Shift.
+
 ## Later, before 1.0
 
 - Learned slice order: the most-used actions move to the easiest slots, learned on the device only.
