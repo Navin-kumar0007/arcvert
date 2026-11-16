@@ -61,18 +61,7 @@ Future<List<PortableFile>> convert(
     actionId: action.id.toJS,
     files: [for (final file in files) WorkerFile(name: file.name.toJS, bytes: file.bytes.toJS)]
         .toJS,
-    cropLeft: options.crop?.left.toJS,
-    cropTop: options.crop?.top.toJS,
-    cropWidth: options.crop?.width.toJS,
-    cropHeight: options.crop?.height.toJS,
-    shiftMilliseconds: options.shift?.inMilliseconds.toJS,
-    password: options.password?.toJS,
-    newPassword: options.newPassword?.toJS,
-    forForm: options.form == null ? null : true.toJS,
-    formWidth: options.form?.width?.toJS,
-    formHeight: options.form?.height?.toJS,
-    formMinBytes: options.form?.minBytes?.toJS,
-    formMaxBytes: options.form?.maxBytes?.toJS,
+    options: options.toWire().jsify(),
   );
   worker.postMessage(request);
   return done.future;

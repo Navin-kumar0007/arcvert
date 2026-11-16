@@ -15,33 +15,10 @@ void main() {
   }).toJS;
 }
 
+/// Every choice the page sent, as it sent them.
 ActionOptions _options(WorkerRequest request) {
-  final left = request.cropLeft;
-  final top = request.cropTop;
-  final width = request.cropWidth;
-  final height = request.cropHeight;
-  final shift = request.shiftMilliseconds;
-  return ActionOptions(
-    crop: left == null || top == null || width == null || height == null
-        ? null
-        : (
-            left: left.toDartInt,
-            top: top.toDartInt,
-            width: width.toDartInt,
-            height: height.toDartInt,
-          ),
-    shift: shift == null ? null : Duration(milliseconds: shift.toDartInt),
-    password: request.password?.toDart,
-    newPassword: request.newPassword?.toDart,
-    form: request.forForm == null
-        ? null
-        : FormTarget(
-            width: request.formWidth?.toDartInt,
-            height: request.formHeight?.toDartInt,
-            minBytes: request.formMinBytes?.toDartInt,
-            maxBytes: request.formMaxBytes?.toDartInt,
-          ),
-  );
+  final wire = request.options?.dartify();
+  return wire is Map ? ActionOptions.fromWire(wire) : const ActionOptions();
 }
 
 Future<void> _handle(WorkerRequest request) async {

@@ -8,39 +8,14 @@ extension type WorkerFile._(JSObject _) implements JSObject {
   external JSUint8Array get bytes;
 }
 
-/// What the page sends the worker.
+/// What the page sends the worker: the action, the files, and every choice for it as plain
+/// values (`ActionOptions.toWire`), so none can be left behind on the way.
 extension type WorkerRequest._(JSObject _) implements JSObject {
-  external factory WorkerRequest({
-    JSString actionId,
-    JSArray<WorkerFile> files,
-    JSNumber? cropLeft,
-    JSNumber? cropTop,
-    JSNumber? cropWidth,
-    JSNumber? cropHeight,
-    JSNumber? shiftMilliseconds,
-    JSString? password,
-    JSString? newPassword,
-    JSNumber? formWidth,
-    JSNumber? formHeight,
-    JSNumber? formMinBytes,
-    JSNumber? formMaxBytes,
-    JSBoolean? forForm,
-  });
+  external factory WorkerRequest({JSString actionId, JSArray<WorkerFile> files, JSAny? options});
 
   external JSString get actionId;
   external JSArray<WorkerFile> get files;
-  external JSNumber? get cropLeft;
-  external JSNumber? get cropTop;
-  external JSNumber? get cropWidth;
-  external JSNumber? get cropHeight;
-  external JSNumber? get shiftMilliseconds;
-  external JSString? get password;
-  external JSString? get newPassword;
-  external JSNumber? get formWidth;
-  external JSNumber? get formHeight;
-  external JSNumber? get formMinBytes;
-  external JSNumber? get formMaxBytes;
-  external JSBoolean? get forForm;
+  external JSAny? get options;
 }
 
 /// What the worker sends back: progress, then the results or why it failed.

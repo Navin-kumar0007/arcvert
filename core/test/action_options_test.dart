@@ -55,4 +55,46 @@ void main() {
     expect(withPassword.newPassword, 'n');
     expect(withPassword.startSeconds, 2);
   });
+
+  group('to and from a browser worker', () {
+    const everything = ActionOptions(
+      longSide: 1280,
+      crop: (left: 1, top: 2, width: 3, height: 4),
+      degrees: 270,
+      flipVertical: true,
+      startSeconds: 1.5,
+      endSeconds: 9.25,
+      pages: '1-3,7',
+      password: 'open sesame',
+      newPassword: 'new one',
+      audioKbps: 128,
+      targetMb: 0.5,
+      shift: Duration(milliseconds: -1500),
+      form: FormTarget(width: 140, height: 60, minBytes: 10240, maxBytes: 20000),
+    );
+
+    test('every choice comes back as it went', () {
+      final back = ActionOptions.fromWire(everything.toWire());
+      expect(back.toWire(), everything.toWire());
+      expect(back.degrees, 270);
+      expect(back.flipVertical, isTrue);
+      expect(back.longSide, 1280);
+    });
+
+    test('a new choice has to be added here too', () {
+      // ActionOptions has 13 choices. One added without toWire and fromWire reaches every engine
+      // but a browser's, as Rotate's and Resize's ring choices once did.
+      expect(everything.toWire().keys, hasLength(13));
+      expect(everything.toWire().values.where((value) => value == null), isEmpty);
+    });
+
+    test('numbers survive a browser, where whole numbers and decimals are one kind', () {
+      final wire = everything.toWire()
+        ..['degrees'] = 270.0
+        ..['crop'] = [1.0, 2.0, 3.0, 4.0];
+      final back = ActionOptions.fromWire(wire);
+      expect(back.degrees, 270);
+      expect(back.crop, (left: 1, top: 2, width: 3, height: 4));
+    });
+  });
 }
