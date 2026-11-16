@@ -19,6 +19,7 @@ const _pdfActions = {
   'pdf-extract-pages',
   'pdf-rotate',
   'pdf-compress',
+  'pdf-add-password',
   'pdf-remove-password',
   'fit-email-pdf',
   'fit-pdf-100kb',
@@ -184,12 +185,37 @@ Future<PdfResult> _one(
       return PdfResult(PortableFile(_name(action, file.name, 'pdf'), bytes));
     case 'pdf-compress':
       return _compress(action, file, document, step, options.compress);
+    case 'pdf-add-password':
+      final secret = options.newPassword;
+      if (secret == null || secret.isEmpty) throw Fail.addPasswordNeedsOne;
+      final bytes = await _locked(file, document, secret);
+      return PdfResult(PortableFile(_name(action, file.name, 'pdf'), bytes));
     case 'pdf-remove-password':
       if (!isPdfLocked(file.bytes)) throw Fail.noPasswordToRemove(file.name);
       final bytes = await document.encodePdf(removeSecurity: true);
       return PdfResult(PortableFile(_name(action, file.name, 'pdf'), bytes));
   }
   return _fit(action, file, document, step);
+}
+
+/// [file] locked with [password] by `lockPdf`, which rewrites the file as it is, so nothing is
+/// lost. A locked PDF goes through PDFium first, which takes the old password off, and so does one
+/// whose structure `lockPdf` can't follow, as PDFium mends what it opens.
+Future<Uint8List> _locked(PortableFile file, PdfDocument document, String password) async {
+  if (!isPdfLocked(file.bytes)) {
+    try {
+      return lockPdf(file.bytes, password);
+    } on FormatException catch (error) {
+      debugPrint('Locking ${file.name} through PDFium instead: ${error.message}');
+    }
+  }
+  final plain = await document.encodePdf(removeSecurity: true);
+  try {
+    return lockPdf(plain, password);
+  } on FormatException catch (error) {
+    debugPrint('Could not lock ${file.name}: ${error.message}');
+    throw Fail.damaged(file.name);
+  }
 }
 
 /// Uses the sharpest step that a few sample pages suggest will really help. Pages that are mostly

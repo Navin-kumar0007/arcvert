@@ -268,8 +268,12 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.
 - Passwords: a locked PDF or ZIP throws `PasswordNeeded`, and the screen asks and runs it again, so every action handles
   locked files with no code of its own. The right password is tried on the next file of a batch before asking, and lasts
-  only for that job. Remove password runs on PDFs through PDFium; Add password runs on archives and always makes an AES
-  ZIP. Adding one to a PDF is not offered: it needs qpdf, which isn't bundled. Merging only takes one password. Results
+  only for that job. Remove password runs on PDFs through PDFium; Add password makes an AES ZIP from archives, and on PDFs
+  runs `lockPdf` (`core/lib/src/pdf_lock.dart`, AES-256 revision 6, our own `aes.dart`): pure Dart, so no qpdf is bundled.
+  It rewrites the file itself, following xref tables and streams, object streams and updates; a locked PDF, or one it
+  can't follow (`FormatException`), goes through PDFium's `encodePdf(removeSecurity: true)` first (`_locked` in
+  `pdf_engine.dart`). Checked on the 57 Downloads PDFs with qpdf, PDFium and PDFKit; `pdf_lock_web_test.dart` makes CI
+  compare its bytes in Chrome. Merging only takes one password. Results
   redrawn or rebuilt (Compress, Split, Merge) have no password; Rotate keeps it. PDFium leaves the old encryption
   details behind as an unused object after removing a password, so hashes of it stay in the file.
 - Never use pdfrx's `isEncrypted`: in a browser it's false for nearly all locked PDFs. `isPdfLocked` reads the file.
@@ -395,7 +399,7 @@ tag. The list below is older and finer-grained.
 Updated 16 November 2026: 0.10 to 0.14 are built, Windows has been run by the owner, and Extract to a folder and
 Compress levels are done.
 
-1. Adding a password to a PDF, once qpdf is bundled. Multi-part RAR files.
+1. Multi-part RAR files.
 2. Try a real iPhone HEIC photo, on every platform.
 3. PDF to DOCX: tables whose cells wrap, pictures inside form objects, italic; scans need OCR. Try the trim preview on
    real long videos: a seek far into one may be slow on a phone.

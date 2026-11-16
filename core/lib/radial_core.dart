@@ -15,6 +15,7 @@ export 'src/media_plan.dart';
 export 'src/menu_pages.dart';
 export 'src/naming.dart';
 export 'src/page_range.dart';
+export 'src/pdf_lock.dart' show lockPdf;
 export 'src/pdf_text_layout.dart';
 export 'src/pdf_writer.dart';
 export 'src/portable_archive.dart' show canRunUnpacked, maxOpenedBytes, zipFiles;

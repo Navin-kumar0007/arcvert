@@ -15,6 +15,7 @@ const _askFirst = {
   'video-trim',
   'audio-trim',
   'archive-add-password',
+  'pdf-add-password',
   'image-form',
   'pdf-extract-pages',
 };
@@ -45,7 +46,7 @@ Future<ActionOptions?> askForOptions(
     builder: (context) => switch (action.id) {
       'image-crop' => CropDialog(loadPicture: loadPicture),
       'subtitle-shift' => const ShiftDialog(),
-      'archive-add-password' => const AddPasswordDialog(),
+      'archive-add-password' || 'pdf-add-password' => const AddPasswordDialog(),
       _ => TrimDialog(preview: trimPreview),
     },
   );

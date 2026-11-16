@@ -35,6 +35,11 @@ jobs:
           dart pub get
           dart analyze
           dart test
+      # The browser's JavaScript numbers must give the same encryption as everywhere else.
+      - name: Test core's encryption in a browser
+        if: runner.os == 'Linux'
+        working-directory: core
+        run: dart test -p chrome test/aes_test.dart test/pdf_lock_web_test.dart
       # PDFium, which the PDF engine downloads from GitHub while building.
       - name: Reuse PDFium
         uses: actions/cache@v4

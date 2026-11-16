@@ -86,7 +86,7 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Photo details.** Converting, compressing, turning, flipping, resizing or cropping a photo keeps when it was taken, the camera and lens, and how it was exposed. Where it was taken is always removed, along with serial numbers and the owner's name. **Make it fit** and **Strip metadata** remove every detail, as those files are made to be sent.
 
-**Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet, and neither can a RAR in several parts. A password can be added to an archive, but not yet to a PDF.
+**Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet, and neither can a RAR in several parts. A password can be added to an archive or a PDF (**Add password** in Tools): type it twice, as nobody can open the result without it. A PDF gets AES-256, which every current PDF reader opens with the password. Adding one to a PDF that already has a password replaces it.
 
 **Limits.** Pictures, PDFs and archives work in memory, up to 1 GB across a job, and folders open up to 200 files. Very large videos work, as they're read piece by piece.
 

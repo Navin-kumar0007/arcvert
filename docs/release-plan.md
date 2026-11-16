@@ -163,8 +163,10 @@ after 0.13.0.
 
 The rest moved into 0.14 and is done. Still open:
 
-- Add a password to a PDF, once qpdf is bundled with the app.
 - RAR files in several parts.
+
+Done since 0.14, for the next release: **Add password to a PDF** (`lockPdf`, 16 November 2026), in pure Dart rather than
+by bundling qpdf, so it works on every platform.
 
 ## 1.0 checklist (launch 12 April 2027)
 

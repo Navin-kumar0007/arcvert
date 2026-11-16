@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **Add password** to a PDF, on every platform: typed twice, then only that password opens the result, in any PDF
+  reader. AES-256, the strongest PDF encryption. A PDF that already has a password asks for it first, and the result
+  opens with the new one only. The original is never changed.
+
 ## 0.14.0 (beta, 16 November 2026)
 
 - **Extract pages** from a PDF, on every platform: pick pages from pictures of each, or type them, such as 1-3, 7.

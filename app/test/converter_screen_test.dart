@@ -16,6 +16,7 @@ import 'package:shiftdrop/home_parts.dart';
 import 'package:shiftdrop/theme.dart';
 import 'package:shiftdrop/thumb_arc.dart';
 import 'package:shiftdrop/converter_screen.dart';
+import 'package:shiftdrop/option_screens.dart' show needsOptions;
 import 'package:shiftdrop/radial_menu.dart';
 import 'package:shiftdrop/words.dart';
 
@@ -1326,6 +1327,12 @@ void main() {
         );
         expect(ids(kind), isNot(contains('archive-to-7z')));
       }
+    });
+
+    test('a PDF can take a password, asked for first, so never in a Shift-drag', () {
+      final tools = availableActions(const [FileKind.pdf], ActionMode.tools, mediaAvailable: false);
+      final lock = tools.firstWhere((a) => a.id == 'pdf-add-password');
+      expect(needsOptions(lock), isTrue);
     });
 
     test('a HEIC photo can join other pictures, given the engine that reads it', () {

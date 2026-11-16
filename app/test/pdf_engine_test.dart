@@ -112,8 +112,8 @@ void main() {
       expect(canRunPdf(actionById('pdf-remove-password')!, FileKind.pdf), isTrue);
     });
 
-    test('adding a password needs qpdf, which isn\'t bundled', () {
-      expect(canRunPdf(actionById('pdf-add-password')!, FileKind.pdf), isFalse);
+    test('adding a password is here too, locked in Dart', () {
+      expect(canRunPdf(actionById('pdf-add-password')!, FileKind.pdf), isTrue);
     });
 
     test('only PDFs', () {
@@ -476,6 +476,64 @@ void main() {
         run('pdf-remove-password', [pdf('plain.pdf', 1, width: 50, height: 50)]),
         throwsA(isA<EngineFailed>().having((e) => e.message, 'message', contains('no password'))),
       );
+    });
+
+    group('adding a password', () {
+      Future<Uint8List> lock(PortableFile file, {ActionOptions? options}) async {
+        final out = (await run('pdf-add-password', [
+          file,
+        ], options: options ?? const ActionOptions(newPassword: 'tea time'))).single;
+        expect(out.file.name, '${p.basenameWithoutExtension(file.name)} (protected).pdf');
+        return out.file.bytes;
+      }
+
+      test('PDFium needs it to open the result, and the pages are all there', () async {
+        final bytes = await lock(pdf('plain.pdf', 2, width: 50, height: 50));
+        expect(isPdfLocked(bytes), isTrue);
+        expect(await opensFreely(bytes), isFalse);
+        await expectLater(
+          run('pdf-to-jpg', [PortableFile('x.pdf', bytes)]),
+          throwsA(isA<PasswordNeeded>()),
+        );
+        final opened = (await run('pdf-to-png', [
+          PortableFile('x.pdf', bytes),
+        ], options: const ActionOptions(password: 'tea time'))).single;
+        expect(detectKind(opened.file.bytes), FileKind.zip);
+        final back = (await run('pdf-remove-password', [
+          PortableFile('x.pdf', bytes),
+        ], options: const ActionOptions(password: 'tea time'))).single;
+        expect(await pagesIn(back.file.bytes), 2);
+      });
+
+      test('a locked PDF swaps its old password for the new one', () async {
+        final bytes = await lock(
+          locked,
+          options: const ActionOptions(password: 'open sesame', newPassword: 'new one'),
+        );
+        final file = PortableFile('x.pdf', bytes);
+        await expectLater(
+          run('pdf-to-jpg', [file], options: right),
+          throwsA(isA<PasswordNeeded>()),
+        );
+        final out = await run('pdf-to-jpg', [
+          file,
+        ], options: const ActionOptions(password: 'new one'));
+        expect(out, hasLength(1));
+      });
+
+      test('a locked PDF still asks for its own password first', () async {
+        await expectLater(
+          run('pdf-add-password', [locked], options: const ActionOptions(newPassword: 'x')),
+          throwsA(isA<PasswordNeeded>()),
+        );
+      });
+
+      test('it needs a password to add', () async {
+        await expectLater(
+          run('pdf-add-password', [pdf('plain.pdf', 1, width: 50, height: 50)]),
+          throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'addPasswordNeedsOne')),
+        );
+      });
     });
 
     test('rotating leaves it locked, as nobody asked to unlock it', () async {
