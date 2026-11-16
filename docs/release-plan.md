@@ -161,11 +161,10 @@ after 0.13.0.
 
 ## Later, before 1.0
 
-- Learned slice order: the most-used actions move to the easiest slots, learned on the device only.
-- A page picker for splitting and extracting PDF pages.
-- Keep photo details (EXIF) while removing location, as the plan asks; outputs drop all of it today.
-- Changing the trigger key from Shift.
-- Extract an archive to a folder. Add a password to a PDF once qpdf is bundled. RAR files in several parts.
+The rest moved into 0.14 and is done. Still open:
+
+- Add a password to a PDF, once qpdf is bundled with the app.
+- RAR files in several parts.
 
 ## 1.0 checklist (launch 12 April 2027)
 
