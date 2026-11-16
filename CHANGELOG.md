@@ -45,6 +45,12 @@
   pictures to compare them, sizes and weights underneath, a small picture on each result, and Enlarge to zoom in.
   Settings turns them off.
 
+## 0.10.1 (beta, 16 November 2026)
+
+- Fixed in the web app: Rotate's 180° and 90° left, Flip's upside down and Resize's sizes from the outer ring ran as
+  the slice's first choice, as the worker that converts in a browser was never told the choice. The apps for Mac,
+  Windows and Android were not affected.
+
 ## 0.10.0 (beta, 11 November 2026)
 
 This is the first version that tells you about the next one. Copies of 0.9 don't check, so install this one by hand.

@@ -22,6 +22,14 @@ Releases are prepared ahead and published one after another, with time to test e
 4. About two days later, update `docs/site/version.json`, so copies from the website offer the new version.
 
 Publish in version order, as GitHub's "latest" release, which the site's Download buttons use, follows commit date.
+A patch built after later versions were tagged, as 0.10.1 was, is newer by date than them: when publishing those, pass
+`--latest` (`gh release edit vX.Y.Z --draft=false --latest`) so Latest moves on to them.
+
+## 0.10.1: web worker fix
+
+Patch on `main` (branch `release-0.10.1`), 16 November 2026: the browser's conversion worker was never told ring
+choices, so in the web app Rotate 180° and 90° left, Flip upside down and Resize's sizes ran as the first choice.
+Published at once, as the live web app had it. 0.11 to 0.13 carry the same fix (`ActionOptions.toWire`).
 
 ## 0.10.0: guide, update check, Tools in Shift-drag
 
