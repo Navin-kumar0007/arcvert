@@ -1402,7 +1402,7 @@ class WordsEn extends Words {
 
   @override
   String get helpOffline =>
-      'Help works without the internet. Reporting a problem or suggesting an idea opens GitHub in your browser.';
+      'Help works without the internet. Reports and ideas open in your email app or browser, for you to send.';
 
   @override
   String get faqConvertQ => 'How do I convert a file?';
@@ -1527,7 +1527,7 @@ class WordsEn extends Words {
 
   @override
   String get reportProblemWhy =>
-      'Fills in a new report on GitHub for you to read and send. Nothing is sent until you send it.';
+      'Fills in a report for you to read and send yourself. Nothing is sent until you send it.';
 
   @override
   String get reportWhatHappened => 'What happened?';
@@ -1540,7 +1540,7 @@ class WordsEn extends Words {
   String get reportIncludes => 'Also included:';
 
   @override
-  String get reportOpen => 'Open on GitHub';
+  String get reportOpen => 'Report on GitHub';
 
   @override
   String get reportCopy => 'Copy instead';
@@ -1552,7 +1552,7 @@ class WordsEn extends Words {
   String get suggestFeature => 'Suggest a feature';
 
   @override
-  String get suggestFeatureWhy => 'Opens GitHub, where ideas are talked over in the open.';
+  String get suggestFeatureWhy => 'Fills in a message for you to finish and send.';
 
   @override
   String whatsNewTitle(Object version) {
@@ -1579,4 +1579,15 @@ class WordsEn extends Words {
 
   @override
   String get whatsNewSee => 'See';
+
+  @override
+  String get reportEmail => 'Send by email';
+
+  @override
+  String get suggestOnGitHub => 'Suggest on GitHub';
+
+  @override
+  String writeToUs(Object address) {
+    return 'Or write to $address';
+  }
 }

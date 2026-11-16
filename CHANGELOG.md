@@ -4,8 +4,9 @@
 
 - **Help**, the new **?** at the top: common questions for your device, searchable, keyboard shortcuts, and what's
   new. Works without the internet.
-- **Report a problem** fills in a report on GitHub, showing you everything it holds first, and **Suggest a feature**
-  opens GitHub for ideas. The app sends nothing: you send it, or copy it instead.
+- **Report a problem** fills in an email in your own email app, or a report on GitHub, showing you everything it holds
+  first, and **Suggest a feature** does the same for ideas. No account is needed for email. The app sends nothing: you
+  send it, or copy it instead.
 - After an update, a short note says what's new, once.
 
 ## 0.15.0 (beta, 16 November 2026)

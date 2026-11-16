@@ -15,17 +15,21 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         media = MediaEngine(this, flutterEngine.dartExecutor.binaryMessenger)
         share = ShareReceiver(this, flutterEngine.dartExecutor.binaryMessenger)
-        // Opens the newest version's page in the browser. The app itself has no permission to use
-        // the internet, and this needs none: the browser does the fetching.
+        // Opens the newest version's page in the browser, or a report as an email draft. The app
+        // itself has no permission to use the internet, and this needs none: the browser or the
+        // email app does the sending, if the person chooses to.
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "radial/pages")
             .setMethodCallHandler { call, result ->
                 val url = call.argument<String>("url")
-                if (call.method != "open" || url == null || !url.startsWith("https://")) {
+                val email = url?.startsWith("mailto:") == true
+                if (call.method != "open" || url == null || !(url.startsWith("https://") || email)) {
                     result.success(false)
                     return@setMethodCallHandler
                 }
                 try {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    // An email draft goes only to email apps.
+                    val action = if (email) Intent.ACTION_SENDTO else Intent.ACTION_VIEW
+                    startActivity(Intent(action, Uri.parse(url)))
                     result.success(true)
                 } catch (error: ActivityNotFoundException) {
                     result.success(false)

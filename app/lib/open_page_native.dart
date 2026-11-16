@@ -8,9 +8,13 @@ import 'shift_drag.dart';
 /// does the fetching.
 const _pages = MethodChannel('radial/pages');
 
-/// Opens a web page in the user's browser. Only `https` ones. False if it couldn't be done.
+/// What the app ever opens: web pages, and email drafts the person sends themselves.
+const openableSchemes = {'https', 'mailto'};
+
+/// Opens a web page in the user's browser, or an email draft in their email app. Only `https` and
+/// `mailto` addresses. False if it couldn't be done.
 Future<bool> openPage(Uri address) async {
-  if (address.scheme != 'https') return false;
+  if (!openableSchemes.contains(address.scheme)) return false;
   final arguments = {'url': address.toString()};
   try {
     if (Platform.isMacOS || Platform.isWindows) {

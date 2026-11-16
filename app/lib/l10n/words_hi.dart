@@ -1403,7 +1403,7 @@ class WordsHi extends Words {
 
   @override
   String get helpOffline =>
-      'मदद बिना इंटरनेट के चलती है। समस्या बताने या सुझाव देने पर आपके ब्राउज़र में GitHub खुलता है।';
+      'मदद बिना इंटरनेट के चलती है। रिपोर्ट और सुझाव आपके ईमेल ऐप या ब्राउज़र में खुलते हैं, ताकि आप उन्हें भेजें।';
 
   @override
   String get faqConvertQ => 'फ़ाइल कैसे बदलूँ?';
@@ -1528,7 +1528,7 @@ class WordsHi extends Words {
 
   @override
   String get reportProblemWhy =>
-      'GitHub पर एक नई रिपोर्ट भर देता है, जिसे आप पढ़कर भेजें। आपके भेजे बिना कुछ नहीं जाता।';
+      'एक रिपोर्ट भर देता है, जिसे आप पढ़कर खुद भेजें। आपके भेजे बिना कुछ नहीं जाता।';
 
   @override
   String get reportWhatHappened => 'क्या हुआ?';
@@ -1541,7 +1541,7 @@ class WordsHi extends Words {
   String get reportIncludes => 'यह भी जुड़ेगा:';
 
   @override
-  String get reportOpen => 'GitHub पर खोलें';
+  String get reportOpen => 'GitHub पर रिपोर्ट करें';
 
   @override
   String get reportCopy => 'इसकी जगह कॉपी करें';
@@ -1553,7 +1553,7 @@ class WordsHi extends Words {
   String get suggestFeature => 'कोई सुविधा सुझाएँ';
 
   @override
-  String get suggestFeatureWhy => 'GitHub खोलता है, जहाँ सुझावों पर खुलकर बात होती है।';
+  String get suggestFeatureWhy => 'एक संदेश भर देता है, जिसे आप पूरा करके भेजें।';
 
   @override
   String whatsNewTitle(Object version) {
@@ -1579,4 +1579,15 @@ class WordsHi extends Words {
 
   @override
   String get whatsNewSee => 'देखें';
+
+  @override
+  String get reportEmail => 'ईमेल से भेजें';
+
+  @override
+  String get suggestOnGitHub => 'GitHub पर सुझाएँ';
+
+  @override
+  String writeToUs(Object address) {
+    return 'या $address पर लिखें';
+  }
 }

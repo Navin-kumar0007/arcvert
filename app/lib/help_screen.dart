@@ -93,11 +93,14 @@ Future<void> openHelp(BuildContext context) {
 /// an idea fills in a page on GitHub and opens it in the browser, where the person sends it or
 /// doesn't. The app itself never sends anything.
 class HelpScreen extends StatefulWidget {
-  const HelpScreen({super.key, this.place, this.open = openPage});
+  const HelpScreen({super.key, this.place, this.open = openPage, this.email = supportEmail});
 
   /// Where the app runs. Null asks the platform.
   final HelpPlace? place;
   final Future<bool> Function(Uri address) open;
+
+  /// Where reports and ideas are emailed, or null to offer GitHub and copying only.
+  final String? email;
 
   @override
   State<HelpScreen> createState() => _HelpScreenState();
@@ -128,12 +131,15 @@ class _HelpScreenState extends State<HelpScreen> {
       platform: platformLabel,
       language: Localizations.localeOf(context).languageCode,
     );
+    final email = widget.email;
     final choice = await showDialog<_Report>(
       context: context,
-      builder: (_) => _ReportDialog(facts: facts),
+      builder: (_) => _ReportDialog(facts: facts, canEmail: email != null),
     );
     if (choice == null || !mounted) return;
-    if (choice.copy) {
+    if (choice.way == _Way.email && email != null) {
+      await _openOrSay(problemEmail(to: email, facts: facts, what: choice.what));
+    } else if (choice.way == _Way.copy) {
       final messenger = ScaffoldMessenger.maybeOf(context);
       final words = context.words;
       final text = [if (choice.what.trim().isNotEmpty) choice.what.trim(), facts].join('\n\n');
@@ -233,8 +239,28 @@ class _HelpScreenState extends State<HelpScreen> {
                     leading: const Icon(Icons.lightbulb_outline),
                     title: Text(words.suggestFeature),
                     subtitle: Text(words.suggestFeatureWhy),
-                    onTap: () => _openOrSay(featureIdea(appVersion: appVersion)),
+                    onTap: () => _openOrSay(
+                      widget.email == null
+                          ? featureIdea(appVersion: appVersion)
+                          : ideaEmail(to: widget.email!, appVersion: appVersion),
+                    ),
+                    // Email comes first where there is an address; GitHub stays for those who use it.
+                    trailing: widget.email == null
+                        ? null
+                        : IconButton(
+                            tooltip: words.suggestOnGitHub,
+                            icon: const Icon(Icons.open_in_new),
+                            onPressed: () => _openOrSay(featureIdea(appVersion: appVersion)),
+                          ),
                   ),
+                  if (widget.email case final email?)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: SelectableText(
+                        words.writeToUs(email),
+                        style: TextStyle(color: sd.muted, fontSize: 13),
+                      ),
+                    ),
                 ],
               ],
             ),
@@ -283,19 +309,22 @@ class _WhatsNew extends StatelessWidget {
   }
 }
 
-/// What the person chose in the report dialog: to open GitHub, or to copy the text instead.
+enum _Way { email, github, copy }
+
+/// What the person typed in the report dialog, and how they chose to send it.
 class _Report {
-  const _Report(this.what, {required this.copy});
+  const _Report(this.what, this.way);
 
   final String what;
-  final bool copy;
+  final _Way way;
 }
 
 /// Asks what happened, and shows exactly what else the report will hold before anything opens.
 class _ReportDialog extends StatefulWidget {
-  const _ReportDialog({required this.facts});
+  const _ReportDialog({required this.facts, required this.canEmail});
 
   final String facts;
+  final bool canEmail;
 
   @override
   State<_ReportDialog> createState() => _ReportDialogState();
@@ -355,13 +384,23 @@ class _ReportDialogState extends State<_ReportDialog> {
       actions: [
         TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(words.cancel)),
         TextButton(
-          onPressed: () => Navigator.of(context).pop(_Report(_what.text, copy: true)),
+          onPressed: () => Navigator.of(context).pop(_Report(_what.text, _Way.copy)),
           child: Text(words.reportCopy),
         ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(_Report(_what.text, copy: false)),
-          child: Text(words.reportOpen),
-        ),
+        if (widget.canEmail) ...[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(_Report(_what.text, _Way.github)),
+            child: Text(words.reportOpen),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(_Report(_what.text, _Way.email)),
+            child: Text(words.reportEmail),
+          ),
+        ] else
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(_Report(_what.text, _Way.github)),
+            child: Text(words.reportOpen),
+          ),
       ],
     );
   }

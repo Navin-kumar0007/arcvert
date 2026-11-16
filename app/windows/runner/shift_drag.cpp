@@ -378,7 +378,8 @@ ShiftDrag::ShiftDrag(flutter::BinaryMessenger* messenger, HWND app_window)
         }
       }
     } else if (call.method_name() == "openPage") {
-      // Only web pages, as a page is all the app ever opens: the newest version's download.
+      // Only web pages and email drafts: the newest version's download, and a report the person
+      // sends from their own email app.
       std::string url;
       if (const auto* map = std::get_if<EncodableMap>(call.arguments())) {
         const auto found = map->find(EncodableValue("url"));
@@ -387,7 +388,7 @@ ShiftDrag::ShiftDrag(flutter::BinaryMessenger* messenger, HWND app_window)
         }
       }
       bool opened = false;
-      if (url.rfind("https://", 0) == 0) {
+      if (url.rfind("https://", 0) == 0 || url.rfind("mailto:", 0) == 0) {
         const HINSTANCE done = ::ShellExecuteW(nullptr, L"open", WideFromUtf8(url).c_str(),
                                                nullptr, nullptr, SW_SHOWNORMAL);
         // ShellExecute answers with a number above 32 when it worked.

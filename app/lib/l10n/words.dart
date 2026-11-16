@@ -2412,7 +2412,7 @@ abstract class Words {
   /// No description provided for @helpOffline.
   ///
   /// In en, this message translates to:
-  /// **'Help works without the internet. Reporting a problem or suggesting an idea opens GitHub in your browser.'**
+  /// **'Help works without the internet. Reports and ideas open in your email app or browser, for you to send.'**
   String get helpOffline;
 
   /// No description provided for @faqConvertQ.
@@ -2628,7 +2628,7 @@ abstract class Words {
   /// No description provided for @reportProblemWhy.
   ///
   /// In en, this message translates to:
-  /// **'Fills in a new report on GitHub for you to read and send. Nothing is sent until you send it.'**
+  /// **'Fills in a report for you to read and send yourself. Nothing is sent until you send it.'**
   String get reportProblemWhy;
 
   /// No description provided for @reportWhatHappened.
@@ -2652,7 +2652,7 @@ abstract class Words {
   /// No description provided for @reportOpen.
   ///
   /// In en, this message translates to:
-  /// **'Open on GitHub'**
+  /// **'Report on GitHub'**
   String get reportOpen;
 
   /// No description provided for @reportCopy.
@@ -2676,7 +2676,7 @@ abstract class Words {
   /// No description provided for @suggestFeatureWhy.
   ///
   /// In en, this message translates to:
-  /// **'Opens GitHub, where ideas are talked over in the open.'**
+  /// **'Fills in a message for you to finish and send.'**
   String get suggestFeatureWhy;
 
   /// No description provided for @whatsNewTitle.
@@ -2720,6 +2720,24 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'See'**
   String get whatsNewSee;
+
+  /// No description provided for @reportEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send by email'**
+  String get reportEmail;
+
+  /// No description provided for @suggestOnGitHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest on GitHub'**
+  String get suggestOnGitHub;
+
+  /// No description provided for @writeToUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Or write to {address}'**
+  String writeToUs(Object address);
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

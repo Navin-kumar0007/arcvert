@@ -86,9 +86,10 @@ class MainFlutterWindow: NSWindow {
         NativeWords.set(call.arguments)
         result(nil)
       case "openPage":
-        // Only web pages, as a page is all the app ever opens: the newest version's download.
+        // Only web pages and email drafts: the newest version's download, and a report the person
+        // sends from their own email app.
         let address = (call.arguments as? [String: Any])?["url"] as? String ?? ""
-        guard let url = URL(string: address), url.scheme == "https" else {
+        guard let url = URL(string: address), url.scheme == "https" || url.scheme == "mailto" else {
           result(false)
           return
         }

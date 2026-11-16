@@ -9,7 +9,7 @@ void main() {
   late List<Uri> opened;
   var opens = true;
 
-  Future<void> pump(WidgetTester tester, HelpPlace place, {Locale? locale}) async {
+  Future<void> pump(WidgetTester tester, HelpPlace place, {Locale? locale, String? email}) async {
     opened = [];
     tester.view.physicalSize = const Size(900, 2400);
     tester.view.devicePixelRatio = 1;
@@ -21,6 +21,7 @@ void main() {
         supportedLocales: Words.supportedLocales,
         home: HelpScreen(
           place: place,
+          email: email,
           open: (address) async {
             opened.add(address);
             return opens;
@@ -83,7 +84,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('ShiftDrop $appVersion'), findsOne);
     await tester.enterText(find.byType(TextField).last, 'The PDF came out blank.');
-    await tester.tap(find.text('Open on GitHub'));
+    await tester.tap(find.text('Report on GitHub'));
     await tester.pumpAndSettle();
     final address = opened.single;
     expect(address.host, 'github.com');
@@ -143,5 +144,41 @@ void main() {
     await pump(tester, HelpPlace.mac, locale: const Locale('hi'));
     expect(find.text('मदद'), findsOne);
     expect(find.text('समस्या बताएँ'), findsOne);
+  });
+
+  group('with a support address', () {
+    const address = 'help@example.org';
+
+    testWidgets('a report goes by email first, as a draft to send', (tester) async {
+      await pump(tester, HelpPlace.phone, email: address);
+      await tester.tap(find.text('Report a problem'));
+      await tester.pumpAndSettle();
+      expect(find.text('Report on GitHub'), findsOne, reason: 'GitHub stays as a second way');
+      await tester.enterText(find.byType(TextField).last, 'Nothing happened.');
+      await tester.tap(find.text('Send by email'));
+      await tester.pumpAndSettle();
+      final draft = opened.single;
+      expect(draft.scheme, 'mailto');
+      expect(draft.path, address);
+      expect(draft.queryParameters['body'], startsWith('Nothing happened.'));
+    });
+
+    testWidgets('an idea goes by email, or GitHub from its own button', (tester) async {
+      await pump(tester, HelpPlace.mac, email: address);
+      expect(find.text('Or write to $address'), findsOne);
+      await tester.tap(find.text('Suggest a feature'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Suggest on GitHub'));
+      await tester.pumpAndSettle();
+      expect(opened.map((uri) => uri.scheme), ['mailto', 'https']);
+    });
+  });
+
+  testWidgets('without one, there is no email button or address', (tester) async {
+    await pump(tester, HelpPlace.mac);
+    expect(find.textContaining('write to'), findsNothing);
+    await tester.tap(find.text('Report a problem'));
+    await tester.pumpAndSettle();
+    expect(find.text('Send by email'), findsNothing);
   });
 }
