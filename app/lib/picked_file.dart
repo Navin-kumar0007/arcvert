@@ -12,6 +12,8 @@ class PickedFile {
     required this.read,
     this.webUrl,
     this.path,
+    this.moreParts = const [],
+    this.missingPart,
   });
 
   final String name;
@@ -26,6 +28,49 @@ class PickedFile {
 
   /// On a desktop, where the file is on disk.
   final String? path;
+
+  /// A RAR in several parts is one file here, named for the whole archive, holding the first part:
+  /// these are the others, in order.
+  final List<PickedFile> moreParts;
+
+  /// The name of a part that wasn't chosen with the others, which the job then says.
+  final String? missingPart;
+}
+
+/// [files] with each RAR in several parts made one file, where its first part was, so the menu and
+/// jobs treat it as the one archive it is. Its size is all the parts'. Anything else is left as it
+/// was, including a part chosen on its own: a desktop finds the rest beside it.
+List<PickedFile> joinArchiveParts(List<PickedFile> files) {
+  final loose = [
+    for (final file in files)
+      if (file.moreParts.isEmpty && detectKind(file.head, fileName: file.name) == FileKind.rar)
+        file
+      else
+        null,
+  ];
+  final sets = findPartSets([for (final file in loose) file?.name ?? '']);
+  if (sets.isEmpty) return files;
+  final replaced = <int, PickedFile>{};
+  final gone = <int>{};
+  for (final set in sets) {
+    final parts = [for (final i in set.order) loose[i]!];
+    final first = parts.first;
+    replaced[set.order.reduce((a, b) => a < b ? a : b)] = PickedFile(
+      name: set.name,
+      size: parts.fold(0, (total, part) => total + part.size),
+      head: first.head,
+      read: first.read,
+      webUrl: first.webUrl,
+      path: first.path,
+      moreParts: parts.sublist(1),
+      missingPart: set.missing,
+    );
+    gone.addAll(set.order);
+  }
+  return [
+    for (var i = 0; i < files.length; i++)
+      if (replaced[i] case final joined?) joined else if (!gone.contains(i)) files[i],
+  ];
 }
 
 /// What a drop brought: files dropped as they are, and files found inside dropped folders.

@@ -158,6 +158,57 @@ void main() {
     });
   });
 
+  group('in several parts', skip: skip, () {
+    List<String> parts(String base, List<String> numbers) => [
+      for (final n in numbers) sample('$base.part$n.rar'),
+    ];
+    final rar4 = parts('sample-parts4', ['1', '2', '3', '4', '5', '6']);
+    final rar5 = parts('sample-parts5', ['01', '02', '03', '04']);
+
+    Future<Archive> unpackAll(List<String> paths) async =>
+        opened(await unpackToZip(paths.first, moreParts: paths.sublist(1)));
+
+    test('a RAR 4 across six parts, with a file crossing them', () async {
+      final archive = await unpackAll(rar4);
+      expect(archive.files.map((f) => f.name), [
+        'LibarchiveAddingTest2.html',
+        'LibarchiveAddingTest.html',
+      ]);
+      expect(archive.files.map((f) => f.size), [20111, 20111]);
+      expect(utf8.decode(archive.files.first.readBytes()!), contains('<HTML>'));
+    });
+
+    test('a solid RAR 5 across four parts, every file whole', () async {
+      final archive = await unpackAll(rar5);
+      expect(archive.files, hasLength(9));
+      expect(archive.findFile('elf-Linux-ARMv7-ls')!.size, 90808);
+      expect(archive.findFile('cebula.txt')!.size, 814);
+    });
+
+    for (final (kind, all) in [('RAR 4', rar4), ('RAR 5', rar5)]) {
+      test('a $kind\'s first part alone is a plain error, never a short file', () async {
+        await expectLater(
+          unpackToZip(all.first),
+          throwsA(isA<EngineFailed>().having((e) => e.key, 'key', 'damagedOrPart')),
+        );
+      });
+
+      test('a $kind missing its last part is a plain error', () async {
+        await expectLater(unpackAll(all.sublist(0, all.length - 1)), throwsA(isA<EngineFailed>()));
+      });
+    }
+
+    test('parts named in Hindi open, as Windows needs wide names for them', () async {
+      final folder = Directory.systemTemp.createTempSync('parts');
+      addTearDown(() => folder.deleteSync(recursive: true));
+      final named = [
+        for (final (i, path) in rar5.indexed)
+          (File(path).copySync(p.join(folder.path, 'फ़ाइल.part${i + 1}.rar'))).path,
+      ];
+      expect((await unpackAll(named)).files, hasLength(9));
+    });
+  });
+
   group('which actions run', () {
     for (final kind in [FileKind.sevenZip, FileKind.rar]) {
       test('$kind opens but is never written', () {

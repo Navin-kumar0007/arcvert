@@ -179,6 +179,8 @@
   "failCropNeeded": "\"क्रॉप करें\" के लिए क्रॉप का हिस्सा चुनना होगा।",
   "failDamaged": "{name} पढ़ी नहीं जा सकी। शायद यह ख़राब है।",
   "failDamagedOrLocked": "{name} पढ़ी नहीं जा सकी। शायद यह ख़राब है या इस पर पासवर्ड है।",
+  "failPartMissing": "{part} नहीं मिली। {archive} के सारे हिस्से एक साथ चुनें।",
+  "failChoosePartsTogether": "{name} कई हिस्सों में से एक है। इसके सारे हिस्से एक साथ चुनें।",
   "failDamagedOrPart": "{name} पढ़ी नहीं जा सकी। शायद यह ख़राब है, या कई हिस्सों में से एक है।",
   "failDamagedOrTooLarge": "{name} पढ़ी नहीं जा सकी। शायद यह ख़राब है, या बहुत बड़ी है।",
   "failEditDoesntFit": "यह बदलाव इस तस्वीर पर नहीं बैठता।",

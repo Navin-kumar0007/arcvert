@@ -40,14 +40,36 @@ function failure(name, reason) {
   );
 }
 
-async function unpack(url, name) {
-  const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+// Each part into the library's memory, then opened as one archive: a RAR in several parts is read
+// one part after another.
+async function open(lib, urls, name) {
+  const parts = [];
+  for (const url of urls) {
+    const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+    const at = lib._malloc(bytes.length);
+    if (at === 0) throw tooLarge(name);
+    // After malloc, as memory growing replaces HEAPU8.
+    lib.HEAPU8.set(bytes, at);
+    parts.push({ at, size: bytes.length });
+  }
+  if (parts.length === 1) return lib._radial_open(parts[0].at, parts[0].size);
+  // Two tables of 32-bit numbers, as WebAssembly's addresses and sizes are: places, then sizes.
+  const table = lib._malloc(parts.length * 8);
+  if (table === 0) throw tooLarge(name);
+  const view = new DataView(lib.HEAPU8.buffer);
+  parts.forEach((part, i) => {
+    view.setUint32(table + i * 4, part.at, true);
+    view.setUint32(table + (parts.length + i) * 4, part.size, true);
+  });
+  return lib._radial_open_parts(table, table + parts.length * 4, parts.length);
+}
+
+async function unpack(urls, name) {
   const lib = await createLibarchive();
-  const source = lib._malloc(bytes.length);
   const buffer = lib._malloc(chunk);
-  if (source === 0 || buffer === 0) throw tooLarge(name);
-  lib.HEAPU8.set(bytes, source);
-  const archive = lib._radial_open(source, bytes.length);
+  if (buffer === 0) throw tooLarge(name);
+  const archive = await open(lib, urls, name);
+  if (archive === 0) throw failure(name, '');
   try {
     const error = () => lib.UTF8ToString(lib._radial_error(archive));
     const files = [];
@@ -96,7 +118,7 @@ async function unpack(url, name) {
 
 self.onmessage = async ({ data }) => {
   try {
-    const files = await unpack(data.url, data.name);
+    const files = await unpack(data.urls, data.name);
     self.postMessage({ files }, files.map((file) => file.bytes.buffer));
   } catch (error) {
     if (error instanceof Plain) {

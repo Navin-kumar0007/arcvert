@@ -18,6 +18,8 @@ typedef _OneC = Int Function(Pointer<Void>);
 typedef _OneD = int Function(Pointer<Void>);
 typedef _OpenC = Int Function(Pointer<Void>, Pointer<Void>, Size);
 typedef _OpenD = int Function(Pointer<Void>, Pointer<Void>, int);
+typedef _OpenManyC = Int Function(Pointer<Void>, Pointer<Pointer<Void>>, Size);
+typedef _OpenManyD = int Function(Pointer<Void>, Pointer<Pointer<Void>>, int);
 typedef _NextC = Int Function(Pointer<Void>, Pointer<Pointer<Void>>);
 typedef _NextD = int Function(Pointer<Void>, Pointer<Pointer<Void>>);
 typedef _ReadC = IntPtr Function(Pointer<Void>, Pointer<Uint8>, Size);
@@ -58,13 +60,19 @@ DynamicLibrary? _library(String? given) {
 bool libarchiveAvailable({String? libraryPath}) => _library(libraryPath) != null;
 
 /// Unpacks the 7z or RAR at [path] into a ZIP in memory, for the portable engine to take from there.
-/// Only regular files come out, so links can't point anywhere. [limit] counts what really comes
-/// out, however little the archive claims, so a zip bomb stops here. Runs apart from the app.
-Future<Uint8List> unpackToZip(String path, {int limit = maxOpenedBytes, String? libraryPath}) {
-  return Isolate.run(() => _unpack(path, limit, libraryPath));
+/// A RAR in several parts gives the others in order as [moreParts]. Only regular files come out, so
+/// links can't point anywhere. [limit] counts what really comes out, however little the archive
+/// claims, so a zip bomb stops here. Runs apart from the app.
+Future<Uint8List> unpackToZip(
+  String path, {
+  List<String> moreParts = const [],
+  int limit = maxOpenedBytes,
+  String? libraryPath,
+}) {
+  return Isolate.run(() => _unpack(path, moreParts, limit, libraryPath));
 }
 
-Uint8List _unpack(String path, int limit, String? libraryPath) {
+Uint8List _unpack(String path, List<String> moreParts, int limit, String? libraryPath) {
   final name = p.basename(path);
   final library = _library(libraryPath);
   if (library == null) throw Fail.cantOpenOnComputer(name);
@@ -74,13 +82,25 @@ Uint8List _unpack(String path, int limit, String? libraryPath) {
   final entryOut = malloc<Pointer<Void>>();
   const bufferSize = 1 << 20;
   final buffer = malloc<Uint8>(bufferSize);
-  final Pointer<Void> nativePath = Platform.isWindows
-      ? path.toNativeUtf16().cast()
-      : path.toNativeUtf8().cast();
+  Pointer<Void> native(String path) =>
+      Platform.isWindows ? path.toNativeUtf16().cast() : path.toNativeUtf8().cast();
+  final paths = [path, ...moreParts];
+  // libarchive reads the parts one after another, as one archive, given in order and ending in null.
+  final nativePaths = malloc<Pointer<Void>>(paths.length + 1);
+  for (var i = 0; i < paths.length; i++) {
+    nativePaths[i] = native(paths[i]);
+  }
+  nativePaths[paths.length] = nullptr;
   try {
-    if (archive.open(handle, nativePath, bufferSize) != _ok) {
-      throw _failure(name, archive.error(handle));
+    final int opened;
+    try {
+      opened = moreParts.isEmpty
+          ? archive.open(handle, nativePaths[0], bufferSize)
+          : archive.openMany(handle, nativePaths, bufferSize);
+    } on _TooOld {
+      throw Fail.cantOpenOnComputer(name);
     }
+    if (opened != _ok) throw _failure(name, archive.error(handle));
     final zip = Archive();
     var total = 0;
     var files = 0;
@@ -121,10 +141,13 @@ Uint8List _unpack(String path, int limit, String? libraryPath) {
     return Uint8List.fromList(ZipEncoder().encodeBytes(zip));
   } finally {
     archive.free(handle);
+    for (var i = 0; i < paths.length; i++) {
+      malloc.free(nativePaths[i]);
+    }
     malloc
       ..free(entryOut)
       ..free(buffer)
-      ..free(nativePath);
+      ..free(nativePaths);
   }
 }
 
@@ -152,6 +175,9 @@ class _Reader {
       _open = Platform.isWindows
           ? library.lookupFunction<_OpenC, _OpenD>('archive_read_open_filename_w')
           : library.lookupFunction<_OpenC, _OpenD>('archive_read_open_filename'),
+      _openMany = (() => Platform.isWindows
+          ? library.lookupFunction<_OpenManyC, _OpenManyD>('archive_read_open_filenames_w')
+          : library.lookupFunction<_OpenManyC, _OpenManyD>('archive_read_open_filenames')),
       _next = library.lookupFunction<_NextC, _NextD>('archive_read_next_header'),
       read = library.lookupFunction<_ReadC, _ReadD>('archive_read_data'),
       _error = library.lookupFunction<_TextC, _TextC>('archive_error_string'),
@@ -170,6 +196,9 @@ class _Reader {
   final _OneD _free;
   final List<_OneD> _formats;
   final _OpenD _open;
+
+  /// Looked up only when needed: a library too old to have it still reads archives in one part.
+  final _OpenManyD Function() _openMany;
   final _NextD _next;
   final _ReadD read;
   final _TextC _error;
@@ -194,6 +223,17 @@ class _Reader {
   }
 
   int open(Pointer<Void> handle, Pointer<Void> path, int size) => _open(handle, path, size);
+
+  int openMany(Pointer<Void> handle, Pointer<Pointer<Void>> paths, int size) {
+    final _OpenManyD openMany;
+    try {
+      openMany = _openMany();
+    } on ArgumentError {
+      throw const _TooOld();
+    }
+    return openMany(handle, paths, size);
+  }
+
   int next(Pointer<Void> handle, Pointer<Pointer<Void>> out) => _next(handle, out);
   void free(Pointer<Void> handle) => _free(handle);
   int fileType(Pointer<Void> entry) => _fileType(entry);
@@ -211,4 +251,9 @@ class _Reader {
   }
 
   List<int> _bytes(Pointer<Utf8> text) => text.cast<Uint8>().asTypedList(text.length);
+}
+
+/// This computer's libarchive can't read archives in several parts.
+class _TooOld implements Exception {
+  const _TooOld();
 }

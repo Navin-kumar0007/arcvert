@@ -405,6 +405,19 @@
       "name": {}
     }
   },
+  "failPartMissing": "{part} is missing. Choose every part of {archive} together.",
+  "@failPartMissing": {
+    "placeholders": {
+      "part": {},
+      "archive": {}
+    }
+  },
+  "failChoosePartsTogether": "{name} is one part of several. Choose all of its parts together.",
+  "@failChoosePartsTogether": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "failDamagedOrPart": "{name} could not be read. It may be damaged, or one part of several.",
   "@failDamagedOrPart": {
     "placeholders": {

@@ -17,6 +17,21 @@ abstract final class Fail {
     '$name could not be read. It may be damaged or have a password.',
     {'name': name},
   );
+
+  /// A RAR in several parts was chosen without one of them.
+  static EngineFailed partMissing(String part, String archive) => _say(
+    'partMissing',
+    '$part is missing. Choose every part of $archive together.',
+    {'part': part, 'archive': archive},
+  );
+
+  /// One part of a RAR in several was chosen on its own.
+  static EngineFailed choosePartsTogether(String name) => _say(
+    'choosePartsTogether',
+    '$name is one part of several. Choose all of its parts together.',
+    {'name': name},
+  );
+
   static EngineFailed damagedOrPart(String name) => _say(
     'damagedOrPart',
     '$name could not be read. It may be damaged, or one part of several.',

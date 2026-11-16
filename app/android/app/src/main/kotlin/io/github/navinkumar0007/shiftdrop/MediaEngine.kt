@@ -115,6 +115,7 @@ class MediaEngine(private val activity: Activity, messenger: BinaryMessenger) :
             "shareFile" -> shareFile(call, result)
             "unpackArchive" -> unpackArchive(
                 call.argument<String>("path")!!,
+                call.argument<List<String>>("parts").orEmpty(),
                 (call.argument<Number>("limit")!!).toLong(),
                 result,
             )
@@ -225,13 +226,13 @@ class MediaEngine(private val activity: Activity, messenger: BinaryMessenger) :
      * regular files come out, so links can't point anywhere, and [limit] counts what really comes
      * out, so a zip bomb stops here.
      */
-    private fun unpackArchive(path: String, limit: Long, result: MethodChannel.Result) {
+    private fun unpackArchive(path: String, parts: List<String>, limit: Long, result: MethodChannel.Result) {
         thread {
             val name = File(path).name
             val zip = File(File(outputs, "archive-${System.nanoTime()}").apply { mkdirs() }, "unpacked.zip")
             var failure: Said? = null
             try {
-                writeUnpacked(path, name, zip, limit)
+                writeUnpacked(path, parts, name, zip, limit)
             } catch (error: UnpackFailed) {
                 failure = error.said
             } catch (error: ArchiveException) {
@@ -274,7 +275,8 @@ class MediaEngine(private val activity: Activity, messenger: BinaryMessenger) :
         )
     }
 
-    private fun writeUnpacked(path: String, name: String, zip: File, limit: Long) {
+    /** A RAR in several parts gives the others, in order, as [parts]: libarchive reads them as one. */
+    private fun writeUnpacked(path: String, parts: List<String>, name: String, zip: File, limit: Long) {
         val archive = Archive.readNew()
         try {
             // Only the formats wanted, so nothing else in the library ever sees a stranger's file.
@@ -283,7 +285,12 @@ class MediaEngine(private val activity: Activity, messenger: BinaryMessenger) :
             Archive.readSupportFormatRar5(archive)
             // Without this any name that isn't plain English stops the whole archive.
             Archive.setCharset(archive, "UTF-8".toByteArray())
-            Archive.readOpenFileName(archive, path.toByteArray(), UNPACK_BUFFER)
+            if (parts.isEmpty()) {
+                Archive.readOpenFileName(archive, path.toByteArray(), UNPACK_BUFFER)
+            } else {
+                val all = (listOf(path) + parts).map { it.toByteArray() }.toTypedArray()
+                Archive.readOpenFileNames(archive, all, UNPACK_BUFFER)
+            }
             val buffer = ByteBuffer.allocateDirect(UNPACK_BUFFER.toInt())
             val bytes = ByteArray(UNPACK_BUFFER.toInt())
             val used = HashSet<String>()

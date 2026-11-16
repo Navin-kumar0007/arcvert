@@ -221,8 +221,11 @@ extension type _ArchiveFile._(JSObject _) implements JSObject {
 /// A 7z or RAR unpacked into a ZIP, so the archive engine can take it from there.
 Future<Uint8List> unpackArchive(PickedFile file) async {
   const cannotStart = Fail.archiveCantStart;
-  final url = file.webUrl;
-  if (url == null) throw Fail.fileUnreadable;
+  // A RAR in several parts goes as all of them, first part first.
+  final urls = [
+    for (final part in [file, ...file.moreParts]) part.webUrl,
+  ];
+  if (urls.contains(null)) throw Fail.fileUnreadable;
   final done = Completer<Uint8List>();
   final web.Worker worker;
   try {
@@ -250,7 +253,7 @@ Future<Uint8List> unpackArchive(PickedFile file) async {
     if (!done.isCompleted) done.completeError(cannotStart);
   }).toJS;
   try {
-    worker.postMessage({'url': url, 'name': file.name}.jsify());
+    worker.postMessage({'urls': urls, 'name': file.name}.jsify());
     return await done.future;
   } finally {
     worker.terminate();

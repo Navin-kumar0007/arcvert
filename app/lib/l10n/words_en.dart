@@ -642,6 +642,16 @@ class WordsEn extends Words {
   }
 
   @override
+  String failPartMissing(Object part, Object archive) {
+    return '$part is missing. Choose every part of $archive together.';
+  }
+
+  @override
+  String failChoosePartsTogether(Object name) {
+    return '$name is one part of several. Choose all of its parts together.';
+  }
+
+  @override
   String failDamagedOrPart(Object name) {
     return '$name could not be read. It may be damaged, or one part of several.';
   }

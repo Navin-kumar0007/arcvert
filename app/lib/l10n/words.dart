@@ -1167,6 +1167,18 @@ abstract class Words {
   /// **'{name} could not be read. It may be damaged or have a password.'**
   String failDamagedOrLocked(Object name);
 
+  /// No description provided for @failPartMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'{part} is missing. Choose every part of {archive} together.'**
+  String failPartMissing(Object part, Object archive);
+
+  /// No description provided for @failChoosePartsTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is one part of several. Choose all of its parts together.'**
+  String failChoosePartsTogether(Object name);
+
   /// No description provided for @failDamagedOrPart.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,7 @@
 library;
 
 export 'src/action_options.dart';
+export 'src/archive_parts.dart';
 export 'src/actions.dart';
 export 'src/detect.dart';
 export 'src/docx_writer.dart';

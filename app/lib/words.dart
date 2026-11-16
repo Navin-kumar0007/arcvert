@@ -107,6 +107,8 @@ String failureText(Words words, EngineFailed failure) {
     'damaged' => words.failDamaged(blank('name')),
     'damagedOrLocked' => words.failDamagedOrLocked(blank('name')),
     'damagedOrPart' => words.failDamagedOrPart(blank('name')),
+    'partMissing' => words.failPartMissing(blank('part'), blank('archive')),
+    'choosePartsTogether' => words.failChoosePartsTogether(blank('name')),
     'damagedOrTooLarge' => words.failDamagedOrTooLarge(blank('name')),
     'editDoesntFit' => words.failEditDoesntFit,
     'emptyArchive' => words.failEmptyArchive(blank('name')),

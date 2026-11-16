@@ -88,11 +88,43 @@ Future<Uint8List> decodeHeic(PickedFile file) async {
   return Platform.isAndroid ? decodeHeicOnPhone(path) : decodeHeicWith(_appEngines(), path);
 }
 
-/// A 7z or RAR unpacked into a ZIP, so the archive engine can take it from there.
+/// A 7z or RAR unpacked into a ZIP, so the archive engine can take it from there. A RAR in several
+/// parts reads them all, in order: those chosen with it, or on a desktop those found beside it.
 Future<Uint8List> unpackArchive(PickedFile file) async {
-  final path = file.path;
+  var path = file.path;
   if (path == null) throw Fail.cantRead(file.name);
-  return Platform.isAndroid ? unpackOnPhone(path) : unpackToZip(path);
+  var parts = [for (final part in file.moreParts) part.path ?? (throw Fail.cantRead(part.name))];
+  if (parts.isEmpty && !Platform.isAndroid) {
+    final beside = await _partsBeside(path, file.head);
+    if (beside != null) {
+      path = beside.first;
+      parts = beside.sublist(1);
+    }
+  }
+  return Platform.isAndroid
+      ? unpackOnPhone(path, moreParts: parts)
+      : unpackToZip(path, moreParts: parts);
+}
+
+/// Every part of the RAR at [path], in order, if it is one of several and they are beside it.
+/// Phones can't look: other apps hand over files one by one.
+Future<List<String>?> _partsBeside(String path, List<int> head) async {
+  final split = rarSplitOf(head);
+  if (split == null || split == RarSplit.whole) return null;
+  final folder = p.dirname(path);
+  final names = <String>[];
+  try {
+    await for (final entry in Directory(folder).list()) {
+      if (entry is File) names.add(p.basename(entry.path));
+    }
+  } on FileSystemException {
+    return null;
+  }
+  final found = partsBeside(p.basename(path), names);
+  if (found == null) return null;
+  final missing = found.missing;
+  if (missing != null) throw Fail.partMissing(missing, found.name);
+  return [for (final name in found.parts) p.join(folder, name)];
 }
 
 /// What is inside a video or audio file, read without changing it.

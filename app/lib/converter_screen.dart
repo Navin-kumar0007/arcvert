@@ -264,9 +264,20 @@ class _ConverterScreenState extends State<ConverterScreen> {
     ),
   );
 
-  /// Unpacks a 7z or RAR for a job, noting the names inside for its preview on the way.
+  /// Unpacks a 7z or RAR for a job, noting the names inside for its preview on the way. A RAR in
+  /// several parts needs them all, and says which is missing.
   Future<Uint8List> _unpack(PickedFile file) async {
-    final zip = await widget.archiveUnpacker(file);
+    final missing = file.missingPart;
+    if (missing != null) throw Fail.partMissing(missing, file.name);
+    final Uint8List zip;
+    try {
+      zip = await widget.archiveUnpacker(file);
+    } on EngineFailed catch (failure) {
+      final split = rarSplitOf(file.head);
+      final alone = file.moreParts.isEmpty && split != null && split != RarSplit.whole;
+      if (failure.key == 'damagedOrPart' && alone) throw Fail.choosePartsTogether(file.name);
+      rethrow;
+    }
     try {
       _namesInside[file] = archiveNames(zip, FileKind.zip);
       _looks.forget(file);
@@ -481,7 +492,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
     _dragged = null;
     final List<PickedFile> files;
     try {
-      files = (await _readDrop([for (final path in paths) DropItemFile(path)])).files;
+      files = joinArchiveParts(
+        (await _readDrop([for (final path in paths) DropItemFile(path)])).files,
+      );
     } catch (_) {
       return const [];
     }
@@ -701,8 +714,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
     }
   }
 
-  void _open(List<PickedFile> files) {
-    if (files.isEmpty) return;
+  void _open(List<PickedFile> chosen) {
+    if (chosen.isEmpty) return;
+    final files = joinArchiveParts(chosen);
     _stopRunningJob();
     _looks.clear();
     setState(() {

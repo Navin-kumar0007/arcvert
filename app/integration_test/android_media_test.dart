@@ -19,6 +19,7 @@ import 'package:shiftdrop/picked_file.dart';
 import 'package:shiftdrop/shared_files.dart';
 
 import 'clip_data.dart';
+import 'rar_parts_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -117,6 +118,23 @@ void main() {
         unpackArchive(await fileOf('locked.7z', locked7zBase64)),
         throwsA(isA<EngineFailed>().having((e) => e.message, 'message', contains('password'))),
       );
+    });
+
+    testWidgets('a RAR in four parts comes out whole, read as one', (tester) async {
+      final parts = [
+        for (final (i, data) in rarPartsBase64.indexed)
+          await fileOf('parts.part0${i + 1}.rar', data),
+      ];
+      final joined = joinArchiveParts(parts.reversed.toList()).single;
+      expect(joined.name, 'parts.rar');
+      final archive = ZipDecoder().decodeBytes(await unpackArchive(joined));
+      expect(archive.files, hasLength(9));
+      expect(archive.findFile('elf-Linux-ARMv7-ls')!.size, 90808);
+    });
+
+    testWidgets('its first part alone is a plain error, never a short file', (tester) async {
+      final first = await fileOf('alone.part01.rar', rarPartsBase64.first);
+      await expectLater(unpackArchive(first), throwsA(isA<EngineFailed>()));
     });
 
     testWidgets('a broken one is a plain error, not a crash', (tester) async {

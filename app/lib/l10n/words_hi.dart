@@ -642,6 +642,16 @@ class WordsHi extends Words {
   }
 
   @override
+  String failPartMissing(Object part, Object archive) {
+    return '$part नहीं मिली। $archive के सारे हिस्से एक साथ चुनें।';
+  }
+
+  @override
+  String failChoosePartsTogether(Object name) {
+    return '$name कई हिस्सों में से एक है। इसके सारे हिस्से एक साथ चुनें।';
+  }
+
+  @override
   String failDamagedOrPart(Object name) {
     return '$name पढ़ी नहीं जा सकी। शायद यह ख़राब है, या कई हिस्सों में से एक है।';
   }
