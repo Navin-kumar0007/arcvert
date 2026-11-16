@@ -242,7 +242,10 @@ class _PracticeState extends State<_Practice> {
       return;
     }
     if ((event.position - start).distance < kTouchSlop / 2) return;
-    if (_needsShift && !HardwareKeyboard.instance.isShiftPressed) {
+    final held = chosenTrigger == 'control'
+        ? HardwareKeyboard.instance.isControlPressed
+        : HardwareKeyboard.instance.isShiftPressed;
+    if (_needsShift && !held) {
       setState(() => _said = context.words.practiceHoldShift);
       _pressedAt = null;
       return;

@@ -1352,4 +1352,11 @@ class WordsEn extends Words {
   @override
   String get learnOrderForgotten =>
       'The menus go back to their usual order when the app next opens.';
+
+  @override
+  String get triggerKey => 'Key for dragging from other apps';
+
+  @override
+  String get triggerKeyWhy =>
+      'Hold it while dragging a file to open the menu. Option or Alt still adds Tools.';
 }

@@ -28,7 +28,7 @@ The first time it opens, a short guide shows what ShiftDrop does and lets you pr
 
 **Shift-drag (Mac and Windows).** Start dragging a file or folder from anywhere, hold **Shift** while dragging, and a round menu appears at your cursor. Drop on a slice. The result lands next to the original, and a chip appears at your cursor to drag it straight on. Drop in the middle to cancel.
 
-Hold **Option** (Mac) or **Alt** (Windows) as well, at any point in the drag, and the menu switches to **Tools**, such as Compress, Rotate, Resize and Strip metadata. Let go of it and Convert comes back. Rotate, Flip and Resize show their choices around the slice there too.
+If Shift already means something in the apps you drag from, choose **Control** (Ctrl on Windows) as the key in **Settings**. Hold **Option** (Mac) or **Alt** (Windows) as well, at any point in the drag, and the menu switches to **Tools**, such as Compress, Rotate, Resize and Strip metadata. Let go of it and Convert comes back. Rotate, Flip and Resize show their choices around the slice there too.
 
 **In the window.** Drop files on the dial, or press **Choose files** in its middle, then pick a slice. **Convert** changes the format, **Make it fit** (in amber) aims at a purpose or a size, such as a chat app, an email or under 100 KB, and **Tools** does things like merging, compressing and rotating. Use **More** for further slices. **Clear** starts again.
 

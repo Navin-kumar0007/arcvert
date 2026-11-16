@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:radial_core/radial_core.dart';
 
 import 'conversion.dart' show formatBytes;
+import 'app_settings.dart';
 import 'theme.dart';
 import 'words.dart';
 
@@ -232,7 +233,7 @@ class ShiftDragTip extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              const KeyCap('Shift'),
+              KeyCap(triggerKeyName(SettingsScope.maybeOf(context)?.value.triggerKey ?? 'shift')),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text('+', style: TextStyle(color: sd.muted)),
@@ -546,4 +547,10 @@ class ModeTabs<T> extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A trigger key as it's printed on keyboards here: Control on a Mac, Ctrl on Windows.
+String triggerKeyName(String key) {
+  if (key != 'control') return 'Shift';
+  return defaultTargetPlatform == TargetPlatform.macOS ? 'Control' : 'Ctrl';
 }

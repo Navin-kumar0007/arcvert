@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.14.0 (unreleased)
+## 0.14.0 (beta, 16 November 2026)
 
 - **Extract pages** from a PDF, on every platform: pick pages from pictures of each, or type them, such as 1-3, 7.
   They come out as one PDF, in the order typed.
@@ -13,6 +13,8 @@
 - The menus learn: actions used at least three times move to the first slots, most used first, in the window, on a
   phone and in the Shift-drag menu. Learned on the device only, and the order changes only when the app next opens,
   never while you use it. **Settings** turns it off or forgets what was learned.
+- On a Mac or Windows, **Settings** can make Control (Ctrl) the key that opens the menu while dragging, instead of
+  Shift. Option or Alt still adds Tools.
 
 ## 0.13.0 (beta, 16 November 2026)
 

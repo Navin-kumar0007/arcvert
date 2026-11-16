@@ -7,6 +7,7 @@ import 'app_settings.dart';
 import 'open_page.dart';
 import 'shift_drag.dart';
 import 'update_check.dart';
+import 'home_parts.dart' show triggerKeyName;
 import 'theme.dart';
 import 'words.dart';
 
@@ -66,6 +67,7 @@ class SettingsScreen extends StatelessWidget {
                   PreviewsSwitch(settings: settings),
                   LearnOrderSwitch(settings: settings),
                 ],
+                if (isDesktop && settings != null) TriggerKeyChoice(settings: settings),
                 if (isDesktop) const OpenAtLogin(),
                 if (settings != null && updates == UpdateWay.check)
                   UpdateChecks(settings: settings),
@@ -543,6 +545,42 @@ class LearnOrderSwitch extends StatelessWidget {
               child: Text(words.learnOrderForget),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Which key, held while dragging from another app, opens the menu: Shift, or Control if Shift
+/// already means something in the apps someone drags from.
+class TriggerKeyChoice extends StatelessWidget {
+  const TriggerKeyChoice({super.key, required this.settings});
+
+  final SettingsStore settings;
+
+  @override
+  Widget build(BuildContext context) {
+    final words = context.words;
+    return ValueListenableBuilder(
+      valueListenable: settings,
+      builder: (context, value, _) => _Labelled(
+        label: words.triggerKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SegmentedButton<String>(
+              showSelectedIcon: false,
+              segments: [
+                for (final key in const ['shift', 'control'])
+                  ButtonSegment(value: key, label: Text(triggerKeyName(key))),
+              ],
+              selected: {value.triggerKey},
+              onSelectionChanged: (chosen) =>
+                  settings.change((old) => old.copyWith(triggerKey: chosen.single)),
+            ),
+            const SizedBox(height: 6),
+            Text(words.triggerKeyWhy, style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
       ),
     );
   }

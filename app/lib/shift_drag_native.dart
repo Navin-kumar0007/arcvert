@@ -79,6 +79,7 @@ void sendNativeWords() {
         'trayQuit': words.trayQuit,
         // Not a word: the theme rides along, so the menus need no message of their own for it.
         'theme': chosenTheme,
+        'trigger': chosenTrigger,
       })
       .catchError((Object _) {
         // The native side keeps its English.

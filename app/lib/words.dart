@@ -19,6 +19,10 @@ Locale? chosenLocale;
 /// their own colours.
 String chosenTheme = 'system';
 
+/// The key that opens the Shift-drag menu, "shift" or "control", for the native menus and the
+/// guide's practice.
+String chosenTrigger = 'shift';
+
 /// For code with no screen to ask, such as the Shift-drag menu and engines.
 Words get deviceWords => wordsFor(chosenLocale ?? PlatformDispatcher.instance.locale);
 

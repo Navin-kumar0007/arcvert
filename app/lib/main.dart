@@ -35,6 +35,7 @@ class _RadialAppState extends State<RadialApp> {
     _language = widget.settings.value.language;
     _themeName = widget.settings.value.theme;
     chosenTheme = _themeName;
+    chosenTrigger = widget.settings.value.triggerKey;
     chosenLocale = widget.settings.value.locale;
     widget.settings.addListener(_changed);
   }
@@ -47,6 +48,10 @@ class _RadialAppState extends State<RadialApp> {
 
   void _changed() {
     final value = widget.settings.value;
+    if (value.triggerKey != chosenTrigger) {
+      chosenTrigger = value.triggerKey;
+      sendNativeWords();
+    }
     if (value.theme != _themeName) {
       chosenTheme = value.theme;
       sendNativeWords();

@@ -112,7 +112,6 @@ bool LeftButtonDown() {
   return (::GetAsyncKeyState(key) & 0x8000) != 0;
 }
 
-bool ShiftDown() { return (::GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0; }
 
 // Held as well as Shift, the menu offers Tools instead of Convert.
 bool AltDown() { return (::GetAsyncKeyState(VK_MENU) & 0x8000) != 0; }
@@ -320,6 +319,12 @@ EncodableValue PathsArgument(const std::vector<std::string>& paths) {
 std::wstring NativeWord(const std::string& key, const wchar_t* english) {
   const auto found = Words().find(key);
   return found == Words().end() ? std::wstring(english) : found->second;
+}
+
+// Whether the key chosen in Settings to open the menu is held: Shift, or Ctrl.
+bool TriggerDown() {
+  const int key = NativeWord("trigger", L"shift") == L"control" ? VK_CONTROL : VK_SHIFT;
+  return (::GetAsyncKeyState(key) & 0x8000) != 0;
 }
 
 // What Settings chose, or Windows' own setting for "As the system". The app sends its choice
@@ -614,7 +619,7 @@ void ShiftDrag::Tick() {
     pressed_at_ = cursor;
   }
   if (revealed_ && !switching_ && AltDown() != asked_tools_) SwitchMode(AltDown());
-  if (placed_ || !ShiftDown()) return;
+  if (placed_ || !TriggerDown()) return;
   if (std::abs(cursor.x - pressed_at_.x) + std::abs(cursor.y - pressed_at_.y) < kDragDistance) {
     return;
   }

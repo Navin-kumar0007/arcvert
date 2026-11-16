@@ -16,6 +16,7 @@ class AppSettings {
     this.resultsFolder,
     this.learnOrder = true,
     this.uses = const {},
+    this.triggerKey = 'shift',
   });
 
   /// Whether the first-launch guide has been seen, or skipped.
@@ -44,6 +45,11 @@ class AppSettings {
   /// How often each action has been used, by its id. Kept on this device only, with the settings.
   final Map<String, int> uses;
 
+  /// The key held while dragging that opens the menu over other apps: "shift" or "control".
+  final String triggerKey;
+
+  static const triggerKeys = {'shift', 'control'};
+
   /// The most actions [uses] remembers, so the file stays small whatever happens.
   static const mostUses = 200;
 
@@ -57,6 +63,7 @@ class AppSettings {
     String? Function()? resultsFolder,
     bool? learnOrder,
     Map<String, int>? uses,
+    String? triggerKey,
   }) {
     return AppSettings(
       welcomed: welcomed ?? this.welcomed,
@@ -68,6 +75,7 @@ class AppSettings {
       resultsFolder: resultsFolder == null ? this.resultsFolder : resultsFolder(),
       learnOrder: learnOrder ?? this.learnOrder,
       uses: uses ?? this.uses,
+      triggerKey: triggerKey ?? this.triggerKey,
     );
   }
 
@@ -95,6 +103,7 @@ class AppSettings {
     final theme = json['theme'];
     final folder = json['resultsFolder'];
     final uses = json['uses'];
+    final trigger = json['triggerKey'];
     return AppSettings(
       welcomed: json['welcomed'] == true,
       checkForUpdates: json['checkForUpdates'] != false,
@@ -110,6 +119,7 @@ class AppSettings {
                 if (key is String && value is int && value > 0) key: value,
             }
           : const {},
+      triggerKey: trigger is String && triggerKeys.contains(trigger) ? trigger : 'shift',
     );
   }
 
@@ -123,6 +133,7 @@ class AppSettings {
     'resultsFolder': ?resultsFolder,
     'learnOrder': learnOrder,
     if (uses.isNotEmpty) 'uses': uses,
+    'triggerKey': triggerKey,
   });
 
   Locale? get locale => language == null ? null : Locale(language!);

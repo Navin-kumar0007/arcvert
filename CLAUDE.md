@@ -214,6 +214,9 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   counts its action in Settings (at most 200 ids); actions used 3+ times go first, most used first, ties in the usual
   order. The window, phone arc and Shift-drag menu (before its 8-slice cut) order by `_usesAtStart`, a snapshot, so
   slices never move mid-session. Settings has the switch and "Forget what was learned".
+- Trigger key (`AppSettings.triggerKey`: "shift" or "control", desktop Settings): reaches the native menus as
+  `trigger` in `setWords` (`chosenTrigger`, like the theme); Swift checks `TriggerKey.flag`, C++ `TriggerDown()`. The
+  guide's practice and the home tip follow it. Option/Alt for Tools is unchanged. Not yet tried in a real drag.
 - Compress levels (`CompressLevel` in `action_options.dart`, `ActionOptions.compress`, null is medium): pictures by
   `compressPictureQuality` (85/70/50, no palette at high) in the portable engine and the vips runner, video by
   `compressedVideoKbps` in the shared plan (so FFmpeg, Mediabunny and Media3 all follow), PDFs by `compressSteps` in

@@ -1353,4 +1353,11 @@ class WordsHi extends Words {
 
   @override
   String get learnOrderForgotten => 'ऐप अगली बार खुलने पर मेनू अपने सामान्य क्रम में लौट आएँगे।';
+
+  @override
+  String get triggerKey => 'दूसरे ऐप से खींचने की कुंजी';
+
+  @override
+  String get triggerKeyWhy =>
+      'फ़ाइल खींचते समय इसे दबाए रखें तो मेनू खुलता है। Option या Alt से अब भी टूल मिलते हैं।';
 }

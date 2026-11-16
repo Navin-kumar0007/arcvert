@@ -49,6 +49,13 @@ enum NativeWords {
   static func word(_ key: String, _ english: String) -> String { words[key] ?? english }
 }
 
+/// The key held while dragging that opens the menu, as chosen in Settings: Shift, or Control.
+enum TriggerKey {
+  static var flag: NSEvent.ModifierFlags {
+    return NativeWords.word("trigger", "shift") == "control" ? .control : .shift
+  }
+}
+
 /// One choice on the radial menu, with the labels of its outer-ring choices, if it has any.
 struct RadialSlice {
   let id: String
@@ -519,7 +526,8 @@ final class ShiftDragWatcher: NSObject {
       if !isSwitching, wantsTools != askedTools { switchMode(to: wantsTools) }
       return
     }
-    guard !isAsking, NSEvent.modifierFlags.contains(.shift), pasteboard.changeCount != seenChange
+    guard !isAsking, NSEvent.modifierFlags.contains(TriggerKey.flag),
+      pasteboard.changeCount != seenChange
     else { return }
     let paths = shiftDragPaths(on: pasteboard)
     guard !paths.isEmpty else { return }

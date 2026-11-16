@@ -2336,6 +2336,18 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'The menus go back to their usual order when the app next opens.'**
   String get learnOrderForgotten;
+
+  /// No description provided for @triggerKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Key for dragging from other apps'**
+  String get triggerKey;
+
+  /// No description provided for @triggerKeyWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold it while dragging a file to open the menu. Option or Alt still adds Tools.'**
+  String get triggerKeyWhy;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

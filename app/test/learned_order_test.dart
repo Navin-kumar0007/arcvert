@@ -23,6 +23,13 @@ void main() {
       expect(AppSettings.decode('{"learnOrder": false}').learnOrder, isFalse);
     });
 
+    test('the trigger key is Shift unless Control was chosen', () {
+      expect(const AppSettings().triggerKey, 'shift');
+      final control = const AppSettings().copyWith(triggerKey: 'control');
+      expect(AppSettings.decode(control.encode()).triggerKey, 'control');
+      expect(AppSettings.decode('{"triggerKey": "fn"}').triggerKey, 'shift');
+    });
+
     test('the list never grows past its limit', () {
       var settings = AppSettings(
         uses: {for (var i = 0; i < AppSettings.mostUses; i++) 'action-$i': 1},

@@ -145,7 +145,8 @@ owner chose to ship the new look with Copy details and move the other planned it
 
 ## 0.14.0: pages, details and habits
 
-Started 16 November 2026, after the owner tried 0.13.0 on every platform.
+**Done.** Built 16 November 2026, after the owner tried 0.13.0 on every platform; tagged once CI passed. Publish
+after 0.13.0.
 
 - **PDF page picker**: Extract pages with a grid of page pictures to tap, and the range typed, such as 1-3, 7.
   **Done** (`page_picker.dart`, `page_range.dart`, 16 November 2026), tried in Chrome.
@@ -155,7 +156,8 @@ Started 16 November 2026, after the owner tried 0.13.0 on every platform.
   `saveFolderBesideOriginal`, 16 November 2026).
 - **Learned slice order**: the most-used actions move to the easiest slots, learned on the device only. **Done**
   (`orderByUse`, `AppSettings.uses`, 16 November 2026).
-- **Changing the trigger key** from Shift.
+- **Changing the trigger key** from Shift. **Done** (`AppSettings.triggerKey`, `TriggerKey` in Swift, `TriggerDown` in
+  C++, 16 November 2026): Shift or Control.
 
 ## Later, before 1.0
 
