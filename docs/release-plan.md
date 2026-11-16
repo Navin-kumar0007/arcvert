@@ -29,7 +29,8 @@ A patch built after later versions were tagged, as 0.10.1 was, is newer by date 
 
 Patch on `main` (branch `release-0.10.1`), 16 November 2026: the browser's conversion worker was never told ring
 choices, so in the web app Rotate 180° and 90° left, Flip upside down and Resize's sizes ran as the first choice.
-Published at once, as the live web app had it. 0.11 to 0.13 carry the same fix (`ActionOptions.toWire`).
+Published at once, as the live web app had it. 0.13.0 carries the same fix (`ActionOptions.toWire`); the 0.11.0 and
+0.12.0 drafts were tagged before it and don't, so they need the fix before they are published.
 
 ## 0.10.0: guide, update check, Tools in Shift-drag
 
