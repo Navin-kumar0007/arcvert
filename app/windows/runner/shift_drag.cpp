@@ -595,10 +595,11 @@ LRESULT CALLBACK ShiftDrag::PanelProc(HWND window, UINT message, WPARAM wparam, 
 }
 
 void ShiftDrag::Tick() {
-  const Clock::time_point now = Clock::now();
-  const Clock::time_point previous =
-      last_tick_ == Clock::time_point{} ? now - std::chrono::milliseconds(kCheckEveryMs) : last_tick_;
-  last_tick_ = now;
+  const Clock::time_point ticked = Clock::now();
+  const Clock::time_point previous = last_tick_ == Clock::time_point{}
+                                         ? ticked - std::chrono::milliseconds(kCheckEveryMs)
+                                         : last_tick_;
+  last_tick_ = ticked;
   if (dragging_out_) return;
   if (!LeftButtonDown()) {
     button_was_down_ = false;
@@ -628,8 +629,8 @@ void ShiftDrag::Tick() {
     return;
   }
   Place(cursor);
-  placed_at_ = now;
-  waited_ms_ = std::chrono::duration<double, std::milli>(now - previous).count();
+  placed_at_ = ticked;
+  waited_ms_ = std::chrono::duration<double, std::milli>(ticked - previous).count();
 }
 
 double ShiftDrag::Scale() const { return ::GetDpiForWindow(app_window_) / 96.0; }
