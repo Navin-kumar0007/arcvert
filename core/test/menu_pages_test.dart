@@ -80,4 +80,40 @@ void main() {
   test('too few slots is refused', () {
     expect(() => menuPages(tools(3), slots: 1), throwsArgumentError);
   });
+
+  group('orderByUse', () {
+    final actions = actionsFor(const [FileKind.jpg], ActionMode.tools);
+    List<String> ids(List<RadialAction> list) => [for (final action in list) action.id];
+
+    test('nothing used keeps the usual order', () {
+      expect(ids(orderByUse(actions, const {})), ids(actions));
+    });
+
+    test('the most used come first, the rest as they were', () {
+      final ordered = orderByUse(actions, const {'image-compress': 9, 'image-rotate': 4});
+      expect(ids(ordered).take(2), ['image-compress', 'image-rotate']);
+      final rest = [
+        for (final id in ids(actions))
+          if (id != 'image-compress' && id != 'image-rotate') id,
+      ];
+      expect(ids(ordered).skip(2), rest);
+    });
+
+    test('a couple of uses is not yet a habit', () {
+      expect(ids(orderByUse(actions, const {'image-flip': 2})), ids(actions));
+    });
+
+    test('ties keep the usual order', () {
+      final last = actions.last.id;
+      final first = actions.first.id;
+      final ordered = orderByUse(actions, {last: 5, first: 5});
+      expect(ids(ordered).take(2), [first, last]);
+    });
+
+    test('nothing is lost or repeated', () {
+      final ordered = orderByUse(actions, {for (final action in actions) action.id: 3});
+      expect(ids(ordered).toSet(), ids(actions).toSet());
+      expect(ordered, hasLength(actions.length));
+    });
+  });
 }

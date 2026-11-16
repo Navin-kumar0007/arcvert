@@ -2312,6 +2312,30 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'There is no page {page}. This PDF has {total} pages.'**
   String failPageOutOfRange(int page, int total);
+
+  /// No description provided for @learnOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Put my most-used actions first'**
+  String get learnOrder;
+
+  /// No description provided for @learnOrderWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Learned on this device only. The menus change order when the app next opens, never while you use them.'**
+  String get learnOrderWhy;
+
+  /// No description provided for @learnOrderForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget what was learned'**
+  String get learnOrderForget;
+
+  /// No description provided for @learnOrderForgotten.
+  ///
+  /// In en, this message translates to:
+  /// **'The menus go back to their usual order when the app next opens.'**
+  String get learnOrderForgotten;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

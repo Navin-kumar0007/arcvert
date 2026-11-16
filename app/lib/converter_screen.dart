@@ -501,11 +501,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
             ),
           );
     }
-    return availableActions(
-      kinds,
-      mode,
-      mediaAvailable: _mediaAvailable,
-      mediaOutputs: mediaOutputsHere(),
+    return _learned(
+      availableActions(
+        kinds,
+        mode,
+        mediaAvailable: _mediaAvailable,
+        mediaOutputs: mediaOutputsHere(),
+      ),
     ).where((action) => !needsOptions(action)).take(_shiftDragSlices).toList();
   }
 
@@ -998,6 +1000,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   Future<void> _start(RadialAction action, ActionOptions options, {bool saveBeside = false}) async {
+    final settings = SettingsScope.maybeOf(context);
+    _usesAtStart ??= settings?.value.uses;
+    if (settings != null && settings.value.learnOrder) {
+      unawaited(settings.change((old) => old.usedOnce(action.id)));
+    }
     final folder = await _resultsFolder();
     if (!mounted) return;
     final before = _files.fold<int>(0, (sum, file) => sum + file.size);
@@ -1639,7 +1646,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
       mediaAvailable: _mediaAvailable,
       mediaOutputs: mediaOutputsHere(),
     );
-    return switch (tab) {
+    return _learned(switch (tab) {
       _Tab.convert => [
         for (final action in all)
           if (!action.isFit) action,
@@ -1649,7 +1656,18 @@ class _ConverterScreenState extends State<ConverterScreen> {
           if (action.isFit) action,
       ],
       _Tab.tools => all,
-    };
+    });
+  }
+
+  /// How often each action had been used when the app started. The menus order by this, not by
+  /// the live count, so slices never move while someone is using them.
+  Map<String, int>? _usesAtStart;
+
+  /// [actions] with the most used first, where Settings allow.
+  List<RadialAction> _learned(List<RadialAction> actions) {
+    final settings = SettingsScope.maybeOf(context)?.value;
+    if (settings == null || !settings.learnOrder) return actions;
+    return orderByUse(actions, _usesAtStart ??= settings.uses);
   }
 
   /// The tabs these files have anything in.

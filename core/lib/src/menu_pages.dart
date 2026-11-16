@@ -36,3 +36,24 @@ List<RadialAction> _interleaved(List<RadialAction> actions) {
     ],
   ];
 }
+
+/// [actions] with the ones used at least [often] times first, most used first, the rest in their
+/// usual order. Ties keep the usual order too, so the menu only moves for a real habit.
+List<RadialAction> orderByUse(List<RadialAction> actions, Map<String, int> uses, {int often = 3}) {
+  int count(RadialAction action) => uses[action.id] ?? 0;
+  final favourites = [
+    for (final action in actions)
+      if (count(action) >= often) action,
+  ];
+  // List.sort isn't stable, so ties are broken by where they were.
+  final place = {for (var i = 0; i < actions.length; i++) actions[i]: i};
+  favourites.sort((a, b) {
+    final byUse = count(b).compareTo(count(a));
+    return byUse != 0 ? byUse : place[a]!.compareTo(place[b]!);
+  });
+  return [
+    ...favourites,
+    for (final action in actions)
+      if (count(action) < often) action,
+  ];
+}

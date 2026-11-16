@@ -10,6 +10,9 @@
 - On a Mac or Windows, **Extract** puts everything into one new folder beside the archive, named after it, with the
   archive's own folders inside and no limit of 50 files. Show in folder, drag on or Undo it as one. Phones and
   browsers still give each file its own Save.
+- The menus learn: actions used at least three times move to the first slots, most used first, in the window, on a
+  phone and in the Shift-drag menu. Learned on the device only, and the order changes only when the app next opens,
+  never while you use it. **Settings** turns it off or forgets what was learned.
 
 ## 0.13.0 (beta, 16 November 2026)
 

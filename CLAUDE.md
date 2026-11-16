@@ -210,6 +210,10 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   it in Chrome did.
 - `RadialMenu` compares its actions by content (`listEquals`): the screen builds a new list every draw, and comparing by
   identity sent the menu back to its first page on any redraw. PDFium starts in `_open`, so previews can open PDFs first.
+- Learned order (`orderByUse` in `menu_pages.dart`, `AppSettings.uses`/`learnOrder`/`usedOnce`): each `_start`
+  counts its action in Settings (at most 200 ids); actions used 3+ times go first, most used first, ties in the usual
+  order. The window, phone arc and Shift-drag menu (before its 8-slice cut) order by `_usesAtStart`, a snapshot, so
+  slices never move mid-session. Settings has the switch and "Forget what was learned".
 - Compress levels (`CompressLevel` in `action_options.dart`, `ActionOptions.compress`, null is medium): pictures by
   `compressPictureQuality` (85/70/50, no palette at high) in the portable engine and the vips runner, video by
   `compressedVideoKbps` in the shared plan (so FFmpeg, Mediabunny and Media3 all follow), PDFs by `compressSteps` in

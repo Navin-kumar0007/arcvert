@@ -14,6 +14,8 @@ class AppSettings {
     this.theme = 'system',
     this.showPreviews = true,
     this.resultsFolder,
+    this.learnOrder = true,
+    this.uses = const {},
   });
 
   /// Whether the first-launch guide has been seen, or skipped.
@@ -36,6 +38,15 @@ class AppSettings {
   /// Where results go on a desktop, or null for beside each original.
   final String? resultsFolder;
 
+  /// Whether the menus put the actions used most in the first slots.
+  final bool learnOrder;
+
+  /// How often each action has been used, by its id. Kept on this device only, with the settings.
+  final Map<String, int> uses;
+
+  /// The most actions [uses] remembers, so the file stays small whatever happens.
+  static const mostUses = 200;
+
   AppSettings copyWith({
     bool? welcomed,
     bool? checkForUpdates,
@@ -44,6 +55,8 @@ class AppSettings {
     String? theme,
     bool? showPreviews,
     String? Function()? resultsFolder,
+    bool? learnOrder,
+    Map<String, int>? uses,
   }) {
     return AppSettings(
       welcomed: welcomed ?? this.welcomed,
@@ -53,7 +66,16 @@ class AppSettings {
       theme: theme ?? this.theme,
       showPreviews: showPreviews ?? this.showPreviews,
       resultsFolder: resultsFolder == null ? this.resultsFolder : resultsFolder(),
+      learnOrder: learnOrder ?? this.learnOrder,
+      uses: uses ?? this.uses,
     );
+  }
+
+  /// These settings with one more use of [actionId].
+  AppSettings usedOnce(String actionId) {
+    final counted = {...uses, actionId: (uses[actionId] ?? 0) + 1};
+    if (counted.length > mostUses) return this;
+    return copyWith(uses: counted);
   }
 
   static const languages = {'en', 'hi'};
@@ -72,6 +94,7 @@ class AppSettings {
     final checked = json['lastUpdateCheck'];
     final theme = json['theme'];
     final folder = json['resultsFolder'];
+    final uses = json['uses'];
     return AppSettings(
       welcomed: json['welcomed'] == true,
       checkForUpdates: json['checkForUpdates'] != false,
@@ -80,6 +103,13 @@ class AppSettings {
       theme: theme is String && themes.contains(theme) ? theme : 'system',
       showPreviews: json['showPreviews'] != false,
       resultsFolder: folder is String && folder.isNotEmpty ? folder : null,
+      learnOrder: json['learnOrder'] != false,
+      uses: uses is Map
+          ? {
+              for (final MapEntry(:key, :value) in uses.entries.take(mostUses))
+                if (key is String && value is int && value > 0) key: value,
+            }
+          : const {},
     );
   }
 
@@ -91,6 +121,8 @@ class AppSettings {
     'theme': theme,
     'showPreviews': showPreviews,
     'resultsFolder': ?resultsFolder,
+    'learnOrder': learnOrder,
+    if (uses.isNotEmpty) 'uses': uses,
   });
 
   Locale? get locale => language == null ? null : Locale(language!);

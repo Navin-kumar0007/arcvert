@@ -1338,4 +1338,18 @@ class WordsEn extends Words {
   String failPageOutOfRange(int page, int total) {
     return 'There is no page $page. This PDF has $total pages.';
   }
+
+  @override
+  String get learnOrder => 'Put my most-used actions first';
+
+  @override
+  String get learnOrderWhy =>
+      'Learned on this device only. The menus change order when the app next opens, never while you use them.';
+
+  @override
+  String get learnOrderForget => 'Forget what was learned';
+
+  @override
+  String get learnOrderForgotten =>
+      'The menus go back to their usual order when the app next opens.';
 }

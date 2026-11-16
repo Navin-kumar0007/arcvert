@@ -64,6 +64,7 @@ class SettingsScreen extends StatelessWidget {
                   LanguageChoice(settings: settings),
                   const SizedBox(height: 8),
                   PreviewsSwitch(settings: settings),
+                  LearnOrderSwitch(settings: settings),
                 ],
                 if (isDesktop) const OpenAtLogin(),
                 if (settings != null && updates == UpdateWay.check)
@@ -504,6 +505,44 @@ class _OpenAtLoginState extends State<OpenAtLogin> {
         ),
         value: _state != LoginItem.off,
         onChanged: _busy ? null : _set,
+      ),
+    );
+  }
+}
+
+/// Whether the menus put the most-used actions first, and a way to forget what was learned.
+class LearnOrderSwitch extends StatelessWidget {
+  const LearnOrderSwitch({super.key, required this.settings});
+
+  final SettingsStore settings;
+
+  @override
+  Widget build(BuildContext context) {
+    final words = context.words;
+    return ValueListenableBuilder(
+      valueListenable: settings,
+      builder: (context, value, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(words.learnOrder),
+            subtitle: Text(words.learnOrderWhy),
+            value: value.learnOrder,
+            onChanged: (on) => settings.change((old) => old.copyWith(learnOrder: on)),
+          ),
+          if (value.uses.isNotEmpty)
+            TextButton(
+              onPressed: () async {
+                await settings.change((old) => old.copyWith(uses: const {}));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(words.learnOrderForgotten)));
+                }
+              },
+              child: Text(words.learnOrderForget),
+            ),
+        ],
       ),
     );
   }

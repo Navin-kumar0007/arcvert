@@ -1340,4 +1340,17 @@ class WordsHi extends Words {
   String failPageOutOfRange(int page, int total) {
     return 'पन्ना $page नहीं है। इस PDF में $total पन्ने हैं।';
   }
+
+  @override
+  String get learnOrder => 'सबसे ज़्यादा इस्तेमाल होने वाले काम पहले दिखाएँ';
+
+  @override
+  String get learnOrderWhy =>
+      'सिर्फ़ इसी डिवाइस पर सीखा जाता है। मेनू का क्रम ऐप अगली बार खुलने पर बदलता है, इस्तेमाल के दौरान कभी नहीं।';
+
+  @override
+  String get learnOrderForget => 'सीखा हुआ भूल जाएँ';
+
+  @override
+  String get learnOrderForgotten => 'ऐप अगली बार खुलने पर मेनू अपने सामान्य क्रम में लौट आएँगे।';
 }

@@ -859,5 +859,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "learnOrder": "Put my most-used actions first",
+  "learnOrderWhy": "Learned on this device only. The menus change order when the app next opens, never while you use them.",
+  "learnOrderForget": "Forget what was learned",
+  "learnOrderForgotten": "The menus go back to their usual order when the app next opens."
 }

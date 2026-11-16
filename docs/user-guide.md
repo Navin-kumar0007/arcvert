@@ -82,6 +82,8 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Extract.** On a Mac or Windows, **Extract** makes one folder beside the archive, named after it, with the archive's own folders inside. On a phone or in a browser, each file gets its own **Save**, up to 50 files.
 
+**Your favourite actions first.** The menus learn which actions you use: once you've used one three times, it moves to the first slots, most used first. This is learned on your device only, and the order changes only when the app next opens. Turn it off, or forget what was learned, in **Settings**.
+
 **Photo details.** Converting, compressing, turning, flipping, resizing or cropping a photo keeps when it was taken, the camera and lens, and how it was exposed. Where it was taken is always removed, along with serial numbers and the owner's name. **Make it fit** and **Strip metadata** remove every detail, as those files are made to be sent.
 
 **Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet, and neither can a RAR in several parts. A password can be added to an archive, but not yet to a PDF.
