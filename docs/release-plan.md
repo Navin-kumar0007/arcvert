@@ -172,7 +172,8 @@ owner chose to ship the new look with Copy details and move the other planned it
 - **Right-click to convert** on desktops: Finder's Open With (`CFBundleDocumentTypes`, rank Alternate) and a
   `NSServices` item; Explorer's verb for files and folders from the installer, a copy per item handing its path to the
   running one (`WM_COPYDATA`). Both reach Dart on `radial/open` and open as a drop. Not in the portable zip or the
-  Microsoft Store build, which can't write those registry keys.
+  Microsoft Store build, which can't write those registry keys. Finder's Convert with Arcvert shows the dial at the
+  cursor (owner's request); the owner tried it on a Mac on 17 November 2026: it works.
 - Next candidates, in the owner's list from 17 November 2026: a pattern for result names, a notification when a long
   job ends.
 
