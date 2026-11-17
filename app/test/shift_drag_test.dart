@@ -153,6 +153,46 @@ void main() {
       // The slice itself runs as plain options, so its size trial can be reused.
       expect(identical(picked[1].$2, const ActionOptions()), isTrue);
     }, skip: hasMenu ? false : 'Only macOS and Windows have the Shift-drag menu');
+
+    test('a long name of the user\'s is cut to fit a slice', () {
+      expect(shortSliceLabel('College form'), 'College form');
+      expect(shortSliceLabel('University admission form'), 'University...');
+      expect(shortSliceLabel('Superlongwordwithoutspaces'), 'Superlongwordwi...');
+      expect(shortSliceLabel('x' * 18), 'x' * 18);
+    });
+
+    test('a slice the user made is offered, sized and chosen like the rest', () async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      const fit = MyFit(id: 'my-fit-a1', name: 'College form', form: FormTarget(maxBytes: 50000));
+      final sized = <RadialAction>[];
+      final picked = <RadialAction>[];
+      final stop = listenForShiftDrag(
+        menuFor: (paths, mode) async => [fit.action, actionById('image-to-png')!],
+        sizeOf: (action, paths) async {
+          sized.add(action);
+          return 'About 48 KB';
+        },
+        chosen: (action, paths, options) => picked.add(action),
+      );
+      addTearDown(stop);
+      final slices = await ask('menuFor', {
+        'paths': ['/a.jpg'],
+      }) as List;
+      expect(slices.first, {'id': 'my-fit-a1', 'label': 'College form', 'fit': true});
+      expect(
+        await ask('sizeOf', {
+          'id': 'my-fit-a1',
+          'paths': ['/a.jpg'],
+        }),
+        'About 48 KB',
+      );
+      await ask('chosen', {
+        'id': 'my-fit-a1',
+        'paths': ['/a.jpg'],
+      });
+      expect(sized, [fit.action]);
+      expect(picked, [fit.action]);
+    }, skip: hasMenu ? false : 'Only macOS and Windows have the Shift-drag menu');
   });
 
   test('ring choices are chosen by index, out of range runs the slice itself', () {

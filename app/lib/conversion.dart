@@ -9,11 +9,15 @@ export 'picked_file.dart';
 
 /// What the menu offers for these files on this device. Pictures and subtitles run on all
 /// platforms; video, audio and HEIC photos need that platform's engine.
+///
+/// Slices the user made ([myFits]) come first, so the few a Shift-drag menu has room for include
+/// them.
 List<RadialAction> availableActions(
   List<FileKind> kinds,
   ActionMode mode, {
   required bool mediaAvailable,
   Set<FileKind>? mediaOutputs,
+  Iterable<MyFit> myFits = const [],
 }) {
   bool canRunMedia(RadialAction action, FileKind kind) {
     if (!mediaAvailable || !canPlanMedia(action, kind)) return false;
@@ -29,7 +33,7 @@ List<RadialAction> availableActions(
   }
 
   return [
-    for (final action in actionsFor(kinds, mode))
+    for (final action in [...myFitsFor(kinds, mode, myFits), ...actionsFor(kinds, mode)])
       // The crop frame is drawn on one picture, and wouldn't fit any others.
       if (!(action.id == 'image-crop' && kinds.length > 1) &&
           kinds.every((kind) => canRun(action, kind)))

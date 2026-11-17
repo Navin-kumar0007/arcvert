@@ -4,6 +4,7 @@ import 'package:radial_core/radial_core.dart';
 /// The icon for a slice. Icon sets can be swapped here in one place.
 IconData iconFor(RadialAction action) {
   final id = action.id;
+  if (action is MyFitAction) return Icons.badge_outlined;
   if (id.startsWith('fit-whatsapp')) return Icons.chat_outlined;
   if (id.startsWith('fit-email')) return Icons.mail_outline;
   if (id == 'fit-instagram') return Icons.crop_portrait;

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:radial_core/radial_core.dart' show MyFit;
 
 /// What the user has chosen, kept between launches. Anything missing or damaged reads as the
 /// default, so a bad file never stops the app.
@@ -18,6 +19,7 @@ class AppSettings {
     this.uses = const {},
     this.triggerKey = 'shift',
     this.whatsNewSeen,
+    this.myFits = const [],
   });
 
   /// Whether the first-launch guide has been seen, or skipped.
@@ -52,6 +54,9 @@ class AppSettings {
   /// The version whose What's new has been announced, so each update says so once.
   final String? whatsNewSeen;
 
+  /// Make it fit slices the user made, in the order made. At most [MyFit.most].
+  final List<MyFit> myFits;
+
   static const triggerKeys = {'shift', 'control'};
 
   /// The most actions [uses] remembers, so the file stays small whatever happens.
@@ -69,6 +74,7 @@ class AppSettings {
     Map<String, int>? uses,
     String? triggerKey,
     String? whatsNewSeen,
+    List<MyFit>? myFits,
   }) {
     return AppSettings(
       welcomed: welcomed ?? this.welcomed,
@@ -82,6 +88,29 @@ class AppSettings {
       uses: uses ?? this.uses,
       triggerKey: triggerKey ?? this.triggerKey,
       whatsNewSeen: whatsNewSeen ?? this.whatsNewSeen,
+      myFits: myFits ?? this.myFits,
+    );
+  }
+
+  /// These settings with [fit] kept: in its old place if it was there, or last.
+  AppSettings keepMyFit(MyFit fit) {
+    final at = myFits.indexWhere((old) => old.id == fit.id);
+    if (at < 0 && myFits.length >= MyFit.most) return this;
+    return copyWith(
+      myFits: List.unmodifiable(
+        at < 0 ? [...myFits, fit] : [for (final old in myFits) old.id == fit.id ? fit : old],
+      ),
+    );
+  }
+
+  /// These settings without the slice [id], nor its count in the learned order.
+  AppSettings forgetMyFit(String id) {
+    return copyWith(
+      myFits: List.unmodifiable([
+        for (final fit in myFits)
+          if (fit.id != id) fit,
+      ]),
+      uses: {...uses}..remove(id),
     );
   }
 
@@ -111,6 +140,7 @@ class AppSettings {
     final uses = json['uses'];
     final trigger = json['triggerKey'];
     final seen = json['whatsNewSeen'];
+    final fits = json['myFits'];
     return AppSettings(
       welcomed: json['welcomed'] == true,
       checkForUpdates: json['checkForUpdates'] != false,
@@ -128,6 +158,7 @@ class AppSettings {
           : const {},
       triggerKey: trigger is String && triggerKeys.contains(trigger) ? trigger : 'shift',
       whatsNewSeen: seen is String ? seen : null,
+      myFits: fits is List ? _readMyFits(fits) : const [],
     );
   }
 
@@ -143,7 +174,21 @@ class AppSettings {
     if (uses.isNotEmpty) 'uses': uses,
     'triggerKey': triggerKey,
     'whatsNewSeen': ?whatsNewSeen,
+    if (myFits.isNotEmpty) 'myFits': [for (final fit in myFits) fit.toJson()],
   });
+
+  /// The slices that can be read, each id once, at most [MyFit.most]. A damaged one is left out
+  /// and the rest kept.
+  static List<MyFit> _readMyFits(List<Object?> list) {
+    final fits = <MyFit>[];
+    for (final item in list) {
+      final fit = MyFit.fromJson(item);
+      if (fit == null || fits.any((kept) => kept.id == fit.id)) continue;
+      fits.add(fit);
+      if (fits.length == MyFit.most) break;
+    }
+    return List.unmodifiable(fits);
+  }
 
   Locale? get locale => language == null ? null : Locale(language!);
 

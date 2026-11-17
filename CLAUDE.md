@@ -295,6 +295,15 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   Android sends `mailto` as `ACTION_SENDTO`, so only email apps answer. After an update,
   `AppHome` says what's new once (`AppSettings.whatsNewSeen`); a new install has the guide instead. A SnackBar with an
   action persists unless `persist: false`.
+- Own Make it fit slices (`core/lib/src/my_fits.dart`, 17 Nov 2026, for 0.17): `MyFit` is a name plus a `FormTarget`,
+  kept in `AppSettings.myFits` (at most 12, ids `my-fit-<time>` never reused, as uses count by id). `MyFitAction` is the
+  slice; engines only know the catalogue, so `runsAs` turns it into `image-form` with its sizes and
+  `ActionOptions.nameSuffix` (`photo (college form).jpg`) at the two converter calls in `converter_screen.dart`
+  (`_runTogether`, `_trial`). `availableActions(myFits:)` puts them first, so Shift-drag's 8 slices include them, and
+  the native menus look their ids up in what was last offered (`find` in `shift_drag_native.dart`), names cut by
+  `shortSliceLabel`. Made by Form photo's keep switch (`FormDialog.onKeep`) or Settings (`MyFitsList`, `FormDialog`
+  with `sliceOnly`). No framing: one file or many, the middle is used; Form photo with the slice chosen frames it.
+  Copy details says "Form photo (own slice)", never the name. Not yet tried on devices.
 - Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
   an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.

@@ -51,6 +51,7 @@ class ActionOptions {
     this.form,
     this.compress,
     this.keepFolders = false,
+    this.nameSuffix,
   });
 
   final int? longSide;
@@ -84,6 +85,10 @@ class ActionOptions {
   /// write into a folder. Otherwise each file comes out flat, to be saved one by one.
   final bool keepFolders;
 
+  /// The word in brackets in the result's name, in place of the action's own: a slice someone made
+  /// and named (`runsAs`).
+  final String? nameSuffix;
+
   /// Every choice as plain values, for crossing to a browser's worker, which can only be sent
   /// maps, lists, text and numbers. [fromWire] reads it back; a test checks no choice is lost.
   Map<String, Object?> toWire() {
@@ -113,6 +118,7 @@ class ActionOptions {
             },
       'compress': compress?.name,
       'keepFolders': keepFolders,
+      'nameSuffix': nameSuffix,
     };
   }
 
@@ -154,6 +160,7 @@ class ActionOptions {
           : null,
       compress: CompressLevel.values.where((level) => level.name == compress).firstOrNull,
       keepFolders: wire['keepFolders'] == true,
+      nameSuffix: wire['nameSuffix'] as String?,
     );
   }
 
@@ -175,6 +182,7 @@ class ActionOptions {
       form: form,
       compress: compress,
       keepFolders: keepFolders,
+      nameSuffix: nameSuffix,
     );
   }
 }

@@ -123,7 +123,7 @@ Future<List<PortableFile>> runPortable(
     final bytes = kinds[i].family == FileFamily.subtitle
         ? _subtitles(action, files[i], kinds[i], options)
         : await _image(action, files[i], kind, options, step);
-    outputs.add(PortableFile(_outputName(action, files[i].name, kind), bytes));
+    outputs.add(PortableFile(_outputName(action, files[i].name, kind, options.nameSuffix), bytes));
   }
   onProgress?.call(1);
   return outputs;
@@ -134,11 +134,11 @@ List<int> _head(Uint8List bytes) {
 }
 
 /// In memory nothing exists yet to collide with; saving picks the final name.
-String _outputName(RadialAction action, String input, FileKind kind) {
+String _outputName(RadialAction action, String input, FileKind kind, [String? suffix]) {
   return freeOutputName(
     inputName: input,
     extension: kind.extension,
-    suffix: action.suffix,
+    suffix: suffix ?? action.suffix,
     exists: (_) => false,
   );
 }

@@ -54,6 +54,7 @@ void main() {
     expect(withPassword.degrees, 90);
     expect(withPassword.newPassword, 'n');
     expect(withPassword.startSeconds, 2);
+    expect(const ActionOptions(nameSuffix: 'x').withPassword('p').nameSuffix, 'x');
   });
 
   group('to and from a browser worker', () {
@@ -73,6 +74,7 @@ void main() {
       form: FormTarget(width: 140, height: 60, minBytes: 10240, maxBytes: 20000, signature: true),
       compress: CompressLevel.small,
       keepFolders: true,
+      nameSuffix: 'college form',
     );
 
     test('every choice comes back as it went', () {
@@ -85,9 +87,9 @@ void main() {
     });
 
     test('a new choice has to be added here too', () {
-      // ActionOptions has 15 choices. One added without toWire and fromWire would reach every
+      // ActionOptions has 16 choices. One added without toWire and fromWire would reach every
       // engine but a browser's, as Rotate's and Resize's ring choices once did.
-      expect(everything.toWire().keys, hasLength(15));
+      expect(everything.toWire().keys, hasLength(16));
       expect(everything.toWire().values.where((value) => value == null), isEmpty);
     });
 

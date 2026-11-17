@@ -2,9 +2,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
+import 'package:radial_core/radial_core.dart';
 
 import 'app_settings.dart';
 import 'open_page.dart';
+import 'option_screens.dart' show FormDialog;
+import 'presets.dart';
 import 'shift_drag.dart';
 import 'update_check.dart';
 import 'home_parts.dart' show triggerKeyName;
@@ -30,6 +33,7 @@ class SettingsScreen extends StatelessWidget {
     this.desktop,
     this.updateWay,
     this.chooseFolder = _chooseFolder,
+    this.loadPresets = loadBundledPresets,
   });
 
   /// Opens the first-launch guide again, after Settings closes.
@@ -40,6 +44,9 @@ class SettingsScreen extends StatelessWidget {
   final bool? desktop;
   final UpdateWay? updateWay;
   final Future<String?> Function() chooseFolder;
+
+  /// The form presets a new slice can be filled in from.
+  final Future<List<Preset>> Function() loadPresets;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +74,7 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   PreviewsSwitch(settings: settings),
                   LearnOrderSwitch(settings: settings),
+                  MyFitsList(settings: settings, loadPresets: loadPresets),
                 ],
                 if (isDesktop && settings != null) TriggerKeyChoice(settings: settings),
                 if (isDesktop) const OpenAtLogin(),
@@ -599,4 +607,117 @@ class TriggerKeyChoice extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The Make it fit slices the user made: each to change or delete, and a way to add one without
+/// a file, as well as from Form photo.
+class MyFitsList extends StatelessWidget {
+  const MyFitsList({super.key, required this.settings, this.loadPresets});
+
+  final SettingsStore settings;
+  final Future<List<Preset>> Function()? loadPresets;
+
+  Future<void> _edit(BuildContext context, MyFit? fit) {
+    return showDialog<FormTarget>(
+      context: context,
+      builder: (_) => FormDialog(
+        loadPresets: loadPresets,
+        myFits: settings.value.myFits,
+        sliceOnly: true,
+        editing: fit,
+        onKeep: (kept) => settings.change((old) => old.keepMyFit(kept)),
+      ),
+    );
+  }
+
+  Future<void> _delete(BuildContext context, MyFit fit) async {
+    final words = context.words;
+    final messenger = ScaffoldMessenger.of(context);
+    final before = settings.value;
+    final at = before.myFits.indexOf(fit);
+    final count = before.uses[fit.id];
+    await settings.change((old) => old.forgetMyFit(fit.id));
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(words.sliceDeleted(fit.name)),
+        persist: false,
+        action: SnackBarAction(
+          label: words.undo,
+          onPressed: () => settings.change((now) {
+            if (now.myFits.any((kept) => kept.id == fit.id)) return now;
+            final fits = [...now.myFits]..insert(at.clamp(0, now.myFits.length), fit);
+            return now.copyWith(
+              myFits: List.unmodifiable(fits),
+              uses: count == null ? null : {...now.uses, fit.id: count},
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final words = context.words;
+    final styles = Theme.of(context).textTheme;
+    return ValueListenableBuilder(
+      valueListenable: settings,
+      builder: (context, value, _) => _Labelled(
+        label: words.yourSlices,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              words.yourSlicesWhy,
+              style: styles.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            for (final fit in value.myFits)
+              ListTile(
+                key: ValueKey(fit.id),
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.badge_outlined),
+                title: Text(fit.name),
+                subtitle: Text(mySliceSummary(words, fit.form)),
+                onTap: () => _edit(context, fit),
+                trailing: IconButton(
+                  tooltip: words.deleteSlice,
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () => _delete(context, fit),
+                ),
+              ),
+            if (value.myFits.length < MyFit.most)
+              TextButton.icon(
+                onPressed: () => _edit(context, null),
+                icon: const Icon(Icons.add),
+                label: Text(words.addSlice),
+              )
+            else
+              Text(words.slicesFull(MyFit.most), style: styles.bodySmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// What a slice makes, in a few words: `200 x 230 px, 20-50 KB, signature`.
+String mySliceSummary(Words words, FormTarget form) {
+  final width = form.width;
+  final height = form.height;
+  final atLeast = form.minBytes == null ? null : formMinKb(form.minBytes!);
+  final atMost = form.maxBytes == null ? null : formMaxKb(form.maxBytes!);
+  final parts = [
+    if (width != null && height != null) '$width x $height px',
+    if (atLeast != null && atMost != null)
+      '$atLeast-$atMost KB'
+    else if (atMost != null)
+      words.sliceUpToKb(atMost)
+    else if (atLeast != null)
+      words.sliceAtLeastKb(atLeast),
+    if (form.signature) words.sliceSignature,
+  ];
+  return parts.isEmpty ? words.sliceAnySize : parts.join(', ');
 }

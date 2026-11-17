@@ -22,6 +22,14 @@ void Function() listenForShiftDrag({
   required void Function(RadialAction action, List<String> paths, ActionOptions options) chosen,
 }) {
   if (!Platform.isMacOS && !Platform.isWindows) return () {};
+  // What the menu last offered. Slices the user made aren't in the catalogue, so a choice or a
+  // size asked for is looked up here first.
+  var offered = const <RadialAction>[];
+  RadialAction? find(Object? id) {
+    if (id is! String) return null;
+    return offered.where((action) => action.id == id).firstOrNull ?? actionById(id);
+  }
+
   shiftDragChannel.setMethodCallHandler((call) async {
     if (call.method == 'menuTiming') {
       final timing = MenuTiming.fromWire(call.arguments);
@@ -32,15 +40,16 @@ void Function() listenForShiftDrag({
     final paths = (arguments['paths'] as List).cast<String>();
     if (call.method == 'menuFor') {
       final mode = arguments['tools'] == true ? ActionMode.tools : ActionMode.convert;
-      return [for (final action in await menuFor(paths, mode)) shiftDragSlice(action, deviceWords)];
+      offered = await menuFor(paths, mode);
+      return [for (final action in offered) shiftDragSlice(action, deviceWords)];
     }
     if (call.method == 'sizeOf') {
       // What the centre shows while the drag rests on a slice, such as "About 240 KB".
-      final action = actionById(arguments['id'] as String);
+      final action = find(arguments['id']);
       return action == null ? null : await sizeOf(action, paths);
     }
     if (call.method == 'chosen') {
-      final action = actionById(arguments['id'] as String);
+      final action = find(arguments['id']);
       if (action != null) chosen(action, paths, shiftDragOptions(action, arguments['choice']));
     }
     return null;
@@ -54,12 +63,23 @@ Map<String, Object> shiftDragSlice(RadialAction action, Words words) {
   final choices = ringChoices(action);
   return {
     'id': action.id,
-    'label': actionLabel(words, action.label),
+    // A slice the user made has their name, which may be longer than a slice can show.
+    'label': action is MyFitAction
+        ? shortSliceLabel(action.label)
+        : actionLabel(words, action.label),
     // Make it fit is drawn in amber, as in the window.
     if (action.isFit) 'fit': true,
     if (choices.isNotEmpty)
       'choices': [for (final choice in choices) ringChoiceLabel(words, choice)],
   };
+}
+
+/// [label] cut to what the native menus can draw on a slice, at a word where it can be.
+String shortSliceLabel(String label, {int most = 18}) {
+  if (label.length <= most) return label;
+  final cut = label.substring(0, most - 3);
+  final space = cut.lastIndexOf(' ');
+  return '${(space >= most ~/ 2 ? cut.substring(0, space) : cut).trimRight()}...';
 }
 
 /// What a choice from the native menu's outer ring runs with. The first is the slice itself, and

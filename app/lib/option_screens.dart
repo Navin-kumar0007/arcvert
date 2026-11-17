@@ -31,6 +31,8 @@ Future<ActionOptions?> askForOptions(
   required Future<Uint8List> Function() loadPicture,
   TrimPreview? trimPreview,
   Future<List<Preset>> Function()? loadPresets,
+  List<MyFit> myFits = const [],
+  void Function(MyFit fit)? onKeep,
   int fileCount = 1,
   Future<PdfPagePictures> Function()? openPdfPages,
 }) async {
@@ -39,7 +41,7 @@ Future<ActionOptions?> askForOptions(
     return pages == null ? null : ActionOptions(pages: pages);
   }
   if (action.id == 'image-form') {
-    return _askForForm(context, loadPicture, loadPresets, fileCount);
+    return _askForForm(context, loadPicture, loadPresets, myFits, onKeep, fileCount);
   }
   return showDialog<ActionOptions>(
     context: context,
@@ -58,11 +60,13 @@ Future<ActionOptions?> _askForForm(
   BuildContext context,
   Future<Uint8List> Function() loadPicture,
   Future<List<Preset>> Function()? loadPresets,
+  List<MyFit> myFits,
+  void Function(MyFit fit)? onKeep,
   int fileCount,
 ) async {
   final form = await showDialog<FormTarget>(
     context: context,
-    builder: (context) => FormDialog(loadPresets: loadPresets),
+    builder: (context) => FormDialog(loadPresets: loadPresets, myFits: myFits, onKeep: onKeep),
   );
   if (form == null) return null;
   if (fileCount > 1 || !context.mounted) return ActionOptions(form: form);
@@ -81,10 +85,32 @@ Future<ActionOptions?> _askForForm(
 
 /// What a form wants a picture to be. A preset only fills in the boxes, since forms change their
 /// rules and every one of these numbers may need correcting.
+///
+/// The sizes can also be kept as a Make it fit slice of the user's own ([onKeep]). From Settings
+/// ([sliceOnly]) that is all it does: it names a new slice, or changes [editing].
 class FormDialog extends StatefulWidget {
-  const FormDialog({super.key, this.loadPresets});
+  const FormDialog({
+    super.key,
+    this.loadPresets,
+    this.myFits = const [],
+    this.onKeep,
+    this.sliceOnly = false,
+    this.editing,
+  }) : assert(!sliceOnly || onKeep != null);
 
   final Future<List<Preset>> Function()? loadPresets;
+
+  /// The slices already made, listed first to fill in from, and whose names are taken.
+  final List<MyFit> myFits;
+
+  /// Keeps a slice, new or changed. Null leaves the choice out.
+  final void Function(MyFit fit)? onKeep;
+
+  /// Only names and keeps a slice, as Settings does, rather than running anything.
+  final bool sliceOnly;
+
+  /// The slice being changed, when [sliceOnly].
+  final MyFit? editing;
 
   @override
   State<FormDialog> createState() => _FormDialogState();
@@ -95,15 +121,31 @@ class _FormDialogState extends State<FormDialog> {
   final _height = TextEditingController();
   final _atLeast = TextEditingController();
   final _atMost = TextEditingController();
+  final _name = TextEditingController();
   List<Preset> _presets = const [];
   Preset? _chosen;
+
+  /// The user's own slice last chosen from the list. Unlike [_chosen], changing a box keeps it, as
+  /// keeping the slice then changes it.
+  String? _chosenMine;
   bool _signature = false;
+  late bool _keep = widget.sliceOnly;
   String? _pixelsError;
   String? _sizeError;
+  String? _nameError;
+
+  /// The user's own slices, first in the list.
+  late final List<Preset> _mine = [for (final fit in widget.myFits) fit.asPreset];
 
   @override
   void initState() {
     super.initState();
+    _presets = _mine;
+    final editing = widget.editing;
+    if (editing != null) {
+      _fill(editing.asPreset.output);
+      _name.text = editing.name;
+    }
     _load();
   }
 
@@ -113,6 +155,7 @@ class _FormDialogState extends State<FormDialog> {
     _height.dispose();
     _atLeast.dispose();
     _atMost.dispose();
+    _name.dispose();
     super.dispose();
   }
 
@@ -121,25 +164,49 @@ class _FormDialogState extends State<FormDialog> {
     if (load == null) return;
     try {
       final presets = await load();
-      if (mounted) setState(() => _presets = presets);
+      if (mounted) setState(() => _presets = [..._mine, ...presets]);
     } catch (error) {
       debugPrint('Could not load presets: $error');
     }
   }
 
+  /// The slice the boxes came from, which keeping changes rather than adding another.
+  String? get _keepsAs {
+    final editing = widget.editing;
+    if (editing != null) return editing.id;
+    return _chosenMine;
+  }
+
+  /// No room for another, unless this changes one already kept.
+  bool get _full => _keepsAs == null && widget.myFits.length >= MyFit.most;
+
+  void _fill(PresetOutput? output) {
+    _signature = output?.signature ?? false;
+    _width.text = '${output?.width ?? ''}';
+    _height.text = '${output?.height ?? ''}';
+    final atLeast = output?.minBytes;
+    final atMost = output?.maxBytes;
+    _atLeast.text = atLeast == null ? '' : '${formMinKb(atLeast)}';
+    _atMost.text = atMost == null ? '' : '${formMaxKb(atMost)}';
+  }
+
+  void _switchKeep(bool on) {
+    setState(() {
+      _keep = on;
+      _nameError = null;
+      // A slice chosen from the list is kept under its own name, so changing it is one switch.
+      final mine = widget.myFits.where((fit) => fit.id == _chosenMine).firstOrNull;
+      if (on && _name.text.trim().isEmpty && mine != null) _name.text = mine.name;
+    });
+  }
+
   void _choose(Preset? preset) {
     setState(() {
       _chosen = preset;
-      _signature = preset?.output.signature ?? false;
+      _chosenMine = preset != null && isMyFitId(preset.id) ? preset.id : null;
       _pixelsError = null;
       _sizeError = null;
-      final output = preset?.output;
-      _width.text = '${output?.width ?? ''}';
-      _height.text = '${output?.height ?? ''}';
-      final atLeast = output?.minBytes;
-      final atMost = output?.maxBytes;
-      _atLeast.text = atLeast == null ? '' : '${formMinKb(atLeast)}';
-      _atMost.text = atMost == null ? '' : '${formMaxKb(atMost)}';
+      _fill(preset?.output);
     });
   }
 
@@ -160,16 +227,40 @@ class _FormDialogState extends State<FormDialog> {
           ? words.thisAboveZero
           : null;
     });
-    if (_pixelsError != null || _sizeError != null) return;
-    Navigator.of(context).pop(
-      FormTarget(
-        width: width,
-        height: height,
-        minBytes: atLeast == null || atLeast == 0 ? null : formMinBytes(atLeast),
-        maxBytes: atMost == null ? null : formMaxBytes(atMost),
-        signature: _signature,
-      ),
+    final keep = _keep && !_full;
+    final name = _name.text.trim().replaceAll(RegExp(r'\s+'), ' ');
+    final keepsAs = _keepsAs;
+    // Changing a slice, from Settings or by keeping one chosen from the list under its own name.
+    // Another name makes another slice.
+    final same = widget.myFits.where((fit) => fit.id == keepsAs).firstOrNull;
+    final changing =
+        same != null && (widget.editing != null || same.name.toLowerCase() == name.toLowerCase());
+    setState(() {
+      _nameError = !keep
+          ? null
+          : name.isEmpty
+          ? words.sliceNameNeeded
+          : widget.myFits.any(
+              (fit) => fit.id != keepsAs && fit.name.toLowerCase() == name.toLowerCase(),
+            )
+          ? words.sliceNameTaken(name)
+          : !changing && widget.myFits.length >= MyFit.most
+          ? words.slicesFull(MyFit.most)
+          : null;
+    });
+    if (_pixelsError != null || _sizeError != null || _nameError != null) return;
+    final form = FormTarget(
+      width: width,
+      height: height,
+      minBytes: atLeast == null || atLeast == 0 ? null : formMinBytes(atLeast),
+      maxBytes: atMost == null ? null : formMaxBytes(atMost),
+      signature: _signature,
     );
+    if (keep) {
+      final id = changing ? same.id : newMyFitId([for (final fit in widget.myFits) fit.id]);
+      widget.onKeep?.call(MyFit(id: id, name: name, form: form));
+    }
+    Navigator.of(context).pop(form);
   }
 
   Widget _number(TextEditingController field, String label, {String? errorText}) {
@@ -191,9 +282,32 @@ class _FormDialogState extends State<FormDialog> {
   @override
   Widget build(BuildContext context) {
     final styles = Theme.of(context).textTheme;
+    final words = context.words;
     final chosen = _chosen;
+    final name = TextField(
+      controller: _name,
+      maxLength: MyFit.longestName,
+      autofocus: widget.sliceOnly && widget.editing == null,
+      textCapitalization: TextCapitalization.sentences,
+      decoration: InputDecoration(
+        labelText: words.sliceName,
+        hintText: words.sliceNameHint,
+        errorText: _nameError,
+        errorMaxLines: 3,
+      ),
+      onChanged: (_) {
+        if (_nameError != null) setState(() => _nameError = null);
+      },
+      onSubmitted: (_) => _finish(),
+    );
     return AlertDialog(
-      title: Text(context.words.formPhoto),
+      title: Text(
+        !widget.sliceOnly
+            ? words.formPhoto
+            : widget.editing == null
+            ? words.newSlice
+            : words.changeSlice,
+      ),
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
@@ -201,6 +315,7 @@ class _FormDialogState extends State<FormDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (widget.sliceOnly) ...[name, const SizedBox(height: 8)],
               if (_presets.isNotEmpty) ...[
                 DropdownButtonFormField<Preset?>(
                   initialValue: chosen,
@@ -246,6 +361,17 @@ class _FormDialogState extends State<FormDialog> {
                 value: _signature,
                 onChanged: (on) => setState(() => _signature = on),
               ),
+              if (widget.onKeep != null && !widget.sliceOnly) ...[
+                SwitchListTile(
+                  key: const ValueKey('keep as slice'),
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(words.keepAsSlice),
+                  subtitle: Text(_full ? words.slicesFull(MyFit.most) : words.keepAsSliceWhy),
+                  value: _keep && !_full,
+                  onChanged: _full ? null : _switchKeep,
+                ),
+                if (_keep && !_full) name,
+              ],
               const SizedBox(height: 8),
               if (chosen != null) ...[
                 if (chosen.note != null) Text(chosen.note!, style: styles.bodySmall),
@@ -260,7 +386,7 @@ class _FormDialogState extends State<FormDialog> {
       ),
       actions: [
         TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.words.cancel)),
-        FilledButton(onPressed: _finish, child: Text(context.words.next)),
+        FilledButton(onPressed: _finish, child: Text(widget.sliceOnly ? words.save : words.next)),
       ],
     );
   }

@@ -2756,6 +2756,132 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Pick PDF pages from pictures of them, and Compress at three levels.'**
   String get whatsNewPages;
+
+  /// No description provided for @keepAsSlice.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep as a Make it fit slice'**
+  String get keepAsSlice;
+
+  /// No description provided for @keepAsSliceWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Next time it\'s one step: first in Make it fit, and in the Shift-drag menu on a Mac or Windows.'**
+  String get keepAsSliceWhy;
+
+  /// No description provided for @slicesFull.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} slices, the most there can be. Delete one in Settings to keep another.'**
+  String slicesFull(int count);
+
+  /// No description provided for @sliceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Slice name'**
+  String get sliceName;
+
+  /// No description provided for @sliceNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'College form'**
+  String get sliceNameHint;
+
+  /// No description provided for @sliceNameNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it a name.'**
+  String get sliceNameNeeded;
+
+  /// No description provided for @sliceNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a slice called {name}.'**
+  String sliceNameTaken(Object name);
+
+  /// No description provided for @sliceKept.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is now in Make it fit.'**
+  String sliceKept(Object name);
+
+  /// No description provided for @yourSlices.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Make it fit slices'**
+  String get yourSlices;
+
+  /// No description provided for @yourSlicesWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own sizes, one step away: first in Make it fit, and in the Shift-drag menu on a Mac or Windows. Pictures come out as JPG, using the middle of each.'**
+  String get yourSlicesWhy;
+
+  /// No description provided for @addSlice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a slice'**
+  String get addSlice;
+
+  /// No description provided for @newSlice.
+  ///
+  /// In en, this message translates to:
+  /// **'New slice'**
+  String get newSlice;
+
+  /// No description provided for @changeSlice.
+  ///
+  /// In en, this message translates to:
+  /// **'Change slice'**
+  String get changeSlice;
+
+  /// No description provided for @deleteSlice.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteSlice;
+
+  /// No description provided for @sliceDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} deleted.'**
+  String sliceDeleted(Object name);
+
+  /// No description provided for @sliceAnySize.
+  ///
+  /// In en, this message translates to:
+  /// **'Any size'**
+  String get sliceAnySize;
+
+  /// No description provided for @sliceUpToKb.
+  ///
+  /// In en, this message translates to:
+  /// **'up to {kb} KB'**
+  String sliceUpToKb(int kb);
+
+  /// No description provided for @sliceAtLeastKb.
+  ///
+  /// In en, this message translates to:
+  /// **'at least {kb} KB'**
+  String sliceAtLeastKb(int kb);
+
+  /// No description provided for @sliceSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'signature'**
+  String get sliceSignature;
+
+  /// No description provided for @faqSlicesQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I keep my form\'s sizes for next time?'**
+  String get faqSlicesQ;
+
+  /// No description provided for @faqSlicesA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. In Form photo, fill in the sizes, switch on Keep as a Make it fit slice and give it a name. It comes first in Make it fit, and in the Shift-drag menu on a Mac or Windows, and makes that JPG in one step, from the middle of the photo. To frame it yourself, open Form photo and choose your slice from its list. Settings lists your slices to change or delete.'**
+  String get faqSlicesA;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

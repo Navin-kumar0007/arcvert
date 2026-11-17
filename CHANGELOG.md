@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.17.0 (not released yet)
+
+- **Your own Make it fit slices.** In Form photo, fill in the sizes your form asks for, switch on **Keep as a Make it
+  fit slice** and name it, such as "College form". From then on it is first in Make it fit, and in the Shift-drag menu on a Mac or Windows,
+  and one drop makes that JPG, named `photo (college form).jpg`, from the middle of the photo. Settings lists your
+  slices to change, delete (with Undo) or add without a file. Up to 12, kept on this device only.
+
 ## 0.16.0 (beta, 17 November 2026)
 
 - **ShiftDrop is now Arcvert.** The same app with a new name, as another file converter was already called ShiftDrop.

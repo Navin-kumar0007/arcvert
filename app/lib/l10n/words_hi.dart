@@ -1602,4 +1602,82 @@ class WordsHi extends Words {
   @override
   String get whatsNewPages =>
       'PDF के पन्ने उनकी तस्वीरें देखकर चुनें, और Compress तीन स्तरों पर करें।';
+
+  @override
+  String get keepAsSlice => 'Make it fit स्लाइस के रूप में रखें';
+
+  @override
+  String get keepAsSliceWhy =>
+      'अगली बार बस एक कदम: Make it fit में सबसे पहले, और Mac या Windows पर Shift-drag मेनू में भी।';
+
+  @override
+  String slicesFull(int count) {
+    return 'आपके पास $count स्लाइस हैं, जितने रखे जा सकते हैं। दूसरा रखने के लिए सेटिंग में एक हटाएँ।';
+  }
+
+  @override
+  String get sliceName => 'स्लाइस का नाम';
+
+  @override
+  String get sliceNameHint => 'कॉलेज फ़ॉर्म';
+
+  @override
+  String get sliceNameNeeded => 'इसे एक नाम दें।';
+
+  @override
+  String sliceNameTaken(Object name) {
+    return '$name नाम का स्लाइस पहले से है।';
+  }
+
+  @override
+  String sliceKept(Object name) {
+    return '$name अब Make it fit में है।';
+  }
+
+  @override
+  String get yourSlices => 'आपके Make it fit स्लाइस';
+
+  @override
+  String get yourSlicesWhy =>
+      'आपके अपने साइज़, बस एक कदम दूर: Make it fit में सबसे पहले, और Mac या Windows पर Shift-drag मेनू में भी। तस्वीरें JPG बनती हैं, हर एक के बीच के हिस्से से।';
+
+  @override
+  String get addSlice => 'स्लाइस जोड़ें';
+
+  @override
+  String get newSlice => 'नया स्लाइस';
+
+  @override
+  String get changeSlice => 'स्लाइस बदलें';
+
+  @override
+  String get deleteSlice => 'हटाएँ';
+
+  @override
+  String sliceDeleted(Object name) {
+    return '$name हटाया गया।';
+  }
+
+  @override
+  String get sliceAnySize => 'कोई भी साइज़';
+
+  @override
+  String sliceUpToKb(int kb) {
+    return '$kb KB तक';
+  }
+
+  @override
+  String sliceAtLeastKb(int kb) {
+    return 'कम से कम $kb KB';
+  }
+
+  @override
+  String get sliceSignature => 'हस्ताक्षर';
+
+  @override
+  String get faqSlicesQ => 'क्या मैं अपने फ़ॉर्म के साइज़ अगली बार के लिए रख सकता हूँ?';
+
+  @override
+  String get faqSlicesA =>
+      'हाँ। Form photo में साइज़ भरें, Make it fit स्लाइस के रूप में रखें चालू करें और नाम दें। यह Make it fit में सबसे पहले आता है, और Mac या Windows पर Shift-drag मेनू में भी, और एक कदम में वही JPG बनाता है, फ़ोटो के बीच के हिस्से से। फ़्रेम खुद चुनने के लिए Form photo खोलें और सूची से अपना स्लाइस चुनें। सेटिंग में आपके स्लाइस हैं, बदलने या हटाने के लिए।';
 }

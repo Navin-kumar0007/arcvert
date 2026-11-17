@@ -157,6 +157,16 @@ owner chose to ship the new look with Copy details and move the other planned it
 - **Changing the trigger key** from Shift. **Done** (`AppSettings.triggerKey`, `TriggerKey` in Swift, `TriggerDown` in
   C++, 16 November 2026): Shift or Control.
 
+## 0.17.0: your own slices
+
+**Built**, 17 November 2026, not yet tried on devices.
+
+- **Own Make it fit slices** (`core/lib/src/my_fits.dart`, `AppSettings.myFits`, `MyFitsList` in Settings): a form's
+  sizes under a name, first in Make it fit and Shift-drag, run as Form photo (`runsAs`), result named after the slice
+  (`ActionOptions.nameSuffix`). Made from Form photo's **Keep as a Make it fit slice** or in Settings.
+- Next candidates, in the owner's list from 17 November 2026: export and import of settings, right-click "Convert with
+  Arcvert", a pattern for result names, a notification when a long job ends.
+
 ## 0.16.0: Arcvert
 
 **Done**, 17 November 2026. The next release after 0.10.1. The owner found another converter already called ShiftDrop

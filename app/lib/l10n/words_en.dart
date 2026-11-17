@@ -1601,4 +1601,82 @@ class WordsEn extends Words {
 
   @override
   String get whatsNewPages => 'Pick PDF pages from pictures of them, and Compress at three levels.';
+
+  @override
+  String get keepAsSlice => 'Keep as a Make it fit slice';
+
+  @override
+  String get keepAsSliceWhy =>
+      'Next time it\'s one step: first in Make it fit, and in the Shift-drag menu on a Mac or Windows.';
+
+  @override
+  String slicesFull(int count) {
+    return 'You have $count slices, the most there can be. Delete one in Settings to keep another.';
+  }
+
+  @override
+  String get sliceName => 'Slice name';
+
+  @override
+  String get sliceNameHint => 'College form';
+
+  @override
+  String get sliceNameNeeded => 'Give it a name.';
+
+  @override
+  String sliceNameTaken(Object name) {
+    return 'You already have a slice called $name.';
+  }
+
+  @override
+  String sliceKept(Object name) {
+    return '$name is now in Make it fit.';
+  }
+
+  @override
+  String get yourSlices => 'Your Make it fit slices';
+
+  @override
+  String get yourSlicesWhy =>
+      'Your own sizes, one step away: first in Make it fit, and in the Shift-drag menu on a Mac or Windows. Pictures come out as JPG, using the middle of each.';
+
+  @override
+  String get addSlice => 'Add a slice';
+
+  @override
+  String get newSlice => 'New slice';
+
+  @override
+  String get changeSlice => 'Change slice';
+
+  @override
+  String get deleteSlice => 'Delete';
+
+  @override
+  String sliceDeleted(Object name) {
+    return '$name deleted.';
+  }
+
+  @override
+  String get sliceAnySize => 'Any size';
+
+  @override
+  String sliceUpToKb(int kb) {
+    return 'up to $kb KB';
+  }
+
+  @override
+  String sliceAtLeastKb(int kb) {
+    return 'at least $kb KB';
+  }
+
+  @override
+  String get sliceSignature => 'signature';
+
+  @override
+  String get faqSlicesQ => 'Can I keep my form\'s sizes for next time?';
+
+  @override
+  String get faqSlicesA =>
+      'Yes. In Form photo, fill in the sizes, switch on Keep as a Make it fit slice and give it a name. It comes first in Make it fit, and in the Shift-drag menu on a Mac or Windows, and makes that JPG in one step, from the middle of the photo. To frame it yourself, open Form photo and choose your slice from its list. Settings lists your slices to change or delete.';
 }

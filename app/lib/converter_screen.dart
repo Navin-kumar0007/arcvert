@@ -488,6 +488,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   /// has room for few slices, and a drag can't stop to ask questions, so actions that ask first are
   /// left out.
   Future<List<RadialAction>> _menuFor(List<String> paths, ActionMode mode) async {
+    final myFits = SettingsScope.read(context)?.value.myFits ?? const <MyFit>[];
     // Switching to Tools mid-drag asks again about the same file, which keeps its trials.
     final same = _draggedFor(paths);
     _dragged = null;
@@ -521,6 +522,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
         mode,
         mediaAvailable: _mediaAvailable,
         mediaOutputs: mediaOutputsHere(),
+        myFits: myFits,
       ),
     ).where((action) => !needsOptions(action)).take(_shiftDragSlices).toList();
   }
@@ -909,7 +911,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
           ),
       ]);
     }
-    return portable(await widget.converter(action, inputs, onProgress, options));
+    final run = runsAs(action, options);
+    return portable(await widget.converter(run.action, inputs, onProgress, run.options));
   }
 
   /// The menu's trials for one file, made again when another file is chosen. Only one file, as
@@ -927,7 +930,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   Future<List<PortableFile>> _trial(RadialAction action, List<PortableFile> files) {
-    return widget.converter(action, files, (_) {}, const ActionOptions());
+    final run = runsAs(action, const ActionOptions());
+    return widget.converter(run.action, files, (_) {}, run.options);
   }
 
   /// Asks anything the action needs to know, then starts it.
@@ -981,11 +985,19 @@ class _ConverterScreenState extends State<ConverterScreen> {
     }
     final file = _files.first;
     final kind = _kinds.first;
+    final settings = SettingsScope.read(context);
     final options = await askForOptions(
       context,
       action,
       loadPicture: () => _pictureToShow(file, kind),
       loadPresets: widget.presetLoader,
+      myFits: settings?.value.myFits ?? const [],
+      onKeep: settings == null
+          ? null
+          : (fit) {
+              unawaited(settings.change((old) => old.keepMyFit(fit)));
+              _say(_words.sliceKept(fit.name));
+            },
       fileCount: _files.length,
       openPdfPages: kind == FileKind.pdf
           ? () async => PdfPagePictures.open(await file.read(), file.name)
@@ -1114,7 +1126,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
     return failureDetails(
       appVersion: appVersion,
       platform: platformLabel,
-      action: action.label,
+      // A slice's name is the user's own, so it stays out of what may be pasted into a report.
+      action: action is MyFitAction ? 'Form photo (own slice)' : action.label,
       kind: kinds.isNotEmpty && kinds.every((kind) => kind == kinds.first) ? kinds.first : null,
       failure: error,
     );
@@ -1665,6 +1678,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
       tab == _Tab.tools ? ActionMode.tools : ActionMode.convert,
       mediaAvailable: _mediaAvailable,
       mediaOutputs: mediaOutputsHere(),
+      myFits: SettingsScope.maybeOf(context)?.value.myFits ?? const [],
     );
     return _learned(switch (tab) {
       _Tab.convert => [
