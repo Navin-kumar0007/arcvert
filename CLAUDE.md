@@ -289,8 +289,9 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   browser; `helpTopics`), search, shortcuts (`helpShortcuts`), What's new (`whatsNewVersion` must equal `appVersion`, a
   test checks), Report a problem and Suggest a feature (`core/lib/src/support_links.dart`): an email draft (`mailto:`) to
   `supportEmail` first, as most people have no GitHub account (owner's choice, 16 Nov 2026), a prefilled GitHub issue as
-  the second way, or a copy; facts are version, platform and language only. `supportEmail` is null: `shiftdrop.support@gmail.com` (made 16 Nov 2026)
-  was retired with the name, and email stays hidden until the owner makes `arcvert.support@gmail.com`. `openPage` and the native openers allow `https` and `mailto` only;
+  the second way, or a copy; facts are version, platform and language only. `supportEmail` is `arcvert.support@gmail.com`, made by the owner on
+  17 Nov 2026 (also on the website and in the privacy policy); `shiftdrop.support@gmail.com` was retired with the name. Null
+  hides email. `openPage` and the native openers allow `https` and `mailto` only;
   Android sends `mailto` as `ACTION_SENDTO`, so only email apps answer. After an update,
   `AppHome` says what's new once (`AppSettings.whatsNewSeen`); a new install has the guide instead. A SnackBar with an
   action persists unless `persist: false`.

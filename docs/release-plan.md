@@ -166,7 +166,7 @@ built under the old name: 0.16.0 holds all of them, as 0.13.0 held 0.11 and 0.12
 - **The new name** everywhere, with settings and history carried over on desktops, the Windows installer replacing
   ShiftDrop, and `shiftdrop.pages.dev` kept as a pointer for old copies (`docs/legacy-site/`).
 - **Help** with common questions, shortcuts and What's new; **Report a problem** and **Suggest a feature** by email
-  (once `arcvert.support@gmail.com` exists) or GitHub; a once-per-update What's new note.
+  (`arcvert.support@gmail.com`) or GitHub; a once-per-update What's new note.
 
 ## 0.15.0: PDF passwords, RAR in parts, menu speed
 

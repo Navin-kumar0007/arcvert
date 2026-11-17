@@ -44,4 +44,4 @@ Where the web app is hosted, the hosting company handles requests as any website
 
 ## Changes and contact
 
-Any change will be recorded here and in the project's history, which is public. Questions can be asked in the project's [issues](https://github.com/Navin-kumar0007/arcvert/issues).
+Any change will be recorded here and in the project's history, which is public. Questions can be emailed to [arcvert.support@gmail.com](mailto:arcvert.support@gmail.com) or asked in the project's [issues](https://github.com/Navin-kumar0007/arcvert/issues). Emails are read only by the people who make Arcvert and are never shared or used for anything else.

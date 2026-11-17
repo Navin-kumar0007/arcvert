@@ -6,8 +6,7 @@ library;
 
 /// The address reports and ideas are emailed to, or null until there is one: the app then offers
 /// GitHub and copying only. Shown in the app and on the website.
-// arcvert.support@gmail.com once the owner has made it (ShiftDrop's address was retired with the name).
-const String? supportEmail = null;
+const String? supportEmail = 'arcvert.support@gmail.com';
 
 const _newIssue = 'https://github.com/Navin-kumar0007/arcvert/issues/new';
 
