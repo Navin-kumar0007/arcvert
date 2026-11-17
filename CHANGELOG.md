@@ -9,9 +9,10 @@
 - **Move your settings** to another device: in Settings, **Save settings to a file**, then **Bring in settings from a
   file** on the other one. Your choices and slices come along; your files, folders and history never do. Before
   anything changes, it says what will: slices with the same name are updated, others are added.
-- **Right-click to convert** on a Mac or Windows. In Finder, right-click files or a folder and choose **Open With >
-  Arcvert**, or **Convert with Arcvert** under Quick Actions or Services. In File Explorer choose **Convert with
-  Arcvert** (on Windows 11, under Show more options). Arcvert opens, or comes forward, with them chosen.
+- **Right-click to convert** on a Mac or Windows. In Finder, right-click files or a folder and choose **Convert with
+  Arcvert** under Quick Actions or Services: the dial appears right there, click a slice and the result is saved
+  beside the original. **Open With > Arcvert** opens them in the window. In File Explorer choose **Convert with
+  Arcvert** (on Windows 11, under Show more options), which opens them in the window for now.
 
 ## 0.16.0 (beta, 17 November 2026)
 

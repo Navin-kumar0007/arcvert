@@ -37,6 +37,8 @@ final class OpenedFiles: NSObject {
   private var listening = false
   private var waiting: [String] = []
   var showWindow: () -> Void = {}
+  /// Shows the Shift-drag menu at the cursor for these files, saying whether it could.
+  var showMenu: ([String], @escaping (Bool) -> Void) -> Void = { _, done in done(false) }
 
   func connect(to messenger: FlutterBinaryMessenger) {
     let channel = FlutterMethodChannel(name: "radial/open", binaryMessenger: messenger)
@@ -53,8 +55,8 @@ final class OpenedFiles: NSObject {
   func add(_ paths: [String]) {
     guard !paths.isEmpty else { return }
     waiting.append(contentsOf: paths)
-    NSApp.activate(ignoringOtherApps: true)
     showWindow()
+    NSApp.activate(ignoringOtherApps: true)
     send()
   }
 
@@ -65,13 +67,31 @@ final class OpenedFiles: NSObject {
     channel.invokeMethod("open", arguments: ["paths": paths])
   }
 
-  /// The service's message, named in Info.plist's `NSServices`.
+  /// The service's message, named in Info.plist's `NSServices`: the menu at the cursor, over Finder,
+  /// as a Shift-drag shows it, and the result saved beside the original.
   @objc func convertWithArcvert(
     _ pasteboard: NSPasteboard, userData: String?, error: AutoreleasingUnsafeMutablePointer<NSString?>
   ) {
     let urls =
       pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true])
       as? [URL] ?? []
-    add(urls.map(\.path))
+    menu(for: urls.map(\.path), tries: 20)
+  }
+
+  /// Started by the service, the app's Dart side takes a moment to answer, so it's asked again. Once
+  /// it has answered with nothing, or never does, the files open in the window instead, which says
+  /// why nothing can be made.
+  private func menu(for paths: [String], tries: Int) {
+    guard !paths.isEmpty else { return }
+    showMenu(paths) { [weak self] shown in
+      guard let self = self, !shown else { return }
+      if tries > 0, !self.listening {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+          self.menu(for: paths, tries: tries - 1)
+        }
+      } else {
+        self.add(paths)
+      }
+    }
   }
 }

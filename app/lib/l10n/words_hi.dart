@@ -1741,7 +1741,7 @@ class WordsHi extends Words {
 
   @override
   String get faqRightClickMacA =>
-      'हाँ। Finder में फ़ाइलों या फ़ोल्डर पर राइट-क्लिक करें और Open With में Arcvert चुनें, या Quick Actions या Services में Convert with Arcvert। Arcvert उन्हें चुनकर खुलता है, बनाने के लिए तैयार।';
+      'हाँ। Finder में फ़ाइलों या फ़ोल्डर पर राइट-क्लिक करें और Quick Actions या Services में Convert with Arcvert चुनें: डायल वहीं दिखता है, और नतीजा मूल फ़ाइल के पास सेव होता है। Open With में Arcvert चुनने पर वे विंडो में खुलती हैं।';
 
   @override
   String get faqRightClickWindowsA =>

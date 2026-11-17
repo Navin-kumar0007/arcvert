@@ -26,7 +26,15 @@ class MainFlutterWindow: NSWindow {
     }
     connectShiftDrag(to: flutterViewController.engine.binaryMessenger, view: flutterViewController.view)
     OpenedFiles.shared.connect(to: flutterViewController.engine.binaryMessenger)
-    OpenedFiles.shared.showWindow = { [weak self] in self?.makeKeyAndOrderFront(nil) }
+    // In front of Finder even before macOS lets the app become active.
+    OpenedFiles.shared.showWindow = { [weak self] in
+      self?.makeKeyAndOrderFront(nil)
+      self?.orderFrontRegardless()
+    }
+    OpenedFiles.shared.showMenu = { [weak self] paths, done in
+      guard let self = self else { return done(false) }
+      self.shiftDrag.showForClick(paths, done: done)
+    }
     NSApp.servicesProvider = OpenedFiles.shared
 
     super.awakeFromNib()

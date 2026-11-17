@@ -179,6 +179,13 @@ final class RadialDropView: NSView {
   /// The slice dropped on, the files, and the ring choice if it was one.
   var onDrop: ((RadialSlice, [String], Int?) -> Void)?
   var onHighlight: ((Int?) -> Void)?
+  /// Chosen by clicking, for files chosen in Finder's right-click menu, rather than by dropping:
+  /// moving highlights, a click chooses, a click in the centre cancels.
+  var isClicked = false
+  /// The files a click chooses for, as there's no drag to carry them.
+  var clickedPaths: [String] = []
+  var onCancel: (() -> Void)?
+  private var trackingArea: NSTrackingArea?
 
   private let innerRadius: CGFloat = 38
   private var outerRadius: CGFloat { radialMenuRadius }
@@ -364,6 +371,48 @@ final class RadialDropView: NSView {
       withAttributes: attributes)
   }
 
+  override func updateTrackingAreas() {
+    super.updateTrackingAreas()
+    if let trackingArea { removeTrackingArea(trackingArea) }
+    let area = NSTrackingArea(
+      rect: bounds, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect],
+      owner: self)
+    addTrackingArea(area)
+    trackingArea = area
+  }
+
+  // The app is in the background behind Finder, so the first click must count.
+  override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+  override func mouseMoved(with event: NSEvent) {
+    guard isClicked else { return }
+    pointTo(convert(event.locationInWindow, from: nil))
+  }
+
+  override func mouseExited(with event: NSEvent) {
+    guard isClicked else { return }
+    choice = nil
+    highlighted = nil
+  }
+
+  // Chosen when the button comes up, as menus do.
+  override func mouseDown(with event: NSEvent) {}
+
+  override func mouseUp(with event: NSEvent) {
+    guard isClicked else { return }
+    pointTo(convert(event.locationInWindow, from: nil))
+    guard choosing, let index = highlighted, !clickedPaths.isEmpty else {
+      onCancel?()
+      return
+    }
+    onDrop?(slices[index], clickedPaths, choice)
+  }
+
+  private func pointTo(_ point: NSPoint) {
+    isPastMenu = hypot(point.x - centre.x, point.y - centre.y) > outerRadius
+    follow(point)
+  }
+
   override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation { track(sender) }
   override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation { track(sender) }
   override func draggingExited(_ sender: NSDraggingInfo?) {
@@ -481,6 +530,38 @@ final class ShiftDragWatcher: NSObject {
       self?.onChosen?(slice, paths, choice)
     }
     radial.onHighlight = { [weak self] index in self?.highlightChanged(index) }
+    radial.onCancel = { [weak self] in self?.hide() }
+  }
+
+  /// Watches for a click anywhere else while the clicked menu shows, which closes it.
+  private var outsideClicks: Any?
+
+  /// Shows the menu at the cursor for [paths], chosen in Finder's right-click menu, to choose from by
+  /// clicking. [done] says false if nothing was shown: Dart may not be running yet, or nothing can
+  /// be made from these files.
+  func showForClick(_ paths: [String], done: @escaping (Bool) -> Void) {
+    guard !isShowing, !isAsking, !paths.isEmpty else {
+      done(false)
+      return
+    }
+    isAsking = true
+    let point = NSEvent.mouseLocation
+    askForSlices?(paths, false) { [weak self] slices in
+      guard let self = self else { return }
+      self.isAsking = false
+      guard !slices.isEmpty, !self.isShowing else {
+        done(false)
+        return
+      }
+      self.radial.isClicked = true
+      self.radial.clickedPaths = paths
+      self.panel.acceptsMouseMovedEvents = true
+      self.show(slices, for: paths, at: point, tools: false)
+      self.outsideClicks = NSEvent.addGlobalMonitorForEvents(
+        matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown]
+      ) { [weak self] _ in self?.hide() }
+      done(true)
+    }
   }
 
   private func highlightChanged(_ index: Int?) {
@@ -521,6 +602,11 @@ final class ShiftDragWatcher: NSObject {
     let previous = lastTick > 0 ? lastTick : now - 1.0 / 30.0
     lastTick = now
     let pasteboard = NSPasteboard(name: .drag)
+    // A clicked menu stays until it's clicked, whatever the mouse button does elsewhere.
+    if radial.isClicked {
+      seenChange = pasteboard.changeCount
+      return
+    }
     if isPaused() {
       seenChange = pasteboard.changeCount
       return
@@ -625,6 +711,10 @@ final class ShiftDragWatcher: NSObject {
 
   private func hide() {
     panel.orderOut(nil)
+    if let outsideClicks { NSEvent.removeMonitor(outsideClicks) }
+    outsideClicks = nil
+    radial.isClicked = false
+    radial.clickedPaths = []
     isShowing = false
     hideAt = nil
     sizeTimer?.invalidate()

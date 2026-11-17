@@ -1740,7 +1740,7 @@ class WordsEn extends Words {
 
   @override
   String get faqRightClickMacA =>
-      'Yes. Right-click files or a folder in Finder and choose Open With, then Arcvert, or Quick Actions or Services, then Convert with Arcvert. Arcvert opens with them chosen, ready to pick what to make.';
+      'Yes. Right-click files or a folder in Finder and choose Convert with Arcvert, under Quick Actions or Services: the dial appears right there, and the result is saved beside the original. Open With, then Arcvert, opens them in the window instead.';
 
   @override
   String get faqRightClickWindowsA =>

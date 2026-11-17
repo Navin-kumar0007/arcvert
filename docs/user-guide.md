@@ -46,7 +46,7 @@ In the window, resting on **Rotate**, **Flip** or **Resize**, or one of their ch
 
 **On a phone.** The menu is half a dial along the bottom of the screen. Tap a slice to choose it: the card above says how big the result will be, and choices such as Rotate's 180° appear as buttons. Then tap the big button in the middle to run it.
 
-**From a right-click (Mac and Windows).** In Finder, right-click files or a folder and choose **Open With > Arcvert**, or **Convert with Arcvert** under **Quick Actions** or **Services**. In File Explorer, choose **Convert with Arcvert**; on Windows 11 it's under **Show more options**. Arcvert opens with them chosen. On Windows this comes with the installer, not the portable zip.
+**From a right-click (Mac and Windows).** In Finder, right-click files or a folder and choose **Convert with Arcvert** under **Quick Actions** or **Services**: the dial appears where you clicked. Move to a slice and click it, and the result is saved beside the original; click the middle, or anywhere else, to close it. **Open With > Arcvert** opens them in the window instead. In File Explorer, choose **Convert with Arcvert**; on Windows 11 it's under **Show more options**. It opens them in the window. On Windows this comes with the installer, not the portable zip.
 
 ## After converting
 

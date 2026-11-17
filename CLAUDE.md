@@ -309,7 +309,12 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   them through `_dropped`, so folders work as dropped ones. Mac: `OpenedFiles` in `AppDelegate.swift` holds paths
   until Dart listens; `application(_:open:)` (Open With and the Dock icon, from `CFBundleDocumentTypes` with
   `public.item` at rank Alternate, so never anyone's default) and the `convertWithArcvert` service (`NSServices`,
-  `servicesProvider` set in `MainFlutterWindow`). Windows: the installer writes `HKCU\Software\Classes\*\shell\Arcvert`
+  `servicesProvider` set in `MainFlutterWindow`). The service shows the Shift-drag dial at the cursor to click
+  (`showForClick` in `ShiftDragWatcher`, `isClicked` in `RadialDropView`: mouse moved highlights, mouse up chooses,
+  the centre or a click elsewhere, seen by a global monitor, cancels), and Dart runs the choice as a Shift-drag's,
+  saving beside the original. Started by the service, it asks again every 0.25 s until Dart listens, then falls back
+  to the window. The owner asked for this (17 Nov 2026): opening the window wasn't what right-click should do.
+  Open With still opens the window, which `orderFrontRegardless` brings in front of Finder. Windows: the installer writes `HKCU\Software\Classes\*\shell\Arcvert`
   and `Directory\shell\Arcvert` (`"arcvert.exe" "%1"`, MultiSelectModel Player); Explorer starts a copy per item,
   which `main.cpp` sends to the running window as `WM_COPYDATA` (`kOpenFilesData`), and `FlutterWindow` gathers them
   for 300 ms before showing itself and sending them. CI checks the keys, the hand-over and their removal. Not in the
