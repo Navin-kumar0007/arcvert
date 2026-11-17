@@ -1746,4 +1746,16 @@ class WordsHi extends Words {
   @override
   String get faqRightClickWindowsA =>
       'हाँ। File Explorer में फ़ाइलों या फ़ोल्डर पर राइट-क्लिक करें और Convert with Arcvert चुनें। Windows 11 पर यह Show more options में है। Arcvert उन्हें चुनकर खुलता है, बनाने के लिए तैयार।';
+
+  @override
+  String get whatsNewSlices =>
+      'अपने फ़ॉर्म के साइज़ अपने Make it fit स्लाइस के रूप में रखें, अगली बार बस एक कदम।';
+
+  @override
+  String get whatsNewRightClick =>
+      'Mac पर Finder में फ़ाइलों पर राइट-क्लिक करके डायल पाएँ; Windows पर File Explorer में Convert with Arcvert।';
+
+  @override
+  String get whatsNewMoveSettings =>
+      'अपनी सेटिंग और स्लाइस एक फ़ाइल के रूप में दूसरे डिवाइस पर ले जाएँ।';
 }

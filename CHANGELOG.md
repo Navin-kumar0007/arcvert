@@ -1,7 +1,12 @@
 # Changelog
 
-## 0.17.0 (not released yet)
+## 0.17.0 (beta, 17 November 2026)
 
+The first release as **Arcvert** (it was ShiftDrop). New since 0.10.1, the last ShiftDrop release:
+
+- **The new name.** On a Mac or Windows your settings and history come along, and on Windows the installer replaces
+  ShiftDrop. On a Mac, turn on Open at login again in Settings. The Android app is new to your phone, so remove
+  ShiftDrop once Arcvert is in. The website is now arcvert.pages.dev.
 - **Your own Make it fit slices.** In Form photo, fill in the sizes your form asks for, switch on **Keep as a Make it
   fit slice** and name it, such as "College form". From then on it is first in Make it fit, and in the Shift-drag menu on a Mac or Windows,
   and one drop makes that JPG, named `photo (college form).jpg`, from the middle of the photo. Settings lists your
@@ -13,14 +18,18 @@
   Arcvert** under Quick Actions or Services: the dial appears right there, click a slice and the result is saved
   beside the original. **Open With > Arcvert** opens them in the window. In File Explorer choose **Convert with
   Arcvert** (on Windows 11, under Show more options), which opens them in the window for now.
+- **Also new since 0.10.1**, built as 0.11.0 to 0.16.0 and never published on their own: a new look in light and dark
+  with Settings, previews and the Make it fit tab; Help with common questions and **Report a problem** by email;
+  **Add password** to PDFs; **Extract pages** from a PDF by picking them; RAR files in several parts; **Scanned
+  document**; **Clean up a signature** in Form photo; three **Compress** levels; extract archives to a folder; reorder
+  files before merging; and menus that learn what you use most. Each is described below.
 
-## 0.16.0 (beta, 17 November 2026)
+## 0.16.0 (not published: in 0.17.0, 17 November 2026)
 
 - **ShiftDrop is now Arcvert.** The same app with a new name, as another file converter was already called ShiftDrop.
   On a Mac or Windows your settings and history come along, and on Windows the installer replaces ShiftDrop and keeps
   opening at login if you'd chosen it. On a Mac, turn on Open at login again in Settings. The Android app is new to
   your phone, so remove ShiftDrop once Arcvert is in. The website is now arcvert.pages.dev; the old address points there.
-- 0.11.0 to 0.15.0 were tested but never published, so this is the first release with everything below them, too.
 - **Help**, the new **?** at the top: common questions for your device, searchable, keyboard shortcuts, and what's
   new. Works without the internet.
 - **Report a problem** fills in an email in your own email app, or a report on GitHub, showing you everything it holds

@@ -24,15 +24,16 @@ HelpPlace get helpPlaceHere {
 
 /// The version What's new describes. A test fails if it falls behind `appVersion`, so each release
 /// says what it brought.
-const whatsNewVersion = '0.16.0';
+const whatsNewVersion = '0.17.0';
 
 /// Since 0.10.1, the last release most people had, as 0.13 to 0.15 were never published.
 List<String> whatsNew(Words words) => [
   words.whatsNewName,
+  words.whatsNewSlices,
+  words.whatsNewRightClick,
+  words.whatsNewMoveSettings,
   words.whatsNewLook,
   words.whatsNewPdfPassword,
-  words.whatsNewRarParts,
-  words.whatsNewPages,
   words.whatsNewHelp,
 ];
 

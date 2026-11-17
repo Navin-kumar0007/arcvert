@@ -2996,6 +2996,24 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Yes. Right-click files or a folder in File Explorer and choose Convert with Arcvert. On Windows 11 it\'s under Show more options. Arcvert opens with them chosen, ready to pick what to make.'**
   String get faqRightClickWindowsA;
+
+  /// No description provided for @whatsNewSlices.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your form\'s sizes as a Make it fit slice of your own, one step away next time.'**
+  String get whatsNewSlices;
+
+  /// No description provided for @whatsNewRightClick.
+  ///
+  /// In en, this message translates to:
+  /// **'On a Mac, right-click files in Finder for the dial; on Windows, Convert with Arcvert in File Explorer.'**
+  String get whatsNewRightClick;
+
+  /// No description provided for @whatsNewMoveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Move your settings and slices to another device as a file.'**
+  String get whatsNewMoveSettings;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

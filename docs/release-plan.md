@@ -157,9 +157,10 @@ owner chose to ship the new look with Copy details and move the other planned it
 - **Changing the trigger key** from Shift. **Done** (`AppSettings.triggerKey`, `TriggerKey` in Swift, `TriggerDown` in
   C++, 16 November 2026): Shift or Control.
 
-## 0.17.0: your own slices
+## 0.17.0: Arcvert launch
 
-**Built**, 17 November 2026, not yet tried on devices.
+**Done**, 17 November 2026: the first release published as Arcvert, and the next after 0.10.1. The owner chose to
+launch with it rather than 0.16.0, which stays an unpublished draft, as 0.13.0 to 0.15.0 do.
 
 - **Own Make it fit slices** (`core/lib/src/my_fits.dart`, `AppSettings.myFits`, `MyFitsList` in Settings): a form's
   sizes under a name, first in Make it fit and Shift-drag, run as Form photo (`runsAs`), result named after the slice
@@ -179,7 +180,7 @@ owner chose to ship the new look with Copy details and move the other planned it
 
 ## 0.16.0: Arcvert
 
-**Done**, 17 November 2026. The next release after 0.10.1. The owner found another converter already called ShiftDrop
+**Not published**: in 0.17.0. Built 17 November 2026. The owner found another converter already called ShiftDrop
 in the Microsoft Store, chose the name Arcvert, and chose (17 November 2026) not to publish the 0.13.0 to 0.15.0 drafts,
 built under the old name: 0.16.0 holds all of them, as 0.13.0 held 0.11 and 0.12.
 

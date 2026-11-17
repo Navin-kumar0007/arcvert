@@ -1009,5 +1009,8 @@
   "faqMoveA": "In Settings, choose Save settings to a file, and move the file over, by email or a USB stick. On the other device, choose Bring in settings from a file. Your choices and slices come along, never your files or history.",
   "faqRightClickQ": "Can I start from a right-click on a file?",
   "faqRightClickMacA": "Yes. Right-click files or a folder in Finder and choose Convert with Arcvert, under Quick Actions or Services: the dial appears right there, and the result is saved beside the original. Open With, then Arcvert, opens them in the window instead.",
-  "faqRightClickWindowsA": "Yes. Right-click files or a folder in File Explorer and choose Convert with Arcvert. On Windows 11 it's under Show more options. Arcvert opens with them chosen, ready to pick what to make."
+  "faqRightClickWindowsA": "Yes. Right-click files or a folder in File Explorer and choose Convert with Arcvert. On Windows 11 it's under Show more options. Arcvert opens with them chosen, ready to pick what to make.",
+  "whatsNewSlices": "Keep your form's sizes as a Make it fit slice of your own, one step away next time.",
+  "whatsNewRightClick": "On a Mac, right-click files in Finder for the dial; on Windows, Convert with Arcvert in File Explorer.",
+  "whatsNewMoveSettings": "Move your settings and slices to another device as a file."
 }

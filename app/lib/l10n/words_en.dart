@@ -1745,4 +1745,15 @@ class WordsEn extends Words {
   @override
   String get faqRightClickWindowsA =>
       'Yes. Right-click files or a folder in File Explorer and choose Convert with Arcvert. On Windows 11 it\'s under Show more options. Arcvert opens with them chosen, ready to pick what to make.';
+
+  @override
+  String get whatsNewSlices =>
+      'Keep your form\'s sizes as a Make it fit slice of your own, one step away next time.';
+
+  @override
+  String get whatsNewRightClick =>
+      'On a Mac, right-click files in Finder for the dial; on Windows, Convert with Arcvert in File Explorer.';
+
+  @override
+  String get whatsNewMoveSettings => 'Move your settings and slices to another device as a file.';
 }
