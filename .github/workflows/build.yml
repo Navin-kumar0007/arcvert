@@ -355,15 +355,16 @@ jobs:
           path: app/.dart_tool/hooks_runner/shared/pdfium_dart
           key: pdfium-${{ runner.os }}-${{ hashFiles('app/pubspec.lock') }}
           restore-keys: pdfium-${{ runner.os }}-
-      # PDFium for Mac is a Swift package whose framework comes from a GitHub release.
+      # PDFium for Mac is a Swift package whose framework comes from a GitHub release. The cache holds
+      # absolute paths, which name the repository, so it is keyed by that too: renaming it broke the build.
       - name: Reuse Swift packages
         uses: actions/cache@v4
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
             app/build/macos/SourcePackages
-          key: swiftpm-${{ runner.os }}-${{ hashFiles('app/pubspec.lock') }}
-          restore-keys: swiftpm-${{ runner.os }}-
+          key: swiftpm-${{ runner.os }}-${{ github.event.repository.name }}-${{ hashFiles('app/pubspec.lock') }}
+          restore-keys: swiftpm-${{ runner.os }}-${{ github.event.repository.name }}-
       - name: Build
         working-directory: app
         run: tool/retry_network.sh flutter build macos --release

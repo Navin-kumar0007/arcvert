@@ -6,15 +6,16 @@ import 'package:path/path.dart' as p;
 
 void main() {
   test('the old folder is the same one under the ShiftDrop name', () {
+    final support = p.join('/Users', 'a', 'Library', 'Application Support');
     expect(
-      oldNameFolder('/Users/a/Library/Application Support/io.github.navinkumar0007.arcvert'),
-      '/Users/a/Library/Application Support/io.github.navinkumar0007.shiftdrop',
+      oldNameFolder(p.join(support, 'io.github.navinkumar0007.arcvert')),
+      p.join(support, 'io.github.navinkumar0007.shiftdrop'),
     );
     expect(
       oldNameFolder(p.join('/AppData', 'Roaming', 'Arcvert contributors', 'Arcvert')),
       p.join('/AppData', 'Roaming', 'ShiftDrop contributors', 'ShiftDrop'),
     );
-    expect(oldNameFolder('/data/files'), isNull);
+    expect(oldNameFolder(p.join('/data', 'files')), isNull);
   });
 
   group('bringing over', () {
