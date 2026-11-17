@@ -19,8 +19,11 @@ class AppDelegate: FlutterAppDelegate {
 
   // Open With in Finder, or files dropped on the Dock icon. Arcvert is never anything's default app
   // (`LSHandlerRank` Alternate), so this is only when someone chose it.
-  func application(_ application: NSApplication, open urls: [URL]) {
+  override func application(_ application: NSApplication, open urls: [URL]) {
     OpenedFiles.shared.add(urls.filter(\.isFileURL).map(\.path))
+    // Anything else, such as a link, goes on to plugins as before.
+    let others = urls.filter { !$0.isFileURL }
+    if !others.isEmpty { super.application(application, open: others) }
   }
 }
 

@@ -53,8 +53,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
   // Closing the window only hides it, so opening the app again usually means bringing it back. A
   // second copy would also show a second Shift-drag menu.
-  HANDLE running = ::CreateMutexW(nullptr, TRUE, L"Arcvert.SingleInstance");
+  // Read first: anything between making the mutex and GetLastError would hide that it already existed.
   const std::vector<std::wstring> files = FilesToOpen();
+  HANDLE running = ::CreateMutexW(nullptr, TRUE, L"Arcvert.SingleInstance");
   if (running != nullptr && ::GetLastError() == ERROR_ALREADY_EXISTS) {
     HWND window = ::FindWindowW(L"FLUTTER_RUNNER_WIN32_WINDOW", L"Arcvert");
     // The first of several copies Explorer starts may still be making its window.
