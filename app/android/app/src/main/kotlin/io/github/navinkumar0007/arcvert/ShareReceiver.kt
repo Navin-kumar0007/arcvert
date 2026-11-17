@@ -1,4 +1,4 @@
-package io.github.navinkumar0007.shiftdrop
+package io.github.navinkumar0007.arcvert
 
 import android.app.Activity
 import android.content.ContentResolver

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "ShiftDrop contributors" "\0"
-            VALUE "FileDescription", "ShiftDrop" "\0"
+            VALUE "CompanyName", "Arcvert contributors" "\0"
+            VALUE "FileDescription", "Arcvert" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "shiftdrop" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 ShiftDrop contributors. MPL-2.0." "\0"
-            VALUE "OriginalFilename", "shiftdrop.exe" "\0"
-            VALUE "ProductName", "ShiftDrop" "\0"
+            VALUE "InternalName", "arcvert" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Arcvert contributors. MPL-2.0." "\0"
+            VALUE "OriginalFilename", "arcvert.exe" "\0"
+            VALUE "ProductName", "Arcvert" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

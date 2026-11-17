@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'words.dart';
 
 /// Shown to people, and checked against `pubspec.yaml` by a test.
-const appName = 'ShiftDrop';
-const appVersion = '0.15.0';
+const appName = 'Arcvert';
+const appVersion = '0.16.0';
 
 /// Where the app is running, as a bug report would say it.
 String get platformLabel {
@@ -21,7 +21,7 @@ String get platformLabel {
   };
 }
 
-const projectAddress = 'https://github.com/Navin-kumar0007/shiftdrop';
+const projectAddress = 'https://github.com/Navin-kumar0007/arcvert';
 
 /// Parts built into the app whose licences Flutter can't find by itself, as they aren't Dart
 /// packages. LGPL parts say where their source is and that they can be replaced, as LGPL asks.

@@ -1,0 +1,6 @@
+# The old address, shiftdrop.pages.dev, kept after the app became Arcvert. Always fetched fresh, so
+# the offline worker that clears the old web app is found at once.
+/*
+  Cache-Control: no-cache
+  Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff

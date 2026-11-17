@@ -1,7 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.16.0 (beta, 17 November 2026)
 
+- **ShiftDrop is now Arcvert.** The same app with a new name, as another file converter was already called ShiftDrop.
+  On a Mac or Windows your settings and history come along, and on Windows the installer replaces ShiftDrop and keeps
+  opening at login if you'd chosen it. On a Mac, turn on Open at login again in Settings. The Android app is new to
+  your phone, so remove ShiftDrop once Arcvert is in. The website is now arcvert.pages.dev; the old address points there.
+- 0.11.0 to 0.15.0 were tested but never published, so this is the first release with everything below them, too.
 - **Help**, the new **?** at the top: common questions for your device, searchable, keyboard shortcuts, and what's
   new. Works without the internet.
 - **Report a problem** fills in an email in your own email app, or a report on GitHub, showing you everything it holds
@@ -9,7 +14,7 @@
   send it, or copy it instead.
 - After an update, a short note says what's new, once.
 
-## 0.15.0 (beta, 16 November 2026)
+## 0.15.0 (not published: in 0.16.0; built as ShiftDrop, 16 November 2026)
 
 - On a Mac or Windows, **Settings** says how fast the Shift-drag menu has opened over your last drags, counted from
   the key. Measured on your computer only.
@@ -20,7 +25,7 @@
   reader. AES-256, the strongest PDF encryption. A PDF that already has a password asks for it first, and the result
   opens with the new one only. The original is never changed.
 
-## 0.14.0 (beta, 16 November 2026)
+## 0.14.0 (not published: in 0.16.0; built as ShiftDrop, 16 November 2026)
 
 - **Extract pages** from a PDF, on every platform: pick pages from pictures of each, or type them, such as 1-3, 7.
   They come out as one PDF, in the order typed.
@@ -36,7 +41,7 @@
 - On a Mac or Windows, **Settings** can make Control (Ctrl) the key that opens the menu while dragging, instead of
   Shift. Option or Alt still adds Tools.
 
-## 0.13.0 (beta, 16 November 2026)
+## 0.13.0 (not published: in 0.16.0; built as ShiftDrop, 16 November 2026)
 
 - **Clean up a signature** in Form photo: a signature photographed or scanned on paper is cropped to the ink, the
   paper made white and the ink darker, then fitted to the form's size and KB limits without cutting into it. Blue ink
@@ -56,7 +61,7 @@
 - Fixed: a PDF's preview in the web app showed "Can't preview this" until a PDF action had run.
 - Compress never hands back a larger file of the same kind; it says the picture is as small as that level makes it.
 
-## 0.12.0 (beta, 15 November 2026)
+## 0.12.0 (not published: in 0.16.0; built as ShiftDrop, 15 November 2026)
 
 - A new look, in light and dark, following the device unless **Settings** says otherwise. The main screen shows the
   dial before any file is in: drop files on it, or choose them from its middle. Beside it, how Shift-drag works, what
@@ -71,7 +76,7 @@
 - **Copy details** on a file that failed puts the app's version, the platform, the action, the kind of file and the
   failure's name on the clipboard, ready to paste into a bug report. Never the file's name or anything inside it.
 
-## 0.11.0 (beta, 11 November 2026)
+## 0.11.0 (not published: in 0.16.0; built as ShiftDrop, 11 November 2026)
 
 - Settings, behind the gear at the top: where results go (beside the original, or one folder of your choice, on Mac
   and Windows), theme, language, previews, open at login and update checks. About now only says what the app is.

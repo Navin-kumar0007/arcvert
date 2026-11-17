@@ -4,7 +4,7 @@
 
 ### Mac
 
-1. Download the disk image, open it, and move **ShiftDrop** to Applications.
+1. Download the disk image, open it, and move **Arcvert** to Applications.
 2. Open it. macOS warns about apps from unidentified developers, as this one isn't signed yet. Go to **System Settings → Privacy & Security**, scroll down, and choose **Open Anyway**.
 3. Leave it running. Closing the window keeps it working in the background. To stop it, right-click its Dock icon and choose **Quit**.
 
@@ -20,19 +20,19 @@ Download the APK and open it. Android asks you to allow installing from your bro
 
 Open the web app in Safari, tap **Share**, then **Add to Home Screen**. It works offline after the first visit.
 
-The first time it opens, a short guide shows what ShiftDrop does and lets you practise on a sample photo: hold **Shift**, drag the photo, and let go on a slice. **Skip** leaves it, and **Settings** (the gear at the top) brings it back with **Show the guide again**.
+The first time it opens, a short guide shows what Arcvert does and lets you practise on a sample photo: hold **Shift**, drag the photo, and let go on a slice. **Skip** leaves it, and **Settings** (the gear at the top) brings it back with **Show the guide again**.
 
 ## Converting a file
 
-**Open at login (Mac and Windows).** Shift-drag works only while ShiftDrop runs. Turn on **Open at login** in **Settings** (the gear at the top) and it starts when you sign in, out of sight until you need it. On a Mac this needs macOS 13 or newer, and macOS may ask you to allow it in **System Settings → General → Login Items**.
+**Open at login (Mac and Windows).** Shift-drag works only while Arcvert runs. Turn on **Open at login** in **Settings** (the gear at the top) and it starts when you sign in, out of sight until you need it. On a Mac this needs macOS 13 or newer, and macOS may ask you to allow it in **System Settings → General → Login Items**.
 
 **Shift-drag (Mac and Windows).** Start dragging a file or folder from anywhere, hold **Shift** while dragging, and a round menu appears at your cursor. Drop on a slice. The result lands next to the original, and a chip appears at your cursor to drag it straight on. Drop in the middle to cancel.
 
-If Shift already means something in the apps you drag from, choose **Control** (Ctrl on Windows) as the key in **Settings**. Hold **Option** (Mac) or **Alt** (Windows) as well, at any point in the drag, and the menu switches to **Tools**, such as Compress, Rotate, Resize and Strip metadata. Let go of it and Convert comes back. Rotate, Flip and Resize show their choices around the slice there too. Under the key in **Settings**, ShiftDrop says how fast the menu has opened over your last drags, counted from the key, measured on your computer and never sent anywhere.
+If Shift already means something in the apps you drag from, choose **Control** (Ctrl on Windows) as the key in **Settings**. Hold **Option** (Mac) or **Alt** (Windows) as well, at any point in the drag, and the menu switches to **Tools**, such as Compress, Rotate, Resize and Strip metadata. Let go of it and Convert comes back. Rotate, Flip and Resize show their choices around the slice there too. Under the key in **Settings**, Arcvert says how fast the menu has opened over your last drags, counted from the key, measured on your computer and never sent anywhere.
 
 **In the window.** Drop files on the dial, or press **Choose files** in its middle, then pick a slice. **Convert** changes the format, **Make it fit** (in amber) aims at a purpose or a size, such as a chat app, an email or under 100 KB, and **Tools** does things like merging, compressing and rotating. Use **More** for further slices. **Clear** starts again.
 
-**Light or dark.** ShiftDrop follows your device's light or dark setting. To choose one for the app alone, open **Settings** and pick **Light** or **Dark**; **As the system** goes back to following the device.
+**Light or dark.** Arcvert follows your device's light or dark setting. To choose one for the app alone, open **Settings** and pick **Light** or **Dark**; **As the system** goes back to following the device.
 
 **Previews.** Once files are chosen, a small panel shows the first one: a picture or PDF page, a frame of a video, the first lines of subtitles, or the names in an archive, with its size and weight. After converting, it shows the result too. For pictures and PDF pages of the same shape a line runs across them, with the original on the left and the result on the right: drag it, or use the arrow keys, to see what changed. **Enlarge** shows it full size: choose **Compare**, or **Before** or **After** alone to zoom in with a pinch or scroll. Each result in the list gets a small picture. A locked PDF shows a lock until its password has been typed for a job, and a 7z or RAR shows the names inside once it has been unpacked for one. The eye button hides the panel for now, and **Show previews** in **Settings** turns them off. Previews are made on your device and never saved.
 
@@ -40,9 +40,9 @@ If Shift already means something in the apps you drag from, choose **Control** (
 
 Some tools have choices. Rest on **Rotate**, **Flip**, **Resize** or **Compress** and they appear in an outer ring around the slice (Compress offers **Balanced**, **Best quality** and **Smallest**), such as 180° or a long side of 1280 pixels: move out onto one and click. Choosing the slice itself does the first choice. On a phone, tap the slice once to see its choices. With a keyboard, press **Tab** to move into them and back.
 
-In the window, resting on **Rotate**, **Flip** or **Resize**, or one of their choices, shows your picture already turned, flipped or smaller in the middle of the menu, with its new size in pixels. Nothing is converted until you choose. Rest on a slice for a moment, in the window or while Shift-dragging, and the middle of the menu says how big the result will be. For one picture, ShiftDrop really makes it to find out, so choosing that slice is then instant. For video and sound it works the size out from the length, without converting. For PDFs, and for size limits, it shows the most the result can be, such as "Up to 20 MB". When it can't tell, it shows nothing.
+In the window, resting on **Rotate**, **Flip** or **Resize**, or one of their choices, shows your picture already turned, flipped or smaller in the middle of the menu, with its new size in pixels. Nothing is converted until you choose. Rest on a slice for a moment, in the window or while Shift-dragging, and the middle of the menu says how big the result will be. For one picture, Arcvert really makes it to find out, so choosing that slice is then instant. For video and sound it works the size out from the length, without converting. For PDFs, and for size limits, it shows the most the result can be, such as "Up to 20 MB". When it can't tell, it shows nothing.
 
-**On Android.** Share a file from any app and choose ShiftDrop, or open the app and choose files.
+**On Android.** Share a file from any app and choose Arcvert, or open the app and choose files.
 
 **On a phone.** The menu is half a dial along the bottom of the screen. Tap a slice to choose it: the card above says how big the result will be, and choices such as Rotate's 180° appear as buttons. Then tap the big button in the middle to run it.
 
@@ -86,7 +86,7 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Photo details.** Converting, compressing, turning, flipping, resizing or cropping a photo keeps when it was taken, the camera and lens, and how it was exposed. Where it was taken is always removed, along with serial numbers and the owner's name. **Make it fit** and **Strip metadata** remove every detail, as those files are made to be sent.
 
-**RAR files in several parts**, such as `photos.part1.rar`, `photos.part2.rar` or `photos.rar`, `photos.r00`, open as one archive: choose or drop all the parts together, and they show as one file. On a Mac or Windows, choosing or Shift-dragging any one part is enough, as the others are found beside it. If a part is missing, ShiftDrop names it.
+**RAR files in several parts**, such as `photos.part1.rar`, `photos.part2.rar` or `photos.rar`, `photos.r00`, open as one archive: choose or drop all the parts together, and they show as one file. On a Mac or Windows, choosing or Shift-dragging any one part is enough, as the others are found beside it. If a part is missing, Arcvert names it.
 
 **Locked files.** PDFs and ZIPs ask for their password. Locked 7z and RAR files can't be opened yet. A password can be added to an archive or a PDF (**Add password** in Tools): type it twice, as nobody can open the result without it. A PDF gets AES-256, which every current PDF reader opens with the password. Adding one to a PDF that already has a password replaces it.
 
@@ -100,4 +100,4 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Settings.** The gear at the top holds every choice, saved as soon as it's made. On a Mac or Windows, **Where results go** can be **Beside the original**, as before, or **In one folder** you choose; if that folder is later moved or can't be written to, results go beside the originals and the app says so. **Theme** is light, dark or as the system, and **Show previews** turns the small pictures of files on or off.
 
-**Something wrong?** Please tell us in the project's [issues](https://github.com/Navin-kumar0007/shiftdrop/issues). A file that failed has a **Copy details** icon: paste what it copies into the issue. It says the app's version, your platform, what you chose, the kind of file and which failure it was, and never the file's name or contents, so check before attaching the file itself.
+**Something wrong?** Please tell us in the project's [issues](https://github.com/Navin-kumar0007/arcvert/issues). A file that failed has a **Copy details** icon: paste what it copies into the issue. It says the app's version, your platform, what you chose, the kind of file and which failure it was, and never the file's name or contents, so check before attaching the file itself.

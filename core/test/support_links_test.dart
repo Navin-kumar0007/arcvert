@@ -5,18 +5,18 @@ void main() {
   final facts = reportFacts(appVersion: '0.15.0', platform: 'macOS', language: 'hi');
 
   test('the facts are the app, the platform and the language only', () {
-    expect(facts, 'ShiftDrop 0.15.0\nPlatform: macOS\nLanguage: hi');
+    expect(facts, 'Arcvert 0.15.0\nPlatform: macOS\nLanguage: hi');
   });
 
   test('a problem report opens a new GitHub issue holding what was typed and the facts', () {
     final address = problemReport(facts: facts, what: '  The PDF came out blank.  ');
     expect(address.scheme, 'https');
     expect(address.host, 'github.com');
-    expect(address.path, '/Navin-kumar0007/shiftdrop/issues/new');
+    expect(address.path, '/Navin-kumar0007/arcvert/issues/new');
     expect(address.queryParameters['labels'], 'bug');
     final body = address.queryParameters['body']!;
     expect(body, contains('The PDF came out blank.\n'));
-    expect(body, contains('ShiftDrop 0.15.0\nPlatform: macOS'));
+    expect(body, contains('Arcvert 0.15.0\nPlatform: macOS'));
   });
 
   test('with nothing typed, it asks for a description there', () {
@@ -33,7 +33,7 @@ void main() {
   test('an idea opens a new issue labelled as one', () {
     final address = featureIdea(appVersion: '0.15.0');
     expect(address.queryParameters['labels'], 'idea');
-    expect(address.queryParameters['body'], contains('ShiftDrop 0.15.0'));
+    expect(address.queryParameters['body'], contains('Arcvert 0.15.0'));
   });
 
   group('by email', () {
@@ -42,16 +42,16 @@ void main() {
       expect(address.scheme, 'mailto');
       expect(address.path, 'help@example.org');
       expect(address.toString(), isNot(contains('+')));
-      expect(address.queryParameters['subject'], 'ShiftDrop problem');
+      expect(address.queryParameters['subject'], 'Arcvert problem');
       final body = address.queryParameters['body']!;
       expect(body, startsWith('It froze & quit.\n'));
-      expect(body, contains('ShiftDrop 0.15.0\nPlatform: macOS'));
+      expect(body, contains('Arcvert 0.15.0\nPlatform: macOS'));
     });
 
     test('an idea is a draft too', () {
       final address = ideaEmail(to: 'help@example.org', appVersion: '0.15.0');
-      expect(address.queryParameters['subject'], 'ShiftDrop idea');
-      expect(address.queryParameters['body'], contains('ShiftDrop 0.15.0'));
+      expect(address.queryParameters['subject'], 'Arcvert idea');
+      expect(address.queryParameters['body'], contains('Arcvert 0.15.0'));
     });
 
     test('the address is set once there is one, and looks like an address', () {

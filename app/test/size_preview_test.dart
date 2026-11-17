@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/conversion.dart';
-import 'package:shiftdrop/size_preview.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/conversion.dart';
+import 'package:arcvert/size_preview.dart';
+import 'package:arcvert/words.dart';
 
 final _jpeg = img.encodeJpg(img.Image(width: 64, height: 48));
 

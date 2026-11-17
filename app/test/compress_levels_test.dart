@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/pdf_engine.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/pdf_engine.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   test('PDF Compress: best quality redraws sharper, smallest goes straight to light steps', () {

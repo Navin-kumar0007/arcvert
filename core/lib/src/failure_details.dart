@@ -15,7 +15,7 @@ String failureDetails({
 }) {
   final kindText = kind == null ? 'unknown' : '${kind.family.name} (${kind.extension})';
   return [
-    'ShiftDrop $appVersion',
+    'Arcvert $appVersion',
     'Platform: $platform',
     'Action: $action',
     'File kind: $kindText',

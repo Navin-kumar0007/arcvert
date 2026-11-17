@@ -24,7 +24,7 @@ enum LoginItem {
         try SMAppService.mainApp.unregister()
       }
     } catch {
-      NSLog("ShiftDrop: could not change opening at login: \(error)")
+      NSLog("Arcvert: could not change opening at login: \(error)")
     }
     return status()
   }

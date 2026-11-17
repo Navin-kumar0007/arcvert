@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shiftdrop/about.dart';
-import 'package:shiftdrop/help_screen.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/about.dart';
+import 'package:arcvert/help_screen.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   late List<Uri> opened;
@@ -82,14 +82,14 @@ void main() {
     await pump(tester, HelpPlace.mac);
     await tester.tap(find.text('Report a problem'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('ShiftDrop $appVersion'), findsOne);
+    expect(find.textContaining('Arcvert $appVersion'), findsOne);
     await tester.enterText(find.byType(TextField).last, 'The PDF came out blank.');
     await tester.tap(find.text('Report on GitHub'));
     await tester.pumpAndSettle();
     final address = opened.single;
     expect(address.host, 'github.com');
     expect(address.queryParameters['body'], contains('The PDF came out blank.'));
-    expect(address.queryParameters['body'], contains('ShiftDrop $appVersion'));
+    expect(address.queryParameters['body'], contains('Arcvert $appVersion'));
   });
 
   testWidgets('cancelling a report opens nothing', (tester) async {
@@ -124,7 +124,7 @@ void main() {
     await tester.tap(find.text('Copy instead'));
     await tester.pumpAndSettle();
     expect(opened, isEmpty);
-    expect(copied, startsWith('It froze.\n\nShiftDrop $appVersion'));
+    expect(copied, startsWith('It froze.\n\nArcvert $appVersion'));
     expect(find.text('Copied. Paste it into an email or a report.'), findsOne);
   });
 

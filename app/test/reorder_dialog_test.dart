@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/conversion.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/reorder_dialog.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/conversion.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/reorder_dialog.dart';
+import 'package:arcvert/words.dart';
 
 PickedFile _picture(String name) {
   final bytes = img.encodePng(img.Image(width: 8, height: 8));

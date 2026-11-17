@@ -5,7 +5,7 @@
 set -u
 
 device="${ANDROID_SERIAL:-emulator-5554}"
-app=io.github.navinkumar0007.shiftdrop
+app=io.github.navinkumar0007.arcvert
 # It takes a few minutes. Once it sat silent for six hours on the emulator, so it gets a limit, and
 # a hang then shows the device's log like any failure. Flutter's tool sometimes never reaches the app
 # on the emulator: it fails at once ("Failed to start Dart Development Service"), or the app starts

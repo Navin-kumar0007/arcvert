@@ -69,7 +69,7 @@ jobs:
         run: tool/build_site.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: shiftdrop-web
+          name: arcvert-web
           path: app/build/site
 
   # Publishes the site to Cloudflare Pages: main is the live site, any other branch gets its own
@@ -82,7 +82,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'shiftdrop' }}
+      PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'arcvert' }}
     steps:
       - name: Check Cloudflare is set up
         id: ready
@@ -95,7 +95,7 @@ jobs:
       - uses: actions/download-artifact@v4
         if: steps.ready.outputs.go == 'true'
         with:
-          name: shiftdrop-web
+          name: arcvert-web
           path: site
       - name: Publish
         if: steps.ready.outputs.go == 'true'
@@ -106,6 +106,17 @@ jobs:
           fi
           $wrangler pages deploy site --project-name "$PROJECT" --branch "$GITHUB_REF_NAME" \
             --commit-hash "$GITHUB_SHA" --commit-dirty=true
+      # The app was called ShiftDrop before 0.16. Its old address stays, telling people and old copies
+      # where Arcvert is. Only from main, which moves when a release is published.
+      - uses: actions/checkout@v4
+        if: steps.ready.outputs.go == 'true' && github.ref_name == 'main'
+        with:
+          sparse-checkout: docs/legacy-site
+      - name: Publish the old address
+        if: steps.ready.outputs.go == 'true' && github.ref_name == 'main'
+        run: |
+          npx --yes wrangler@4.152.0 pages deploy docs/legacy-site --project-name shiftdrop \
+            --branch main --commit-hash "$GITHUB_SHA" --commit-dirty=true
 
   android:
     runs-on: ubuntu-latest
@@ -151,22 +162,22 @@ jobs:
         working-directory: app
         run: |
           tool/retry_network.sh flutter build apk --release --no-shrink
-          cp build/app/outputs/flutter-apk/app-release.apk "../shiftdrop-$APK_NAME.apk"
+          cp build/app/outputs/flutter-apk/app-release.apk "../arcvert-$APK_NAME.apk"
           tool/retry_network.sh flutter build apk --release --no-shrink --target-platform android-arm64
-          cp build/app/outputs/flutter-apk/app-release.apk "../shiftdrop-$APK_NAME-arm64.apk"
-          ls -la ../shiftdrop-*.apk
+          cp build/app/outputs/flutter-apk/app-release.apk "../arcvert-$APK_NAME-arm64.apk"
+          ls -la ../arcvert-*.apk
       - name: Check Android itself will stop it reaching a network
         run: |
           aapt="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2"
-          "$aapt" dump permissions "shiftdrop-$APK_NAME.apk" | tee permissions.txt
+          "$aapt" dump permissions "arcvert-$APK_NAME.apk" | tee permissions.txt
           if grep -E 'INTERNET|NETWORK|WIFI' permissions.txt; then
             echo "The release app can reach a network." >&2
             exit 1
           fi
       - uses: actions/upload-artifact@v4
         with:
-          name: shiftdrop-android
-          path: shiftdrop-android*.apk
+          name: arcvert-android
+          path: arcvert-android*.apk
 
   # The real Android video engine, on an emulator, since it can't run in `flutter test`.
   android-device:
@@ -268,16 +279,29 @@ jobs:
         shell: pwsh
         run: |
           $setup = (Get-ChildItem installer/*.exe).FullName
+          # What ShiftDrop, the app's name before 0.16, would have left: Arcvert takes its place.
+          $old = "$env:LOCALAPPDATA\Programs\ShiftDrop"
+          New-Item -ItemType Directory -Force -Path $old | Out-Null
+          Set-Content "$old\shiftdrop.exe" 'old'
+          $run = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+          New-ItemProperty -Path $run -Name 'ShiftDrop' -Value "`"$old\shiftdrop.exe`" --hidden" -Force | Out-Null
           Start-Process $setup -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
-          $folder = "$env:LOCALAPPDATA\Programs\ShiftDrop"
-          foreach ($file in 'shiftdrop.exe','archive.dll','engines\ffmpeg.exe') {
+          $folder = "$env:LOCALAPPDATA\Programs\Arcvert"
+          foreach ($file in 'arcvert.exe','archive.dll','engines\ffmpeg.exe') {
             if (-not (Test-Path "$folder\$file")) { throw "The installer left out $file" }
           }
-          $app = Start-Process "$folder\shiftdrop.exe" -PassThru
+          if (Test-Path $old) { throw "The old ShiftDrop folder was left behind" }
+          if (Get-ItemProperty -Path $run -Name 'ShiftDrop' -ErrorAction SilentlyContinue) {
+            throw "ShiftDrop still opens at sign-in"
+          }
+          $moved = (Get-ItemProperty -Path $run -Name 'Arcvert').Arcvert
+          if ($moved -ne "`"$folder\arcvert.exe`" --hidden") { throw "Open at login didn't move to Arcvert: $moved" }
+          Remove-ItemProperty -Path $run -Name 'Arcvert'
+          $app = Start-Process "$folder\arcvert.exe" -PassThru
           Start-Sleep -Seconds 15
           if ($app.HasExited) { throw "The installed app stopped by itself: $($app.ExitCode)" }
           # A second copy hands over to the first and leaves, rather than showing a second menu.
-          $second = Start-Process "$folder\shiftdrop.exe" -PassThru
+          $second = Start-Process "$folder\arcvert.exe" -PassThru
           if (-not $second.WaitForExit(15000)) { throw "A second copy stayed open" }
           if ($app.HasExited) { throw "Opening a second copy stopped the first" }
           # Closing the window leaves it running in the notification area.
@@ -288,7 +312,7 @@ jobs:
           Stop-Process -Id $app.Id -Force
           Start-Sleep -Seconds 2
           # Opened at sign-in, it waits in the notification area with no window.
-          $hidden = Start-Process "$folder\shiftdrop.exe" -ArgumentList '--hidden' -PassThru
+          $hidden = Start-Process "$folder\arcvert.exe" -ArgumentList '--hidden' -PassThru
           Start-Sleep -Seconds 15
           if ($hidden.HasExited) { throw "Starting hidden stopped the app: $($hidden.ExitCode)" }
           $hidden.Refresh()
@@ -297,20 +321,20 @@ jobs:
           Start-Sleep -Seconds 2
           # The app's "Open at login" switch writes this; uninstalling must take it away.
           $run = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
-          New-ItemProperty -Path $run -Name 'ShiftDrop' -Value "`"$folder\shiftdrop.exe`" --hidden" -Force | Out-Null
+          New-ItemProperty -Path $run -Name 'Arcvert' -Value "`"$folder\arcvert.exe`" --hidden" -Force | Out-Null
           Start-Process "$folder\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
           Start-Sleep -Seconds 5
-          if (Test-Path "$folder\shiftdrop.exe") { throw "Uninstalling left the app behind" }
-          if (Get-ItemProperty -Path $run -Name 'ShiftDrop' -ErrorAction SilentlyContinue) {
+          if (Test-Path "$folder\arcvert.exe") { throw "Uninstalling left the app behind" }
+          if (Get-ItemProperty -Path $run -Name 'Arcvert' -ErrorAction SilentlyContinue) {
             throw "Uninstalling left it opening at sign-in"
           }
       - uses: actions/upload-artifact@v4
         with:
-          name: shiftdrop-windows
+          name: arcvert-windows
           path: app/build/windows/x64/runner/Release
       - uses: actions/upload-artifact@v4
         with:
-          name: shiftdrop-windows-installer
+          name: arcvert-windows-installer
           path: installer/*.exe
 
   macos:
@@ -347,7 +371,7 @@ jobs:
       - name: Test PDFs against the real PDFium
         working-directory: app
         run: |
-          PDFIUM_PATH="$PWD/build/macos/Build/Products/Release/ShiftDrop.app/Contents/Frameworks/PDFium.framework/pdfium" \
+          PDFIUM_PATH="$PWD/build/macos/Build/Products/Release/Arcvert.app/Contents/Frameworks/PDFium.framework/pdfium" \
             flutter test test/pdf_engine_test.dart
       - name: Reuse the video engine if its recipe has not changed
         id: engine
@@ -364,35 +388,35 @@ jobs:
         run: engines/check_heic.sh engines/build/macos/bin
       - name: Add the video engine to the app
         run: |
-          app="app/build/macos/Build/Products/Release/ShiftDrop.app"
+          app="app/build/macos/Build/Products/Release/Arcvert.app"
           mkdir -p "$app/Contents/Resources/engines"
           cp engines/build/macos/bin/* "$app/Contents/Resources/engines/"
           # Signing again drops the entitlements unless given, and without them the file dialogs refuse to open.
           codesign --force --deep --sign - --entitlements app/macos/Runner/Release.entitlements "$app"
           codesign -d --entitlements - "$app" 2>&1 | grep -q 'files.user-selected.read-write'
       - name: Zip the app, keeping its permissions
-        run: ditto -c -k --keepParent "app/build/macos/Build/Products/Release/ShiftDrop.app" shiftdrop-macos.zip
+        run: ditto -c -k --keepParent "app/build/macos/Build/Products/Release/Arcvert.app" arcvert-macos.zip
       - name: Make the disk image
         run: |
           mkdir dmg
-          ditto "app/build/macos/Build/Products/Release/ShiftDrop.app" "dmg/ShiftDrop.app"
+          ditto "app/build/macos/Build/Products/Release/Arcvert.app" "dmg/Arcvert.app"
           ln -s /Applications dmg/Applications
           # hdiutil on GitHub's Macs sometimes says "Resource temporarily unavailable" about an image it
           # has just made, so each step gets a few tries. A real fault still fails all of them.
           again() { for try in 1 2 3 4; do "$@" && return 0; echo "Retrying: $*"; sleep 15; done; return 1; }
-          again hdiutil create -volname "ShiftDrop" -srcfolder dmg -ov -format UDZO shiftdrop-macos.dmg
-          again hdiutil verify shiftdrop-macos.dmg
-          again hdiutil attach -nobrowse -mountpoint mounted shiftdrop-macos.dmg
-          codesign -d --entitlements - "mounted/ShiftDrop.app" 2>&1 | grep -q 'files.user-selected.read-write'
+          again hdiutil create -volname "Arcvert" -srcfolder dmg -ov -format UDZO arcvert-macos.dmg
+          again hdiutil verify arcvert-macos.dmg
+          again hdiutil attach -nobrowse -mountpoint mounted arcvert-macos.dmg
+          codesign -d --entitlements - "mounted/Arcvert.app" 2>&1 | grep -q 'files.user-selected.read-write'
           again hdiutil detach mounted
       - uses: actions/upload-artifact@v4
         with:
-          name: shiftdrop-macos
-          path: shiftdrop-macos.zip
+          name: arcvert-macos
+          path: arcvert-macos.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: shiftdrop-macos-dmg
-          path: shiftdrop-macos.dmg
+          name: arcvert-macos-dmg
+          path: arcvert-macos.dmg
 
   # The build machines are Apple Silicon, and nothing else here can run the Intel half.
   macos-intel:
@@ -402,12 +426,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: shiftdrop-macos
+          name: arcvert-macos
       - name: Run the download on an Intel Mac
         run: |
           [ "$(uname -m)" = x86_64 ]
-          ditto -x -k shiftdrop-macos.zip unpacked
-          app="unpacked/ShiftDrop.app"
+          ditto -x -k arcvert-macos.zip unpacked
+          app="unpacked/Arcvert.app"
           engines/check_heic.sh "$app/Contents/Resources/engines"
           # Not the hardware encoder, which a virtual machine may not have.
           "$app/Contents/Resources/engines/ffmpeg" -hide_banner -loglevel error \
@@ -419,8 +443,8 @@ jobs:
           grep -q opus streams.txt
       - name: Start the app on an Intel Mac
         run: |
-          app="unpacked/ShiftDrop.app"
-          "$app/Contents/MacOS/ShiftDrop" &
+          app="unpacked/Arcvert.app"
+          "$app/Contents/MacOS/Arcvert" &
           pid=$!
           sleep 15
           kill -0 "$pid"
@@ -449,13 +473,13 @@ jobs:
         run: |
           mkdir dist
           # No version in the names, so the website can link to releases/latest/download/.
-          name="ShiftDrop"
-          cp built/shiftdrop-macos-dmg/*.dmg "dist/$name-mac.dmg"
-          cp built/shiftdrop-windows-installer/*.exe "dist/$name-windows-setup.exe"
-          (cd built/shiftdrop-windows && zip -qr "$GITHUB_WORKSPACE/dist/$name-windows-portable.zip" .)
-          (cd built/shiftdrop-web && zip -qr "$GITHUB_WORKSPACE/dist/$name-website.zip" .)
-          for apk in built/shiftdrop-android/*.apk; do
-            cp "$apk" "dist/$name-$(basename "$apk" .apk | sed 's/^shiftdrop-//').apk"
+          name="Arcvert"
+          cp built/arcvert-macos-dmg/*.dmg "dist/$name-mac.dmg"
+          cp built/arcvert-windows-installer/*.exe "dist/$name-windows-setup.exe"
+          (cd built/arcvert-windows && zip -qr "$GITHUB_WORKSPACE/dist/$name-windows-portable.zip" .)
+          (cd built/arcvert-web && zip -qr "$GITHUB_WORKSPACE/dist/$name-website.zip" .)
+          for apk in built/arcvert-android/*.apk; do
+            cp "$apk" "dist/$name-$(basename "$apk" .apk | sed 's/^arcvert-//').apk"
           done
           mkdir sources
           get() { curl -fsSL --retry 6 --retry-all-errors --retry-delay 30 -o "$1" "$2"; }
@@ -499,4 +523,4 @@ jobs:
           prerelease=()
           case "$GITHUB_REF_NAME" in *-*) prerelease=(--prerelease) ;; esac
           gh release create "$GITHUB_REF_NAME" dist/* --draft "${prerelease[@]}" \
-            --title "ShiftDrop $GITHUB_REF_NAME" --notes-file notes.md
+            --title "Arcvert $GITHUB_REF_NAME" --notes-file notes.md

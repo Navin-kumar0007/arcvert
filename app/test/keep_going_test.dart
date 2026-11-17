@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/keep_going_native.dart';
-import 'package:shiftdrop/picked_file.dart';
-import 'package:shiftdrop/shift_drag_native.dart';
+import 'package:arcvert/keep_going_native.dart';
+import 'package:arcvert/picked_file.dart';
+import 'package:arcvert/shift_drag_native.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

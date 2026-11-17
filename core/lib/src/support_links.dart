@@ -6,9 +6,10 @@ library;
 
 /// The address reports and ideas are emailed to, or null until there is one: the app then offers
 /// GitHub and copying only. Shown in the app and on the website.
-const String? supportEmail = 'shiftdrop.support@gmail.com';
+// arcvert.support@gmail.com once the owner has made it (ShiftDrop's address was retired with the name).
+const String? supportEmail = null;
 
-const _newIssue = 'https://github.com/Navin-kumar0007/shiftdrop/issues/new';
+const _newIssue = 'https://github.com/Navin-kumar0007/arcvert/issues/new';
 
 /// A `mailto:` address. Spaces must be `%20`: a `+` from form encoding shows as a `+` in many email
 /// apps.
@@ -25,7 +26,7 @@ String reportFacts({
   required String appVersion,
   required String platform,
   required String language,
-}) => 'ShiftDrop $appVersion\nPlatform: $platform\nLanguage: $language';
+}) => 'Arcvert $appVersion\nPlatform: $platform\nLanguage: $language';
 
 String _cut(String text) {
   final trimmed = text.trim();
@@ -40,15 +41,15 @@ String _described(String what) {
 /// A problem report as an email draft to [to], with what the person typed in [what] and the app's
 /// facts below it.
 Uri problemEmail({required String to, required String facts, String what = ''}) {
-  return _email(to, 'ShiftDrop problem', '${_described(what)}\n\n---\n$facts\n');
+  return _email(to, 'Arcvert problem', '${_described(what)}\n\n---\n$facts\n');
 }
 
 /// An idea as an email draft to [to].
 Uri ideaEmail({required String to, required String appVersion}) {
   return _email(
     to,
-    'ShiftDrop idea',
-    '(What would you like ShiftDrop to do, and what is it for?)\n\n---\nShiftDrop $appVersion\n',
+    'Arcvert idea',
+    '(What would you like Arcvert to do, and what is it for?)\n\n---\nArcvert $appVersion\n',
   );
 }
 
@@ -73,9 +74,9 @@ Uri problemReport({required String facts, String what = ''}) {
 Uri featureIdea({required String appVersion}) {
   final body = [
     '**The idea**',
-    '(What would you like ShiftDrop to do, and what is it for?)',
+    '(What would you like Arcvert to do, and what is it for?)',
     '',
-    'Suggested from ShiftDrop $appVersion.',
+    'Suggested from Arcvert $appVersion.',
   ].join('\n');
   return Uri.parse(
     _newIssue,

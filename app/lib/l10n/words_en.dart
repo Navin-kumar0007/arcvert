@@ -923,13 +923,13 @@ class WordsEn extends Words {
       'Text, bold, simple tables and pictures came through, ready to edit. The exact layout isn\'t kept.';
 
   @override
-  String get trayStillRunning => 'ShiftDrop is still running';
+  String get trayStillRunning => 'Arcvert is still running';
 
   @override
   String get trayHowToQuit => 'Shift-drag keeps working. To quit, right-click this icon.';
 
   @override
-  String get trayOpen => 'Open ShiftDrop';
+  String get trayOpen => 'Open Arcvert';
 
   @override
   String get trayQuit => 'Quit';
@@ -939,7 +939,7 @@ class WordsEn extends Words {
 
   @override
   String get keepWorkingText =>
-      'You can use other apps. ShiftDrop keeps going and the result will be waiting.';
+      'You can use other apps. Arcvert keeps going and the result will be waiting.';
 
   @override
   String get openAtLogin => 'Open at login';
@@ -949,10 +949,10 @@ class WordsEn extends Words {
       'So Shift-drag works as soon as you sign in. It waits out of sight until you need it.';
 
   @override
-  String get openAtLoginApprove => 'Allow ShiftDrop in System Settings, General, Login Items.';
+  String get openAtLoginApprove => 'Allow Arcvert in System Settings, General, Login Items.';
 
   @override
-  String get welcomeTitle => 'Welcome to ShiftDrop';
+  String get welcomeTitle => 'Welcome to Arcvert';
 
   @override
   String get welcomeText =>
@@ -1006,7 +1006,7 @@ class WordsEn extends Words {
       'It works the same from File Explorer, over any app: Shift-drag a file and let go on a slice. Hold Alt as well for tools such as Compress, Rotate and Resize.';
 
   @override
-  String get tipAndroid => 'In other apps, tap Share, then ShiftDrop.';
+  String get tipAndroid => 'In other apps, tap Share, then Arcvert.';
 
   @override
   String get tipWeb =>
@@ -1026,18 +1026,18 @@ class WordsEn extends Words {
 
   @override
   String get checkUpdatesWhy =>
-      'Once a day, ShiftDrop asks its website whether a newer version is out. Nothing about you or your files is sent.';
+      'Once a day, Arcvert asks its website whether a newer version is out. Nothing about you or your files is sent.';
 
   @override
   String get getNewest => 'Get the newest version';
 
   @override
   String get getNewestWhy =>
-      'Opens the download page in your browser. ShiftDrop itself can\'t use the internet.';
+      'Opens the download page in your browser. Arcvert itself can\'t use the internet.';
 
   @override
   String updateReady(Object version) {
-    return 'ShiftDrop $version is out.';
+    return 'Arcvert $version is out.';
   }
 
   @override
@@ -1416,7 +1416,7 @@ class WordsEn extends Words {
 
   @override
   String faqShiftDragA(Object key) {
-    return 'ShiftDrop must be running, so turn on Open at login in Settings. Start dragging a file in Finder or Explorer, then hold $key. Text and pictures inside other apps aren\'t files, so they bring no menu.';
+    return 'Arcvert must be running, so turn on Open at login in Settings. Start dragging a file in Finder or Explorer, then hold $key. Text and pictures inside other apps aren\'t files, so they bring no menu.';
   }
 
   @override
@@ -1453,14 +1453,14 @@ class WordsEn extends Words {
 
   @override
   String get faqUploadA =>
-      'No. Everything happens on this device, even in a browser, and ShiftDrop has no accounts, ads or tracking.';
+      'No. Everything happens on this device, even in a browser, and Arcvert has no accounts, ads or tracking.';
 
   @override
   String get faqFormQ => 'A form says my photo or signature is the wrong size.';
 
   @override
   String get faqFormA =>
-      'Use Form photo in Make it fit, choose the form or type its sizes, and check them against the form\'s notice, as forms change them. Some count a KB as 1000 bytes and some as 1024: ShiftDrop meets both.';
+      'Use Form photo in Make it fit, choose the form or type its sizes, and check them against the form\'s notice, as forms change them. Some count a KB as 1000 bytes and some as 1024: Arcvert meets both.';
 
   @override
   String get faqPdfTextQ => 'Why can\'t I select text after compressing a PDF?';
@@ -1488,7 +1488,7 @@ class WordsEn extends Words {
 
   @override
   String get faqMacOpenA =>
-      'ShiftDrop isn\'t signed by Apple yet. Open System Settings, then Privacy & Security, and choose Open Anyway.';
+      'Arcvert isn\'t signed by Apple yet. Open System Settings, then Privacy & Security, and choose Open Anyway.';
 
   @override
   String get faqWindowsWarnQ => 'Windows warns about the app when I open it.';
@@ -1574,7 +1574,7 @@ class WordsEn extends Words {
 
   @override
   String whatsNewReady(Object version) {
-    return 'ShiftDrop $version is here. See what\'s new in Help.';
+    return 'Arcvert $version is here. See what\'s new in Help.';
   }
 
   @override
@@ -1590,4 +1590,15 @@ class WordsEn extends Words {
   String writeToUs(Object address) {
     return 'Or write to $address';
   }
+
+  @override
+  String get whatsNewName =>
+      'ShiftDrop is now Arcvert: the same app with a new name, as another app was already called ShiftDrop. Settings and history come along on a Mac or Windows.';
+
+  @override
+  String get whatsNewLook =>
+      'A new look in light and dark, with previews of files and results, and Settings.';
+
+  @override
+  String get whatsNewPages => 'Pick PDF pages from pictures of them, and Compress at three levels.';
 }

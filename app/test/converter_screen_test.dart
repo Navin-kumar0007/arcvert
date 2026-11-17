@@ -10,15 +10,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/about.dart';
-import 'package:shiftdrop/conversion.dart';
-import 'package:shiftdrop/home_parts.dart';
-import 'package:shiftdrop/theme.dart';
-import 'package:shiftdrop/thumb_arc.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/option_screens.dart' show needsOptions;
-import 'package:shiftdrop/radial_menu.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/about.dart';
+import 'package:arcvert/conversion.dart';
+import 'package:arcvert/home_parts.dart';
+import 'package:arcvert/theme.dart';
+import 'package:arcvert/thumb_arc.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/option_screens.dart' show needsOptions;
+import 'package:arcvert/radial_menu.dart';
+import 'package:arcvert/words.dart';
 
 /// A picked file, counting how many times it is really read.
 PickedFile picked(String name, Uint8List bytes, {int? size, void Function()? onRead}) {
@@ -219,8 +219,8 @@ void main() {
 
   group('theme', () {
     test('light and dark carry the brand colours and the app\'s own', () {
-      final light = shiftDropTheme(Brightness.light);
-      final dark = shiftDropTheme(Brightness.dark);
+      final light = arcvertTheme(Brightness.light);
+      final dark = arcvertTheme(Brightness.dark);
       expect(light.colorScheme.primary, const Color(0xFF0B6E5F));
       expect(dark.colorScheme.primary, const Color(0xFF34C3A6));
       expect(light.extension<SdColors>(), SdColors.light);
@@ -1030,7 +1030,7 @@ void main() {
         await tester.tap(find.byTooltip('Copy details'));
         await tester.pump();
         final details = copied.single;
-        expect(details, startsWith('ShiftDrop $appVersion\n'));
+        expect(details, startsWith('Arcvert $appVersion\n'));
         expect(details, contains('Platform: '));
         expect(details, contains('File kind: image (jpg)'));
         expect(details, contains('Error: notAPicture'));

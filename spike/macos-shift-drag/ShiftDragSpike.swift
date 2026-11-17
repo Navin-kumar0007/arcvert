@@ -1,4 +1,4 @@
-// ShiftDrop: Phase 0 spike (throwaway prototype)
+// Arcvert: Phase 0 spike (throwaway prototype)
 //
 // Proves the riskiest idea in the plan: detecting a Shift-drag of a file anywhere on
 // macOS and showing a radial menu under the cursor that accepts the drop.

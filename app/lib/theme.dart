@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// ShiftDrop's own colours, light and dark, beyond what Material's scheme names. Teal is the brand
+/// Arcvert's own colours, light and dark, beyond what Material's scheme names. Teal is the brand
 /// and every "go" action; amber marks Make it fit, as on the app icon. Read with `context.sd`.
 @immutable
 class SdColors extends ThemeExtension<SdColors> {
@@ -153,7 +153,7 @@ class SdColors extends ThemeExtension<SdColors> {
 }
 
 extension SdColorsOf on BuildContext {
-  /// ShiftDrop's colours for the current theme. Falls back by brightness where no theme set them,
+  /// Arcvert's colours for the current theme. Falls back by brightness where no theme set them,
   /// as in tests that build a bare MaterialApp.
   SdColors get sd {
     final theme = Theme.of(this);
@@ -164,7 +164,7 @@ extension SdColorsOf on BuildContext {
 
 /// The app's whole look for one brightness: Material's scheme filled from [SdColors], and every
 /// common control shaped to match, so screens that only use Material widgets follow too.
-ThemeData shiftDropTheme(Brightness brightness) {
+ThemeData arcvertTheme(Brightness brightness) {
   final sd = brightness == Brightness.dark ? SdColors.dark : SdColors.light;
   final scheme = ColorScheme(
     brightness: brightness,

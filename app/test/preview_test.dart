@@ -4,15 +4,15 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shiftdrop/live_look.dart';
+import 'package:arcvert/live_look.dart';
 import 'package:image/image.dart' as img;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/app_settings.dart';
-import 'package:shiftdrop/conversion.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/preview.dart';
-import 'package:shiftdrop/preview_view.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/app_settings.dart';
+import 'package:arcvert/conversion.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/preview.dart';
+import 'package:arcvert/preview_view.dart';
+import 'package:arcvert/words.dart';
 
 final english = wordsFor(const Locale('en'));
 

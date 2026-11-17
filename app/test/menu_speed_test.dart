@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shiftdrop/app_settings.dart';
-import 'package:shiftdrop/menu_speed.dart';
-import 'package:shiftdrop/settings_screen.dart';
-import 'package:shiftdrop/shift_drag.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/app_settings.dart';
+import 'package:arcvert/menu_speed.dart';
+import 'package:arcvert/settings_screen.dart';
+import 'package:arcvert/shift_drag.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   group('a timing from the native menu', () {

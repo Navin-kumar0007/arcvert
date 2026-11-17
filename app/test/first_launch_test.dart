@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/app_home.dart';
-import 'package:shiftdrop/app_settings.dart';
-import 'package:shiftdrop/help_screen.dart';
-import 'package:shiftdrop/update_check.dart';
-import 'package:shiftdrop/welcome_screen.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/app_home.dart';
+import 'package:arcvert/app_settings.dart';
+import 'package:arcvert/help_screen.dart';
+import 'package:arcvert/update_check.dart';
+import 'package:arcvert/welcome_screen.dart';
+import 'package:arcvert/words.dart';
 
 SettingsStore _store([AppSettings settings = const AppSettings(), List<String>? written]) {
   return SettingsStore(settings, write: (text) async => written?.add(text));
@@ -22,8 +22,8 @@ Widget _app(Widget home, {SettingsStore? settings}) {
 const _newer = '''
 {
   "version": "99.0.0",
-  "page": "https://github.com/Navin-kumar0007/shiftdrop/releases/tag/v99.0.0",
-  "downloads": {"macos": "https://github.com/Navin-kumar0007/shiftdrop/releases/download/v99.0.0/ShiftDrop-mac.dmg"}
+  "page": "https://github.com/Navin-kumar0007/arcvert/releases/tag/v99.0.0",
+  "downloads": {"macos": "https://github.com/Navin-kumar0007/arcvert/releases/download/v99.0.0/Arcvert-mac.dmg"}
 }''';
 
 void main() {
@@ -103,7 +103,7 @@ void main() {
         },
       );
       expect(info?.version, '99.0.0');
-      expect(asked.single.toString(), 'https://shiftdrop.pages.dev/version.json');
+      expect(asked.single.toString(), 'https://arcvert.pages.dev/version.json');
       expect(store.value.lastUpdateCheck, now);
     });
 
@@ -180,7 +180,7 @@ void main() {
       final store = _store();
       await tester.pumpWidget(home(store));
       await tester.pumpAndSettle();
-      expect(find.text('Welcome to ShiftDrop'), findsOneWidget);
+      expect(find.text('Welcome to Arcvert'), findsOneWidget);
       await tester.tap(find.text('Skip'));
       await tester.pumpAndSettle();
       expect(find.text('main screen'), findsOneWidget);
@@ -189,18 +189,18 @@ void main() {
       await tester.pumpWidget(const SizedBox());
       await tester.pumpWidget(home(store));
       await tester.pumpAndSettle();
-      expect(find.text('Welcome to ShiftDrop'), findsNothing);
+      expect(find.text('Welcome to Arcvert'), findsNothing);
       // And again when asked for, as About does.
       await tester.tap(find.text('main screen'));
       await tester.pumpAndSettle();
-      expect(find.text('Welcome to ShiftDrop'), findsOneWidget);
+      expect(find.text('Welcome to Arcvert'), findsOneWidget);
     });
 
     testWidgets('after an update, a note says what\'s new, once, and opens Help', (tester) async {
       final store = _store(const AppSettings(welcomed: true, whatsNewSeen: '0.1.0'));
       await tester.pumpWidget(home(store, way: UpdateWay.none));
       await tester.pump();
-      final note = 'ShiftDrop $whatsNewVersion is here. See what\'s new in Help.';
+      final note = 'Arcvert $whatsNewVersion is here. See what\'s new in Help.';
       expect(find.text(note), findsOneWidget);
       expect(store.value.whatsNewSeen, whatsNewVersion);
       await tester.pump(const Duration(seconds: 1));
@@ -228,11 +228,11 @@ void main() {
       final store = _store(const AppSettings(welcomed: true));
       await tester.pumpWidget(home(store, fetch: (_) async => _newer, opened: opened));
       await tester.pumpAndSettle();
-      expect(find.text('ShiftDrop 99.0.0 is out.'), findsOneWidget);
+      expect(find.text('Arcvert 99.0.0 is out.'), findsOneWidget);
       await tester.tap(find.text('Download'));
       await tester.pumpAndSettle();
       expect(opened.single.host, 'github.com');
-      expect(find.text('ShiftDrop 99.0.0 is out.'), findsNothing);
+      expect(find.text('Arcvert 99.0.0 is out.'), findsNothing);
     });
 
     testWidgets('"Later" puts the note away', (tester) async {
@@ -241,7 +241,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Later'));
       await tester.pumpAndSettle();
-      expect(find.text('ShiftDrop 99.0.0 is out.'), findsNothing);
+      expect(find.text('Arcvert 99.0.0 is out.'), findsNothing);
     });
 
     testWidgets('copies that update otherwise never ask', (tester) async {
@@ -339,7 +339,7 @@ void main() {
       expect(find.text('Drag the photo, then let go on a slice.'), findsOneWidget);
       await dragToTopSlice(tester, PointerDeviceKind.touch);
       expect(converted, hasLength(1));
-      expect(find.text('In other apps, tap Share, then ShiftDrop.'), findsOneWidget);
+      expect(find.text('In other apps, tap Share, then Arcvert.'), findsOneWidget);
     });
 
     testWidgets('letting go in the centre cancels, and it can be tried again', (tester) async {

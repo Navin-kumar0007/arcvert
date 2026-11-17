@@ -53,7 +53,7 @@ class UpdateInfo {
 }
 
 /// Hosts the version file may send people to.
-const trustedUpdateHosts = {'github.com', 'shiftdrop.pages.dev'};
+const trustedUpdateHosts = {'github.com', 'arcvert.pages.dev'};
 
 Uri? _address(Object? value) {
   if (value is! String) return null;

@@ -1,4 +1,4 @@
-# ShiftDrop
+# Arcvert
 
 A free, open-source file converter that works offline. Hold **Shift** while dragging a file and a round menu appears at your cursor. Drop the file on a slice, and the result lands next to the original, ready to drag straight into an email or a chat.
 

@@ -1,4 +1,4 @@
-package io.github.navinkumar0007.shiftdrop
+package io.github.navinkumar0007.arcvert
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -129,7 +129,7 @@ class MediaEngine(private val activity: Activity, messenger: BinaryMessenger) :
                 if (call.argument<Boolean>("working") == true) {
                     KeepWorkingService.start(
                         activity,
-                        call.argument<String>("title") ?: "ShiftDrop",
+                        call.argument<String>("title") ?: "Arcvert",
                         call.argument<String>("text") ?: "",
                     )
                 } else {

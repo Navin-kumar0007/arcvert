@@ -11,12 +11,12 @@ import 'package:integration_test/integration_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/android_media.dart';
-import 'package:shiftdrop/convert_native.dart';
-import 'package:shiftdrop/keep_going.dart';
-import 'package:shiftdrop/pdf_engine.dart';
-import 'package:shiftdrop/picked_file.dart';
-import 'package:shiftdrop/shared_files.dart';
+import 'package:arcvert/android_media.dart';
+import 'package:arcvert/convert_native.dart';
+import 'package:arcvert/keep_going.dart';
+import 'package:arcvert/pdf_engine.dart';
+import 'package:arcvert/picked_file.dart';
+import 'package:arcvert/shared_files.dart';
 
 import 'clip_data.dart';
 import 'rar_parts_data.dart';

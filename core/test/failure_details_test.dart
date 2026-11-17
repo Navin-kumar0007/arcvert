@@ -12,7 +12,7 @@ void main() {
     );
     expect(
       text,
-      'ShiftDrop 0.12.0\n'
+      'Arcvert 0.12.0\n'
       'Platform: macOS\n'
       'Action: Compress\n'
       'File kind: image (jpg)\n'

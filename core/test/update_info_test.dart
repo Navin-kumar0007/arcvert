@@ -29,9 +29,9 @@ void main() {
     const good = '''
 {
   "version": "0.10.0",
-  "page": "https://github.com/Navin-kumar0007/shiftdrop/releases/tag/v0.10.0",
+  "page": "https://github.com/Navin-kumar0007/arcvert/releases/tag/v0.10.0",
   "downloads": {
-    "macos": "https://github.com/Navin-kumar0007/shiftdrop/releases/download/v0.10.0/ShiftDrop-mac.dmg",
+    "macos": "https://github.com/Navin-kumar0007/arcvert/releases/download/v0.10.0/Arcvert-mac.dmg",
     "android": "https://elsewhere.example/evil.apk",
     "windows": 7
   }
@@ -42,7 +42,7 @@ void main() {
       expect(info.version, '0.10.0');
       expect(info.page.host, 'github.com');
       expect(info.downloads.keys, ['macos']);
-      expect(info.addressFor('macos').path, endsWith('ShiftDrop-mac.dmg'));
+      expect(info.addressFor('macos').path, endsWith('Arcvert-mac.dmg'));
       // An untrusted or missing download falls back to the release page.
       expect(info.addressFor('android'), info.page);
       expect(info.addressFor('windows'), info.page);

@@ -1578,7 +1578,7 @@ abstract class Words {
   /// No description provided for @trayStillRunning.
   ///
   /// In en, this message translates to:
-  /// **'ShiftDrop is still running'**
+  /// **'Arcvert is still running'**
   String get trayStillRunning;
 
   /// No description provided for @trayHowToQuit.
@@ -1590,7 +1590,7 @@ abstract class Words {
   /// No description provided for @trayOpen.
   ///
   /// In en, this message translates to:
-  /// **'Open ShiftDrop'**
+  /// **'Open Arcvert'**
   String get trayOpen;
 
   /// No description provided for @trayQuit.
@@ -1608,7 +1608,7 @@ abstract class Words {
   /// No description provided for @keepWorkingText.
   ///
   /// In en, this message translates to:
-  /// **'You can use other apps. ShiftDrop keeps going and the result will be waiting.'**
+  /// **'You can use other apps. Arcvert keeps going and the result will be waiting.'**
   String get keepWorkingText;
 
   /// No description provided for @openAtLogin.
@@ -1626,13 +1626,13 @@ abstract class Words {
   /// No description provided for @openAtLoginApprove.
   ///
   /// In en, this message translates to:
-  /// **'Allow ShiftDrop in System Settings, General, Login Items.'**
+  /// **'Allow Arcvert in System Settings, General, Login Items.'**
   String get openAtLoginApprove;
 
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to ShiftDrop'**
+  /// **'Welcome to Arcvert'**
   String get welcomeTitle;
 
   /// No description provided for @welcomeText.
@@ -1728,7 +1728,7 @@ abstract class Words {
   /// No description provided for @tipAndroid.
   ///
   /// In en, this message translates to:
-  /// **'In other apps, tap Share, then ShiftDrop.'**
+  /// **'In other apps, tap Share, then Arcvert.'**
   String get tipAndroid;
 
   /// No description provided for @tipWeb.
@@ -1764,7 +1764,7 @@ abstract class Words {
   /// No description provided for @checkUpdatesWhy.
   ///
   /// In en, this message translates to:
-  /// **'Once a day, ShiftDrop asks its website whether a newer version is out. Nothing about you or your files is sent.'**
+  /// **'Once a day, Arcvert asks its website whether a newer version is out. Nothing about you or your files is sent.'**
   String get checkUpdatesWhy;
 
   /// No description provided for @getNewest.
@@ -1776,13 +1776,13 @@ abstract class Words {
   /// No description provided for @getNewestWhy.
   ///
   /// In en, this message translates to:
-  /// **'Opens the download page in your browser. ShiftDrop itself can\'t use the internet.'**
+  /// **'Opens the download page in your browser. Arcvert itself can\'t use the internet.'**
   String get getNewestWhy;
 
   /// No description provided for @updateReady.
   ///
   /// In en, this message translates to:
-  /// **'ShiftDrop {version} is out.'**
+  /// **'Arcvert {version} is out.'**
   String updateReady(Object version);
 
   /// No description provided for @updateGet.
@@ -2436,7 +2436,7 @@ abstract class Words {
   /// No description provided for @faqShiftDragA.
   ///
   /// In en, this message translates to:
-  /// **'ShiftDrop must be running, so turn on Open at login in Settings. Start dragging a file in Finder or Explorer, then hold {key}. Text and pictures inside other apps aren\'t files, so they bring no menu.'**
+  /// **'Arcvert must be running, so turn on Open at login in Settings. Start dragging a file in Finder or Explorer, then hold {key}. Text and pictures inside other apps aren\'t files, so they bring no menu.'**
   String faqShiftDragA(Object key);
 
   /// No description provided for @faqAltShiftQ.
@@ -2496,7 +2496,7 @@ abstract class Words {
   /// No description provided for @faqUploadA.
   ///
   /// In en, this message translates to:
-  /// **'No. Everything happens on this device, even in a browser, and ShiftDrop has no accounts, ads or tracking.'**
+  /// **'No. Everything happens on this device, even in a browser, and Arcvert has no accounts, ads or tracking.'**
   String get faqUploadA;
 
   /// No description provided for @faqFormQ.
@@ -2508,7 +2508,7 @@ abstract class Words {
   /// No description provided for @faqFormA.
   ///
   /// In en, this message translates to:
-  /// **'Use Form photo in Make it fit, choose the form or type its sizes, and check them against the form\'s notice, as forms change them. Some count a KB as 1000 bytes and some as 1024: ShiftDrop meets both.'**
+  /// **'Use Form photo in Make it fit, choose the form or type its sizes, and check them against the form\'s notice, as forms change them. Some count a KB as 1000 bytes and some as 1024: Arcvert meets both.'**
   String get faqFormA;
 
   /// No description provided for @faqPdfTextQ.
@@ -2556,7 +2556,7 @@ abstract class Words {
   /// No description provided for @faqMacOpenA.
   ///
   /// In en, this message translates to:
-  /// **'ShiftDrop isn\'t signed by Apple yet. Open System Settings, then Privacy & Security, and choose Open Anyway.'**
+  /// **'Arcvert isn\'t signed by Apple yet. Open System Settings, then Privacy & Security, and choose Open Anyway.'**
   String get faqMacOpenA;
 
   /// No description provided for @faqWindowsWarnQ.
@@ -2712,7 +2712,7 @@ abstract class Words {
   /// No description provided for @whatsNewReady.
   ///
   /// In en, this message translates to:
-  /// **'ShiftDrop {version} is here. See what\'s new in Help.'**
+  /// **'Arcvert {version} is here. See what\'s new in Help.'**
   String whatsNewReady(Object version);
 
   /// No description provided for @whatsNewSee.
@@ -2738,6 +2738,24 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Or write to {address}'**
   String writeToUs(Object address);
+
+  /// No description provided for @whatsNewName.
+  ///
+  /// In en, this message translates to:
+  /// **'ShiftDrop is now Arcvert: the same app with a new name, as another app was already called ShiftDrop. Settings and history come along on a Mac or Windows.'**
+  String get whatsNewName;
+
+  /// No description provided for @whatsNewLook.
+  ///
+  /// In en, this message translates to:
+  /// **'A new look in light and dark, with previews of files and results, and Settings.'**
+  String get whatsNewLook;
+
+  /// No description provided for @whatsNewPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick PDF pages from pictures of them, and Compress at three levels.'**
+  String get whatsNewPages;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

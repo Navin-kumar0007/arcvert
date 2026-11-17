@@ -922,14 +922,14 @@ class WordsHi extends Words {
       'टेक्स्ट, बोल्ड, सरल टेबल और तस्वीरें आ गईं, बदलने के लिए तैयार। सटीक लेआउट नहीं रखा गया।';
 
   @override
-  String get trayStillRunning => 'ShiftDrop अभी भी चल रहा है';
+  String get trayStillRunning => 'Arcvert अभी भी चल रहा है';
 
   @override
   String get trayHowToQuit =>
       'Shift-drag काम करता रहेगा। बंद करने के लिए इस आइकन पर राइट-क्लिक करें।';
 
   @override
-  String get trayOpen => 'ShiftDrop खोलें';
+  String get trayOpen => 'Arcvert खोलें';
 
   @override
   String get trayQuit => 'बंद करें';
@@ -939,7 +939,7 @@ class WordsHi extends Words {
 
   @override
   String get keepWorkingText =>
-      'आप दूसरे ऐप इस्तेमाल कर सकते हैं। ShiftDrop काम करता रहेगा और नतीजा तैयार मिलेगा।';
+      'आप दूसरे ऐप इस्तेमाल कर सकते हैं। Arcvert काम करता रहेगा और नतीजा तैयार मिलेगा।';
 
   @override
   String get openAtLogin => 'लॉग इन पर खोलें';
@@ -950,10 +950,10 @@ class WordsHi extends Words {
 
   @override
   String get openAtLoginApprove =>
-      'System Settings, General, Login Items में ShiftDrop को अनुमति दें।';
+      'System Settings, General, Login Items में Arcvert को अनुमति दें।';
 
   @override
-  String get welcomeTitle => 'ShiftDrop में आपका स्वागत है';
+  String get welcomeTitle => 'Arcvert में आपका स्वागत है';
 
   @override
   String get welcomeText =>
@@ -1007,7 +1007,7 @@ class WordsHi extends Words {
       'File Explorer से भी, किसी भी ऐप के ऊपर, यह ऐसे ही काम करता है: फ़ाइल को Shift के साथ खींचें और किसी हिस्से पर छोड़ें। छोटा करने, घुमाने और साइज़ बदलने जैसे टूल के लिए साथ में Alt भी दबाएँ।';
 
   @override
-  String get tipAndroid => 'दूसरे ऐप में Share पर टैप करें, फिर ShiftDrop चुनें।';
+  String get tipAndroid => 'दूसरे ऐप में Share पर टैप करें, फिर Arcvert चुनें।';
 
   @override
   String get tipWeb =>
@@ -1027,18 +1027,18 @@ class WordsHi extends Words {
 
   @override
   String get checkUpdatesWhy =>
-      'दिन में एक बार ShiftDrop अपनी वेबसाइट से पूछता है कि नया वर्शन आया है या नहीं। आपके या आपकी फ़ाइलों के बारे में कुछ नहीं भेजा जाता।';
+      'दिन में एक बार Arcvert अपनी वेबसाइट से पूछता है कि नया वर्शन आया है या नहीं। आपके या आपकी फ़ाइलों के बारे में कुछ नहीं भेजा जाता।';
 
   @override
   String get getNewest => 'सबसे नया वर्शन पाएँ';
 
   @override
   String get getNewestWhy =>
-      'डाउनलोड पेज आपके ब्राउज़र में खुलता है। ShiftDrop खुद इंटरनेट इस्तेमाल नहीं कर सकता।';
+      'डाउनलोड पेज आपके ब्राउज़र में खुलता है। Arcvert खुद इंटरनेट इस्तेमाल नहीं कर सकता।';
 
   @override
   String updateReady(Object version) {
-    return 'ShiftDrop $version आ गया है।';
+    return 'Arcvert $version आ गया है।';
   }
 
   @override
@@ -1417,7 +1417,7 @@ class WordsHi extends Words {
 
   @override
   String faqShiftDragA(Object key) {
-    return 'ShiftDrop चालू होना चाहिए, इसलिए Settings में Open at login चालू करें। Finder या Explorer में कोई फ़ाइल खींचना शुरू करें, फिर $key दबाए रखें। दूसरे ऐप के अंदर का टेक्स्ट या तस्वीर फ़ाइल नहीं होती, इसलिए उनसे मेनू नहीं खुलता।';
+    return 'Arcvert चालू होना चाहिए, इसलिए Settings में Open at login चालू करें। Finder या Explorer में कोई फ़ाइल खींचना शुरू करें, फिर $key दबाए रखें। दूसरे ऐप के अंदर का टेक्स्ट या तस्वीर फ़ाइल नहीं होती, इसलिए उनसे मेनू नहीं खुलता।';
   }
 
   @override
@@ -1454,14 +1454,14 @@ class WordsHi extends Words {
 
   @override
   String get faqUploadA =>
-      'नहीं। सब कुछ इसी डिवाइस पर होता है, ब्राउज़र में भी, और ShiftDrop में न अकाउंट हैं, न विज्ञापन, न ट्रैकिंग।';
+      'नहीं। सब कुछ इसी डिवाइस पर होता है, ब्राउज़र में भी, और Arcvert में न अकाउंट हैं, न विज्ञापन, न ट्रैकिंग।';
 
   @override
   String get faqFormQ => 'फ़ॉर्म कहता है कि मेरी फ़ोटो या हस्ताक्षर का आकार गलत है।';
 
   @override
   String get faqFormA =>
-      'Make it fit में Form photo लें, फ़ॉर्म चुनें या उसके माप लिखें, और उन्हें फ़ॉर्म की सूचना से मिलाएँ, क्योंकि फ़ॉर्म इन्हें बदलते रहते हैं। कुछ 1 KB को 1000 बाइट गिनते हैं और कुछ 1024: ShiftDrop दोनों पूरे करता है।';
+      'Make it fit में Form photo लें, फ़ॉर्म चुनें या उसके माप लिखें, और उन्हें फ़ॉर्म की सूचना से मिलाएँ, क्योंकि फ़ॉर्म इन्हें बदलते रहते हैं। कुछ 1 KB को 1000 बाइट गिनते हैं और कुछ 1024: Arcvert दोनों पूरे करता है।';
 
   @override
   String get faqPdfTextQ => 'PDF छोटी करने के बाद टेक्स्ट क्यों नहीं चुना जाता?';
@@ -1489,7 +1489,7 @@ class WordsHi extends Words {
 
   @override
   String get faqMacOpenA =>
-      'ShiftDrop पर अभी Apple का साइन नहीं है। System Settings खोलें, फिर Privacy & Security, और Open Anyway चुनें।';
+      'Arcvert पर अभी Apple का साइन नहीं है। System Settings खोलें, फिर Privacy & Security, और Open Anyway चुनें।';
 
   @override
   String get faqWindowsWarnQ => 'ऐप खोलने पर Windows चेतावनी देता है।';
@@ -1574,7 +1574,7 @@ class WordsHi extends Words {
 
   @override
   String whatsNewReady(Object version) {
-    return 'ShiftDrop $version आ गया है। मदद में देखें कि नया क्या है।';
+    return 'Arcvert $version आ गया है। मदद में देखें कि नया क्या है।';
   }
 
   @override
@@ -1590,4 +1590,16 @@ class WordsHi extends Words {
   String writeToUs(Object address) {
     return 'या $address पर लिखें';
   }
+
+  @override
+  String get whatsNewName =>
+      'ShiftDrop अब Arcvert है: वही ऐप, नए नाम के साथ, क्योंकि ShiftDrop नाम का एक और ऐप पहले से था। Mac या Windows पर सेटिंग और History साथ आते हैं।';
+
+  @override
+  String get whatsNewLook =>
+      'लाइट और डार्क में नया रूप, फ़ाइलों और नतीजों के प्रीव्यू, और Settings।';
+
+  @override
+  String get whatsNewPages =>
+      'PDF के पन्ने उनकी तस्वीरें देखकर चुनें, और Compress तीन स्तरों पर करें।';
 }

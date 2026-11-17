@@ -5,13 +5,13 @@ import 'about.dart';
 import 'app_settings.dart';
 
 /// The version file on the website, `docs/site/version.json`.
-final versionFileAddress = Uri.parse('https://shiftdrop.pages.dev/version.json');
+final versionFileAddress = Uri.parse('https://arcvert.pages.dev/version.json');
 
 /// Where every download is, for copies that can't check by themselves.
 final releasesPage = Uri.parse('$projectAddress/releases/latest');
 
 /// Set when building the Microsoft Store copy, which the Store keeps up to date.
-const storeCopy = bool.fromEnvironment('SHIFTDROP_STORE');
+const storeCopy = bool.fromEnvironment('ARCVERT_STORE');
 
 /// How this copy gets newer versions.
 enum UpdateWay {

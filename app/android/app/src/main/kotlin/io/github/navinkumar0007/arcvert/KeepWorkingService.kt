@@ -1,4 +1,4 @@
-package io.github.navinkumar0007.shiftdrop
+package io.github.navinkumar0007.arcvert
 
 import android.app.ActivityManager
 import android.app.Notification
@@ -25,7 +25,7 @@ class KeepWorkingService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val title = intent?.getStringExtra(EXTRA_TITLE) ?: "ShiftDrop"
+        val title = intent?.getStringExtra(EXTRA_TITLE) ?: "Arcvert"
         val text = intent?.getStringExtra(EXTRA_TEXT) ?: ""
         ServiceCompat.startForeground(this, NOTIFICATION_ID, notification(title, text), serviceType())
         // If Android stops it anyway, it shouldn't come back by itself: the job it kept is gone.
@@ -51,7 +51,7 @@ class KeepWorkingService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_shiftdrop)
+            .setSmallIcon(R.drawable.ic_stat_arcvert)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))

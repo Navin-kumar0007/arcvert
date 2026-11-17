@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shiftdrop/pdf_extras.dart';
+import 'package:arcvert/pdf_extras.dart';
 
 void main() {
   group('telling a bold font', () {

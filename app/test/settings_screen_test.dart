@@ -5,12 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/about.dart';
-import 'package:shiftdrop/app_settings.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/settings_screen.dart';
-import 'package:shiftdrop/update_check.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/about.dart';
+import 'package:arcvert/app_settings.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/settings_screen.dart';
+import 'package:arcvert/update_check.dart';
+import 'package:arcvert/words.dart';
 
 SettingsStore _store([AppSettings settings = const AppSettings()]) {
   return SettingsStore(settings, write: (_) async {});

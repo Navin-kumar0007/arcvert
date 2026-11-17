@@ -12,7 +12,7 @@ the installers attached. Nothing is public until you press **Publish** on it.
    `app/lib/help_screen.dart`, with their words in both ARB files: a test fails if they fall behind.
 2. Merge to `main`, then tag it:
    ```sh
-   git tag v0.15.0 && git push origin v0.15.0
+   git tag v0.16.0 && git push origin v0.16.0
    ```
 3. When CI finishes, open the draft under **Releases**, try the downloads, and press **Publish**.
 4. About two days later, once testers have had it, update `docs/site/version.json` to the new version and its
@@ -28,10 +28,10 @@ refuses updates signed by a different key, so the real one has to be used from t
 release. **Keep the keystore safe and backed up. If it's lost, no one can ever update the app.**
 
 ```sh
-keytool -genkeypair -v -keystore shiftdrop-release.jks -alias shiftdrop -keyalg RSA -keysize 4096 -validity 10000
-base64 -i shiftdrop-release.jks | gh secret set ANDROID_KEYSTORE_BASE64 -R Navin-kumar0007/shiftdrop
-gh secret set ANDROID_KEYSTORE_PASSWORD -R Navin-kumar0007/shiftdrop
-gh secret set ANDROID_KEY_ALIAS -R Navin-kumar0007/shiftdrop --body shiftdrop
+keytool -genkeypair -v -keystore arcvert-release.jks -alias arcvert -keyalg RSA -keysize 4096 -validity 10000
+base64 -i arcvert-release.jks | gh secret set ANDROID_KEYSTORE_BASE64 -R Navin-kumar0007/arcvert
+gh secret set ANDROID_KEYSTORE_PASSWORD -R Navin-kumar0007/arcvert
+gh secret set ANDROID_KEY_ALIAS -R Navin-kumar0007/arcvert --body arcvert
 ```
 
 Never commit the keystore or its password. From 2027 Android also needs apps from websites to be
@@ -41,17 +41,17 @@ registered, through the US$25 Android Developer Console.
 
 CI builds the whole site (`app/tool/build_site.sh`: the page from `docs/site`, the web app under `/app/`) and
 publishes it to Cloudflare Pages: pushes to `main` go to the live site, other branches to a preview address
-such as `core-engine.shiftdrop.pages.dev`. It needs two secrets, set once:
+such as `core-engine.arcvert.pages.dev`. It needs two secrets, set once:
 
 1. In Cloudflare, open **My Profile, API Tokens, Create Token**, choose **Create Custom Token**, and give it
    one permission: **Account, Cloudflare Pages, Edit**, for your account. Copy the token.
 2. Find your **Account ID**: open **Workers & Pages** in the dashboard; it's on the right of the page.
 3. Store both in GitHub. Each command asks for the value, so it stays out of your shell history:
    ```sh
-   gh secret set CLOUDFLARE_API_TOKEN -R Navin-kumar0007/shiftdrop
-   gh secret set CLOUDFLARE_ACCOUNT_ID -R Navin-kumar0007/shiftdrop
+   gh secret set CLOUDFLARE_API_TOKEN -R Navin-kumar0007/arcvert
+   gh secret set CLOUDFLARE_ACCOUNT_ID -R Navin-kumar0007/arcvert
    ```
-4. Re-run the latest CI run, or push. The `website` job creates the `shiftdrop` project on its first run and
+4. Re-run the latest CI run, or push. The `website` job creates the `arcvert` project on its first run and
    prints the address. If that name is taken on pages.dev, Cloudflare adds a few letters to it.
 
 Never paste the token anywhere else. To use another project name, set the repository variable
@@ -59,7 +59,7 @@ Never paste the token anywhere else. To use another project name, set the reposi
 `docs/site/_headers` sets the caching the web app needs. `Download` buttons on the site use
 `releases/latest/download/`, so they work once a full release is published.
 
-`ShiftDrop-website.zip` in each release is the same site, for any other static host serving HTTPS.
+`Arcvert-website.zip` in each release is the same site, for any other static host serving HTTPS.
 
 ### Windows signing (optional, free)
 

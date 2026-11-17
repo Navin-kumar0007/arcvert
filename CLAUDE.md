@@ -1,8 +1,20 @@
-# ShiftDrop: notes for Claude Code
+# Arcvert: notes for Claude Code
 
-Named ShiftDrop on 8 Nov 2026; it was "Radial Converter" until then. The GitHub repository is now
-`Navin-kumar0007/shiftdrop` (the old address redirects); only this folder keeps the old name. Read this first; it carries the decisions and status from the planning chat in the Claude app
-(2 Nov 2026).
+Renamed **Arcvert** on 17 Nov 2026 (release 0.16.0). It was "Radial Converter" until 8 Nov 2026, then "ShiftDrop":
+the owner found another Windows converter already called "ShiftDrop - File Converter" (Baraa Adel, MIT,
+github.com/baraadb/ShiftDrop, in the Microsoft Store since 21 Oct 2026, with the same Tangerine-inspired Shift-drag
+wheel), which holds the Store name. Neither copied the other. The GitHub repository is `Navin-kumar0007/arcvert`
+(`shiftdrop` redirects); only this folder keeps the oldest name. The 0.13.0 to 0.15.0 drafts were built as ShiftDrop and
+never published: 0.16.0 "Arcvert" holds all of them. Read this first; it carries the decisions and status from the
+planning chat in the Claude app (2 Nov 2026).
+
+Rename details: package `arcvert`, ids `io.github.navinkumar0007.arcvert`, `arcvert.exe`, assets `Arcvert-*`, site
+`arcvert.pages.dev`. Desktops copy settings and history from the ShiftDrop folder on first launch
+(`bringOverOldName` in `settings_store_native.dart`); the Windows installer keeps ShiftDrop's AppId, so it replaces it,
+deletes its folder and shortcuts and moves its Run value (`[InstallDelete]`, `[Code]` in `installer.iss`, checked in CI).
+Android is a new app id, so phones start afresh. `shiftdrop.pages.dev` stays as `docs/legacy-site/`, published from
+`main` to the old Cloudflare project: a notice, a `version.json` that sends ShiftDrop 0.10.x copies to Arcvert, and an
+offline worker that clears the old web app. Mac "Open at login" must be switched on again.
 
 ## What we're building
 
@@ -60,7 +72,7 @@ Headline features that make people switch:
 | --- | --- |
 | `spike/macos-shift-drag/` | Phase 0 prototype in Swift: Shift-drag detection + radial panel + `sips` conversion. Run with `bash spike/macos-shift-drag/run.sh`. **Works** (tested 2 Nov). |
 | `core/` | Dart package `radial_core`: file detection by bytes, 77-action catalogue, preset loader, never-overwrite naming, "under X KB" search, video bitrate maths, job queue, PDF writer, subtitles, and `portable_engine.dart` (images and subtitles in pure Dart, on every platform). `lib/engines.dart` (desktop only) runs engines as separate processes; `bin/radial.dart` is the command-line test tool. 632 tests; engine tests need `brew install vips qpdf ffmpeg` and skip otherwise. |
-| `app/` | Flutter app (`io.github.navinkumar0007.shiftdrop`): pick files, radial menu, real conversion, save. Same screen on all four platforms. 396 tests, plus 37 PDF ones needing `PDFIUM_PATH`. `tool/test_android_device.sh` runs the real Android engine and share menu on an emulator, in CI. |
+| `app/` | Flutter app (`io.github.navinkumar0007.arcvert`): pick files, radial menu, real conversion, save. Same screen on all four platforms. 396 tests, plus 37 PDF ones needing `PDFIUM_PATH`. `tool/test_android_device.sh` runs the real Android engine and share menu on an emulator, in CI. |
 | `engines/` | Scripts that build or fetch the FFmpeg we ship. See its README. |
 | `core/lib/presets/` | Form presets, one JSON file per preset; the file name must equal the id. Inside `lib/` because that's the only way an app can ship a package's files, and each must also be listed in `app/pubspec.yaml`. A test catches a missed one. |
 | `test-files/` | Sample files for tests: `portrait.heic`, tiled and turned by a tag, as iPhone photos are; `locked.pdf` (password `open sesame`) and `restricted.pdf`, made with qpdf; `sample-*` 7z and RAR files, including a locked one and a bomb. |
@@ -264,7 +276,7 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   page. Pictures inside form objects aren't reached yet. Any failure leaves pages as before, plain and without
   pictures. Checked on the 54 Downloads PDFs (about a second at most) and in Chrome.
 - Look (`app/lib/theme.dart`, `home_parts.dart`): `SdColors` holds the light and dark colours as a `ThemeExtension`,
-  read with `context.sd`; `shiftDropTheme` fills Material's scheme from it, so plain Material screens follow. Teal is
+  read with `context.sd`; `arcvertTheme` fills Material's scheme from it, so plain Material screens follow. Teal is
   "go", amber is Make it fit (`RadialAction.isFit`: Shift menu actions that aren't plain format changes). The window
   splits the Shift menu into Convert and Make it fit tabs (`_Tab` in `converter_screen.dart`); Shift-drag keeps them
   together. No characters outside Latin-1 and Devanagari in `app/lib`: key captions say "Arrows", not arrow symbols.
@@ -277,8 +289,8 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   browser; `helpTopics`), search, shortcuts (`helpShortcuts`), What's new (`whatsNewVersion` must equal `appVersion`, a
   test checks), Report a problem and Suggest a feature (`core/lib/src/support_links.dart`): an email draft (`mailto:`) to
   `supportEmail` first, as most people have no GitHub account (owner's choice, 16 Nov 2026), a prefilled GitHub issue as
-  the second way, or a copy; facts are version, platform and language only. `supportEmail` is `shiftdrop.support@gmail.com`, made by the
-  owner on 16 Nov 2026 (also on the website and in the privacy policy); null hides email. `openPage` and the native openers allow `https` and `mailto` only;
+  the second way, or a copy; facts are version, platform and language only. `supportEmail` is null: `shiftdrop.support@gmail.com` (made 16 Nov 2026)
+  was retired with the name, and email stays hidden until the owner makes `arcvert.support@gmail.com`. `openPage` and the native openers allow `https` and `mailto` only;
   Android sends `mailto` as `ACTION_SENDTO`, so only email apps answer. After an update,
   `AppHome` says what's new once (`AppSettings.whatsNewSeen`); a new install has the guide instead. A SnackBar with an
   action persists unless `persist: false`.
@@ -309,7 +321,7 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   build depend on GitHub serving them. Don't bring SQLite back for a list this small.
 - Open at login (Settings' switch, `OpenAtLogin`, `loginItem`/`setLoginItem` over the Shift-drag channel): Mac uses
   `SMAppService.mainApp` (macOS 13+; `LoginItem` in `ShiftDrag.swift`) and hides the window when macOS says it opened
-  the app at login; Windows writes `HKCU\...\Run` as `"shiftdrop.exe" --hidden`, which starts in the notification
+  the app at login; Windows writes `HKCU\...\Run` as `"arcvert.exe" --hidden`, which starts in the notification
   area, and the uninstaller removes it. CI checks the hidden start and the removal. Nobody has tried it on a real Mac yet.
 - CI downloads Gradle, PDFium (Windows, Mac) and FFmpeg for Windows from GitHub release downloads, which returned 504 for
   over an hour on 8 Nov 2026 while GitHub's status page said all was well. Each is cached between runs, and builds go
@@ -331,10 +343,10 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   beside the original and says so once, and passes it to `saveBesideOriginal(folder:)` and, through
   `ConvertControl.outputFolder`, to the engines. Phones and browsers keep their save dialogs. About is information only.
 - Update check (`update_check.dart`, `core/lib/src/update_info.dart`): Mac and Windows copies from the website fetch
-  `https://shiftdrop.pages.dev/version.json` (`docs/site/version.json`) at most once a day, 5 s after launch, and show a
+  `https://arcvert.pages.dev/version.json` (`docs/site/version.json`) at most once a day, 5 s after launch, and show a
   banner whose Download opens the address in the browser (`openPage`, native `openPage`/`radial/pages`, https only).
-  Only github.com and shiftdrop.pages.dev addresses are kept from the file. The Store copy is built with
-  `--dart-define=SHIFTDROP_STORE=true` and never checks. Android keeps no internet permission, so Settings only opens the
+  Only github.com and arcvert.pages.dev addresses are kept from the file. The Store copy is built with
+  `--dart-define=ARCVERT_STORE=true` and never checks. Android keeps no internet permission, so Settings only opens the
   releases page. Update `version.json` by hand after a release (`docs/RELEASING.md`); a test fails if it runs ahead of
   `pubspec.yaml`. Sparkle and in-app APK downloads, as the plan has them, aren't done: both need more than a link.
 - Languages: English and Hindi, following the device unless one is picked in Settings (`chosenLocale` for `deviceWords`,
@@ -350,7 +362,7 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
 - Website: `docs/site`, one static page with its own security policy, loading nothing from elsewhere. Scroll scenes are our
   own `site.js`; springs, the orbit and card effects use Motion 14.6.0 (MIT), vendored unmodified in `docs/site/vendor/motion/`. `app/tool/build_site.sh`
   puts the web app under `/app/`. CI's `website` job publishes it to Cloudflare Pages once the
-  `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets exist (project `shiftdrop`). Download links need a published release.
+  `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets exist (project `arcvert`). Download links need a published release.
 - Test as you go: `cd app && flutter run -d chrome`. CI (`.github/workflows/build.yml`) builds web,
   Android, Windows and macOS downloads on every push.
 
@@ -429,7 +441,7 @@ Compress levels are done. Everything planned before 1.0 is built: PDF passwords 
 4. Document conversions (`document-to-*`) wait on the optional LibreOffice and Pandoc add-ons. Web video has no MP3,
    FLAC, GIF or merge. Nothing plays video or sound while trimming.
 5. A native speaker should review `app_hi.arb`.
-6. Android package name `io.github.navinkumar0007.shiftdrop`: register it with Google in Phase 5. It can't change after
+6. Android package name `io.github.navinkumar0007.arcvert`: register it with Google in Phase 5. It can't change after
    the first public release, as Android treats a new name as a different app.
 7. The owner is installing Xcode. Then: `sudo xcode-select -s /Applications/Xcode.app`,
    `sudo xcodebuild -license accept`, `sudo xcodebuild -runFirstLaunch`, `flutter doctor`.

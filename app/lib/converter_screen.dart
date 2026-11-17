@@ -1313,7 +1313,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
           SizedBox(width: 10),
           Flexible(
             child: Text(
-              'ShiftDrop',
+              'Arcvert',
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600, letterSpacing: -0.2),
             ),

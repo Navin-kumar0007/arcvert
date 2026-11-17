@@ -1,0 +1,9 @@
+{
+  "version": "0.16.0",
+  "page": "https://github.com/Navin-kumar0007/arcvert/releases/tag/v0.16.0",
+  "downloads": {
+    "macos": "https://github.com/Navin-kumar0007/arcvert/releases/download/v0.16.0/Arcvert-mac.dmg",
+    "windows": "https://github.com/Navin-kumar0007/arcvert/releases/download/v0.16.0/Arcvert-windows-setup.exe",
+    "android": "https://github.com/Navin-kumar0007/arcvert/releases/download/v0.16.0/Arcvert-android-arm64.apk"
+  }
+}

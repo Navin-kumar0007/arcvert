@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shiftdrop/about.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/settings_screen.dart';
-import 'package:shiftdrop/shift_drag.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/about.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/settings_screen.dart';
+import 'package:arcvert/shift_drag.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -20,10 +20,10 @@ void main() {
 
   test('the raw project name shows nowhere people would see it', () {
     final places = {
-      'web/index.html': '<title>ShiftDrop</title>',
-      'web/manifest.json': '"name": "ShiftDrop"',
-      'windows/runner/main.cpp': 'L"ShiftDrop"',
-      'macos/Runner/Configs/AppInfo.xcconfig': 'PRODUCT_NAME = ShiftDrop',
+      'web/index.html': '<title>Arcvert</title>',
+      'web/manifest.json': '"name": "Arcvert"',
+      'windows/runner/main.cpp': 'L"Arcvert"',
+      'macos/Runner/Configs/AppInfo.xcconfig': 'PRODUCT_NAME = Arcvert',
     };
     places.forEach((path, expected) {
       expect(File(path).readAsStringSync(), contains(expected), reason: path);
@@ -34,7 +34,7 @@ void main() {
     );
     expect(
       File('windows/runner/Runner.rc').readAsStringSync(),
-      isNot(contains('"ProductName", "shiftdrop"')),
+      isNot(contains('"ProductName", "arcvert"')),
     );
   });
 
@@ -104,7 +104,7 @@ void main() {
     );
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
-    expect(find.text('ShiftDrop'), findsOneWidget);
+    expect(find.text('Arcvert'), findsOneWidget);
     expect(find.text(appVersion), findsOneWidget);
     expect(find.textContaining('Your files stay on this device'), findsOneWidget);
     expect(find.textContaining('Mozilla Public License'), findsOneWidget);

@@ -1,4 +1,4 @@
-/// Shared logic for ShiftDrop. Safe on every platform, including the web.
+/// Shared logic for Arcvert. Safe on every platform, including the web.
 library;
 
 export 'src/action_options.dart';

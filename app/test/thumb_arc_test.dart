@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/size_preview.dart';
-import 'package:shiftdrop/theme.dart';
-import 'package:shiftdrop/thumb_arc.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/size_preview.dart';
+import 'package:arcvert/theme.dart';
+import 'package:arcvert/thumb_arc.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   final tools = actionsFor(const [FileKind.jpg], ActionMode.tools);
@@ -22,7 +22,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       MaterialApp(
-        theme: shiftDropTheme(brightness),
+        theme: arcvertTheme(brightness),
         localizationsDelegates: Words.localizationsDelegates,
         supportedLocales: Words.supportedLocales,
         home: Scaffold(

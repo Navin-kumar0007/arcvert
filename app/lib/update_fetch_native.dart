@@ -10,7 +10,7 @@ const _largest = 64 * 1024;
 Future<String> fetchVersionFile(Uri address) async {
   final client = HttpClient()
     ..connectionTimeout = const Duration(seconds: 10)
-    ..userAgent = 'ShiftDrop';
+    ..userAgent = 'Arcvert';
   try {
     final request = await client.getUrl(address).timeout(const Duration(seconds: 10));
     final response = await request.close().timeout(const Duration(seconds: 10));

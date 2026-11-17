@@ -128,8 +128,7 @@ owner chose to ship the new look with Copy details and move the other planned it
 
 ## 0.13.0: menu and form polish
 
-**Done.** Built and tagged on 16 November 2026. The next release after 0.10.1: test the draft, then publish, about
-6 December 2026.
+**Not published**: in 0.16.0. Built and tagged on 16 November 2026 as ShiftDrop; the owner tried it on every platform.
 
 - **Live preview in the menu's centre**: resting on Rotate, Flip or Resize, or one of their choices, shows the
   picture already turned, flipped or smaller, without converting. Window menu only. **Done** (`live_look.dart`,
@@ -145,8 +144,7 @@ owner chose to ship the new look with Copy details and move the other planned it
 
 ## 0.14.0: pages, details and habits
 
-**Done.** Built 16 November 2026, after the owner tried 0.13.0 on every platform; tagged once CI passed. Publish
-after 0.13.0.
+**Not published**: in 0.16.0. Built 16 November 2026 as ShiftDrop, after the owner tried 0.13.0 on every platform.
 
 - **PDF page picker**: Extract pages with a grid of page pictures to tap, and the range typed, such as 1-3, 7.
   **Done** (`page_picker.dart`, `page_range.dart`, 16 November 2026), tried in Chrome.
@@ -159,9 +157,20 @@ after 0.13.0.
 - **Changing the trigger key** from Shift. **Done** (`AppSettings.triggerKey`, `TriggerKey` in Swift, `TriggerDown` in
   C++, 16 November 2026): Shift or Control.
 
+## 0.16.0: Arcvert
+
+**Done**, 17 November 2026. The next release after 0.10.1. The owner found another converter already called ShiftDrop
+in the Microsoft Store, chose the name Arcvert, and chose (17 November 2026) not to publish the 0.13.0 to 0.15.0 drafts,
+built under the old name: 0.16.0 holds all of them, as 0.13.0 held 0.11 and 0.12.
+
+- **The new name** everywhere, with settings and history carried over on desktops, the Windows installer replacing
+  ShiftDrop, and `shiftdrop.pages.dev` kept as a pointer for old copies (`docs/legacy-site/`).
+- **Help** with common questions, shortcuts and What's new; **Report a problem** and **Suggest a feature** by email
+  (once `arcvert.support@gmail.com` exists) or GitHub; a once-per-update What's new note.
+
 ## 0.15.0: PDF passwords, RAR in parts, menu speed
 
-**Done.** Built 16 November 2026, and tried by the owner on real devices before tagging. Publish after 0.14.0. With it,
+**Not published**: in 0.16.0. Built 16 November 2026 as ShiftDrop, and tried by the owner on real devices. With it,
 everything planned before 1.0 is built; what remains is the checklist below.
 
 - **Add password to a PDF** (`lockPdf`), in pure Dart rather than by bundling qpdf, so it works on every platform.
@@ -180,6 +189,6 @@ everything planned before 1.0 is built; what remains is the checklist below.
   If it's over, `flutter run` prints each drag's parts (wait, find, ask, draw) to say which to speed up.
 - No crash bugs open. Real-device tries: an iPhone HEIC photo, a form photo accepted by a real form, at least three
   Android phone brands.
-- SignPath signing for Windows, and the Microsoft Store package, built with `--dart-define=SHIFTDROP_STORE=true`.
+- SignPath signing for Windows, and the Microsoft Store package, built with `--dart-define=ARCVERT_STORE=true`.
 - A native Hindi speaker has reviewed `app_hi.arb`.
 - Android package name registered with Google, with the real signing key.

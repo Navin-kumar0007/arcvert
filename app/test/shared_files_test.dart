@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
-import 'package:shiftdrop/conversion.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/shared_files.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/conversion.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/shared_files.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

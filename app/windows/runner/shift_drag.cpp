@@ -226,7 +226,7 @@ std::wstring WideFromUtf8(const std::string& text) {
 // The "paths" list in a call from Flutter.
 // Where Windows keeps what opens at sign-in, for this user only.
 constexpr wchar_t kRunKey[] = L"Software\\Microsoft\\Windows\\CurrentVersion\\Run";
-constexpr wchar_t kRunValue[] = L"ShiftDrop";
+constexpr wchar_t kRunValue[] = L"Arcvert";
 
 bool OpensAtLogin() {
   return ::RegGetValueW(HKEY_CURRENT_USER, kRunKey, kRunValue, RRF_RT_REG_SZ, nullptr, nullptr,

@@ -69,7 +69,7 @@ class _RadialAppState extends State<RadialApp> {
     return SettingsScope(
       store: widget.settings,
       child: MaterialApp(
-        title: 'ShiftDrop',
+        title: 'Arcvert',
         debugShowCheckedModeBanner: false,
         localizationsDelegates: Words.localizationsDelegates,
         supportedLocales: Words.supportedLocales,
@@ -84,5 +84,5 @@ class _RadialAppState extends State<RadialApp> {
 
   /// Hindi file names and labels need a font we ship: in a browser, Flutter would otherwise
   /// fetch a missing font from Google, and nothing here may touch the network.
-  ThemeData _theme(Brightness brightness) => shiftDropTheme(brightness);
+  ThemeData _theme(Brightness brightness) => arcvertTheme(brightness);
 }

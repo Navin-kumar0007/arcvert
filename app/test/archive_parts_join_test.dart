@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:shiftdrop/picked_file.dart';
+import 'package:arcvert/picked_file.dart';
 
 PickedFile sample(String file, {String? name}) {
   final path = p.join(Directory.current.parent.path, 'test-files', file);

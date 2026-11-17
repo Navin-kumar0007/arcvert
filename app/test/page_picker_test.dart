@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shiftdrop/page_picker.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/page_picker.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   Future<String?> Function() open(WidgetTester tester) {

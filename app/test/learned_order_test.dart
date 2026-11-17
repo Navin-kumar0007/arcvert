@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:radial_core/radial_core.dart';
-import 'package:shiftdrop/app_settings.dart';
-import 'package:shiftdrop/conversion.dart';
-import 'package:shiftdrop/converter_screen.dart';
-import 'package:shiftdrop/words.dart';
+import 'package:arcvert/app_settings.dart';
+import 'package:arcvert/conversion.dart';
+import 'package:arcvert/converter_screen.dart';
+import 'package:arcvert/words.dart';
 
 void main() {
   group('settings keep the counts', () {
