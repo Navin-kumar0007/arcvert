@@ -2978,6 +2978,24 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'In Settings, choose Save settings to a file, and move the file over, by email or a USB stick. On the other device, choose Bring in settings from a file. Your choices and slices come along, never your files or history.'**
   String get faqMoveA;
+
+  /// No description provided for @faqRightClickQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I start from a right-click on a file?'**
+  String get faqRightClickQ;
+
+  /// No description provided for @faqRightClickMacA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. Right-click files or a folder in Finder and choose Open With, then Arcvert, or Quick Actions or Services, then Convert with Arcvert. Arcvert opens with them chosen, ready to pick what to make.'**
+  String get faqRightClickMacA;
+
+  /// No description provided for @faqRightClickWindowsA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. Right-click files or a folder in File Explorer and choose Convert with Arcvert. On Windows 11 it\'s under Show more options. Arcvert opens with them chosen, ready to pick what to make.'**
+  String get faqRightClickWindowsA;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

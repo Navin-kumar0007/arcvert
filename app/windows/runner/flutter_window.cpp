@@ -1,9 +1,12 @@
 #include "flutter_window.h"
 
+#include <flutter/standard_method_codec.h>
+
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
 #include "resource.h"
+#include "utils.h"
 
 namespace {
 
@@ -11,11 +14,17 @@ const UINT kTrayMessage = WM_APP + 1;
 const UINT kTrayId = 1;
 const UINT kMenuOpen = 1;
 const UINT kMenuQuit = 2;
+const UINT_PTR kOpenTimer = 7;
+// Explorer starts one copy per file, a few milliseconds apart.
+const UINT kOpenWaitMs = 300;
 
 }  // namespace
 
-FlutterWindow::FlutterWindow(const flutter::DartProject& project, bool start_hidden)
-    : project_(project), start_hidden_(start_hidden) {}
+FlutterWindow::FlutterWindow(const flutter::DartProject& project, bool start_hidden,
+                             std::vector<std::wstring> open_files)
+    : project_(project), start_hidden_(start_hidden) {
+  for (const auto& path : open_files) files_to_open_.push_back(Utf8FromUtf16(path.c_str()));
+}
 
 FlutterWindow::~FlutterWindow() {}
 
@@ -39,6 +48,17 @@ bool FlutterWindow::OnCreate() {
   taskbar_created_ = ::RegisterWindowMessageW(L"TaskbarCreated");
   AddTrayIcon();
   shift_drag_ = std::make_unique<ShiftDrag>(flutter_controller_->engine()->messenger(), GetHandle());
+  // `shared_files_native.dart` on the other side, which opens them as if dropped on the window.
+  open_channel_ = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+      flutter_controller_->engine()->messenger(), "radial/open",
+      &flutter::StandardMethodCodec::GetInstance());
+  open_channel_->SetMethodCallHandler([this](const auto& call, auto result) {
+    if (call.method_name() == "listen") {
+      open_listening_ = true;
+      SendFilesToOpen();
+    }
+    result->Success();
+  });
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     // Hidden only if the icon is there to bring it back.
@@ -96,6 +116,25 @@ void FlutterWindow::ShowFromTray() {
   ::SetForegroundWindow(GetHandle());
 }
 
+void FlutterWindow::AddFilesToOpen(const wchar_t* paths, size_t length) {
+  size_t start = 0;
+  for (size_t i = 0; i < length; i++) {
+    if (paths[i] != L'\0') continue;
+    if (i > start) files_to_open_.push_back(Utf8FromUtf16(std::wstring(paths + start, i - start).c_str()));
+    start = i + 1;
+  }
+}
+
+void FlutterWindow::SendFilesToOpen() {
+  if (!open_listening_ || files_to_open_.empty() || !open_channel_) return;
+  flutter::EncodableList paths;
+  for (const auto& path : files_to_open_) paths.emplace_back(path);
+  files_to_open_.clear();
+  open_channel_->InvokeMethod(
+      "open", std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{
+                  {flutter::EncodableValue("paths"), flutter::EncodableValue(paths)}}));
+}
+
 void FlutterWindow::ShowTrayMenu() {
   HMENU menu = ::CreatePopupMenu();
   if (menu == nullptr) return;
@@ -140,6 +179,20 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
   }
   if (taskbar_created_ != 0 && message == taskbar_created_) {
     AddTrayIcon();
+    return 0;
+  }
+  if (message == WM_COPYDATA) {
+    const auto* data = reinterpret_cast<const COPYDATASTRUCT*>(lparam);
+    if (data != nullptr && data->dwData == kOpenFilesData && data->lpData != nullptr) {
+      AddFilesToOpen(static_cast<const wchar_t*>(data->lpData), data->cbData / sizeof(wchar_t));
+      ::SetTimer(hwnd, kOpenTimer, kOpenWaitMs, nullptr);
+      return TRUE;
+    }
+  }
+  if (message == WM_TIMER && wparam == kOpenTimer) {
+    ::KillTimer(hwnd, kOpenTimer);
+    ShowFromTray();
+    SendFilesToOpen();
     return 0;
   }
 

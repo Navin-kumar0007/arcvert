@@ -25,6 +25,9 @@ class MainFlutterWindow: NSWindow {
       if let launched { NotificationCenter.default.removeObserver(launched) }
     }
     connectShiftDrag(to: flutterViewController.engine.binaryMessenger, view: flutterViewController.view)
+    OpenedFiles.shared.connect(to: flutterViewController.engine.binaryMessenger)
+    OpenedFiles.shared.showWindow = { [weak self] in self?.makeKeyAndOrderFront(nil) }
+    NSApp.servicesProvider = OpenedFiles.shared
 
     super.awakeFromNib()
   }

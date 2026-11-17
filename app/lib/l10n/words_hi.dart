@@ -1735,4 +1735,15 @@ class WordsHi extends Words {
   @override
   String get faqMoveA =>
       'सेटिंग में सेटिंग फ़ाइल में सेव करें चुनें, और फ़ाइल ईमेल या USB स्टिक से दूसरे डिवाइस पर ले जाएँ। वहाँ फ़ाइल से सेटिंग लाएँ चुनें। आपकी पसंद और स्लाइस आते हैं, आपकी फ़ाइलें या हिस्ट्री कभी नहीं।';
+
+  @override
+  String get faqRightClickQ => 'क्या मैं फ़ाइल पर राइट-क्लिक करके शुरू कर सकता हूँ?';
+
+  @override
+  String get faqRightClickMacA =>
+      'हाँ। Finder में फ़ाइलों या फ़ोल्डर पर राइट-क्लिक करें और Open With में Arcvert चुनें, या Quick Actions या Services में Convert with Arcvert। Arcvert उन्हें चुनकर खुलता है, बनाने के लिए तैयार।';
+
+  @override
+  String get faqRightClickWindowsA =>
+      'हाँ। File Explorer में फ़ाइलों या फ़ोल्डर पर राइट-क्लिक करें और Convert with Arcvert चुनें। Windows 11 पर यह Show more options में है। Arcvert उन्हें चुनकर खुलता है, बनाने के लिए तैयार।';
 }

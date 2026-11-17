@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:desktop_drop/desktop_drop.dart';
@@ -138,7 +139,12 @@ void main() {
       return PickedFile(name: name, size: bytes.length, head: bytes, read: () async => bytes);
     }
 
-    Future<void> pump(WidgetTester tester, DropReader reader, {bool? acceptsDrops = true}) {
+    Future<void> pump(
+      WidgetTester tester,
+      DropReader reader, {
+      bool? acceptsDrops = true,
+      Stream<List<String>>? opened,
+    }) {
       return tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: Words.localizationsDelegates,
@@ -148,6 +154,7 @@ void main() {
             mediaAvailable: false,
             dropReader: reader,
             acceptsDrops: acceptsDrops,
+            openedFiles: () => opened ?? const Stream.empty(),
           ),
         ),
       );
@@ -171,6 +178,23 @@ void main() {
       await tester.pump();
       expect(find.text('WhatsApp'), findsOneWidget);
       expect(find.textContaining('drop them'), findsNothing);
+    });
+
+    testWidgets('files opened from a right-click open as a drop does, folders too', (tester) async {
+      final opened = StreamController<List<String>>();
+      addTearDown(opened.close);
+      final asked = <List<String>>[];
+      await pump(tester, (items) async {
+        asked.add([for (final item in items) item.path]);
+        return DroppedFiles(inFolders: [photo('a.png'), photo('b.png')], folders: 1);
+      }, opened: opened.stream);
+      opened.add(['/x/holiday']);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(asked, [
+        ['/x/holiday'],
+      ]);
+      expect(find.textContaining('2 files'), findsOneWidget);
     });
 
     testWidgets('a hint shows while dragging over, and goes', (tester) async {

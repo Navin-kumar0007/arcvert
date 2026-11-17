@@ -148,6 +148,7 @@ class ConverterScreen extends StatefulWidget {
     this.presetLoader = loadBundledPresets,
     this.dropReader = readDroppedFiles,
     this.sharedFiles = listenForSharedFiles,
+    this.openedFiles = listenForOpenedFiles,
     this.shiftDrag = listenForShiftDrag,
     this.keepWorking = keepWorkingInBackground,
     this.mediaAvailable,
@@ -185,6 +186,9 @@ class ConverterScreen extends StatefulWidget {
 
   /// What other apps share with this one. Called once.
   final Stream<SharedFiles> Function() sharedFiles;
+
+  /// Paths opened from a right-click menu or Open With, on a Mac or Windows.
+  final Stream<List<String>> Function() openedFiles;
 
   /// Starts listening for the system-wide Shift-drag menu, and returns how to stop.
   final ShiftDragListener shiftDrag;
@@ -341,12 +345,17 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   late final StreamSubscription<SharedFiles> _shares;
+  late final StreamSubscription<List<String>> _opened;
   late final void Function() _stopShiftDrag;
 
   @override
   void initState() {
     super.initState();
     _shares = widget.sharedFiles().listen(_shared);
+    // As if dropped on the window, so folders open the same way.
+    _opened = widget.openedFiles().listen(
+      (paths) => _dropped([for (final path in paths) DropItemFile(path)]),
+    );
     _stopShiftDrag = widget.shiftDrag(
       menuFor: _menuFor,
       sizeOf: _sizeInShiftDrag,
@@ -359,6 +368,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   @override
   void dispose() {
     _shares.cancel();
+    _opened.cancel();
     _stopShiftDrag();
     super.dispose();
   }

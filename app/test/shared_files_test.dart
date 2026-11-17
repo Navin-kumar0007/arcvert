@@ -140,4 +140,41 @@ void main() {
       expect(find.textContaining('Some of what was shared'), findsOneWidget);
     });
   });
+
+  group('files opened from a right-click', () {
+    final hasMenu = Platform.isMacOS || Platform.isWindows;
+
+    test('says when it is ready, then passes on each set of paths', () async {
+      final calls = <String>[];
+      messenger.setMockMethodCallHandler(openChannel, (call) async => calls.add(call.method));
+      addTearDown(() => messenger.setMockMethodCallHandler(openChannel, null));
+      final opened = <List<String>>[];
+      final subscription = listenForOpenedFiles().listen(opened.add);
+      addTearDown(subscription.cancel);
+      await pumpEventQueue();
+      expect(calls, ['listen']);
+
+      Future<void> fromSystem(Object? arguments) {
+        final done = Completer<void>();
+        messenger.handlePlatformMessage(
+          openChannel.name,
+          openChannel.codec.encodeMethodCall(MethodCall('open', arguments)),
+          (_) => done.complete(),
+        );
+        return done.future;
+      }
+
+      await fromSystem({
+        'paths': ['/a/photo.jpg', '/a/scan.pdf'],
+      });
+      await fromSystem({'paths': <String>[]});
+      await fromSystem({
+        'paths': ['/b/folder', 7],
+      });
+      expect(opened, [
+        ['/a/photo.jpg', '/a/scan.pdf'],
+        ['/b/folder'],
+      ]);
+    }, skip: hasMenu ? false : 'Only a Mac or Windows opens files this way');
+  });
 }

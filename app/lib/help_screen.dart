@@ -58,6 +58,8 @@ List<HelpTopic> helpTopics(Words words, HelpPlace place, {required String key}) 
     HelpTopic(words.faqConvertQ, words.faqConvertA),
     if (desktop) HelpTopic(words.faqShiftDragQ, words.faqShiftDragA(key)),
     if (place == HelpPlace.windows) HelpTopic(words.faqAltShiftQ, words.faqAltShiftA),
+    if (place == HelpPlace.mac) HelpTopic(words.faqRightClickQ, words.faqRightClickMacA),
+    if (place == HelpPlace.windows) HelpTopic(words.faqRightClickQ, words.faqRightClickWindowsA),
     HelpTopic(words.faqWhereQ, desktop ? words.faqWhereDesktopA : words.faqWhereOtherA),
     HelpTopic(words.faqUndoQ, desktop ? words.faqUndoDesktopA : words.faqUndoOtherA),
     HelpTopic(words.faqUploadQ, words.faqUploadA),

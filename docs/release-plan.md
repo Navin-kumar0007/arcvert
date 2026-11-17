@@ -168,8 +168,13 @@ owner chose to ship the new look with Copy details and move the other planned it
 - **Export and import of settings** (`settings_backup.dart`, `MoveSettings` in Settings): a JSON file marked
   `arcvertSettings: 1` with the choices, slices and learned counts, never the results folder or anything else of this
   device's. Bringing one in shows what changes first; slices merge by id or name, counts keep the larger.
-- Next candidates, in the owner's list from 17 November 2026: right-click "Convert with Arcvert", a pattern for result
-  names, a notification when a long job ends.
+  The owner tried it on devices on 17 November 2026: it works.
+- **Right-click to convert** on desktops: Finder's Open With (`CFBundleDocumentTypes`, rank Alternate) and a
+  `NSServices` item; Explorer's verb for files and folders from the installer, a copy per item handing its path to the
+  running one (`WM_COPYDATA`). Both reach Dart on `radial/open` and open as a drop. Not in the portable zip or the
+  Microsoft Store build, which can't write those registry keys.
+- Next candidates, in the owner's list from 17 November 2026: a pattern for result names, a notification when a long
+  job ends.
 
 ## 0.16.0: Arcvert
 

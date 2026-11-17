@@ -304,12 +304,23 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   `shortSliceLabel`. Made by Form photo's keep switch (`FormDialog.onKeep`) or Settings (`MyFitsList`, `FormDialog`
   with `sliceOnly`). No framing: one file or many, the middle is used; Form photo with the slice chosen frames it.
   Copy details says "Form photo (own slice)", never the name. The owner tried it on devices on 17 Nov 2026: it works.
+- Right-click to convert (17 Nov 2026, for 0.17): `listenForOpenedFiles` (`shared_files_native.dart`, channel
+  `radial/open`, Dart says `listen`, native sends `open` with `paths`) feeds `ConverterScreen.openedFiles`, which opens
+  them through `_dropped`, so folders work as dropped ones. Mac: `OpenedFiles` in `AppDelegate.swift` holds paths
+  until Dart listens; `application(_:open:)` (Open With and the Dock icon, from `CFBundleDocumentTypes` with
+  `public.item` at rank Alternate, so never anyone's default) and the `convertWithArcvert` service (`NSServices`,
+  `servicesProvider` set in `MainFlutterWindow`). Windows: the installer writes `HKCU\Software\Classes\*\shell\Arcvert`
+  and `Directory\shell\Arcvert` (`"arcvert.exe" "%1"`, MultiSelectModel Player); Explorer starts a copy per item,
+  which `main.cpp` sends to the running window as `WM_COPYDATA` (`kOpenFilesData`), and `FlutterWindow` gathers them
+  for 300 ms before showing itself and sending them. CI checks the keys, the hand-over and their removal. Not in the
+  portable zip or the Store build. Not yet tried on devices.
 - Moving settings (`app/lib/settings_backup.dart`, `MoveSettings` in `settings_screen.dart`): `exportSettings` writes
   `{"arcvertSettings": 1, "appVersion", "exported", "settings"}` without `welcomed`, `lastUpdateCheck`,
   `resultsFolder` and `whatsNewSeen`. `readSettingsBackup` refuses anything else (`FormatException`, over 1 MB too) and
   reads the rest through `AppSettings.decode`; `importSettings` replaces only the choices the file has, merges slices by
   id or name (keeping this device's id), keeps the larger learned count, and is shown before it's applied. Saving goes
   through `FilePicker.saveFile` (a download in a browser), so a new setting that names a path must be left out here.
+  The owner tried it on devices on 17 Nov 2026: it works.
 - Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
   an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.

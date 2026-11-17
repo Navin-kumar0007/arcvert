@@ -56,6 +56,17 @@ Name: "desktopicon"; Description: "Add a desktop shortcut"; Flags: unchecked
 [Registry]
 ; Created by the app's "Open at login" switch, not here. Uninstalling removes it.
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: none; ValueName: "Arcvert"; Flags: uninsdeletevalue
+; "Convert with Arcvert" when right-clicking files and folders in Explorer (under "Show more options" on
+; Windows 11). Explorer starts a copy for each item, which hands it to the running one (main.cpp).
+; Player keeps the item there when more than 15 are chosen.
+Root: HKCU; Subkey: "Software\Classes\*\shell\Arcvert"; ValueType: string; ValueName: "MUIVerb"; ValueData: "Convert with Arcvert"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\*\shell\Arcvert"; ValueType: string; ValueName: "Icon"; ValueData: """{app}\arcvert.exe"",0"
+Root: HKCU; Subkey: "Software\Classes\*\shell\Arcvert"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player"
+Root: HKCU; Subkey: "Software\Classes\*\shell\Arcvert\command"; ValueType: string; ValueName: ""; ValueData: """{app}\arcvert.exe"" ""%1"""
+Root: HKCU; Subkey: "Software\Classes\Directory\shell\Arcvert"; ValueType: string; ValueName: "MUIVerb"; ValueData: "Convert with Arcvert"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\Directory\shell\Arcvert"; ValueType: string; ValueName: "Icon"; ValueData: """{app}\arcvert.exe"",0"
+Root: HKCU; Subkey: "Software\Classes\Directory\shell\Arcvert"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player"
+Root: HKCU; Subkey: "Software\Classes\Directory\shell\Arcvert\command"; ValueType: string; ValueName: ""; ValueData: """{app}\arcvert.exe"" ""%1"""
 
 [Run]
 Filename: "{app}\arcvert.exe"; Description: "Open Arcvert"; Flags: nowait postinstall skipifsilent

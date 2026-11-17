@@ -1734,4 +1734,15 @@ class WordsEn extends Words {
   @override
   String get faqMoveA =>
       'In Settings, choose Save settings to a file, and move the file over, by email or a USB stick. On the other device, choose Bring in settings from a file. Your choices and slices come along, never your files or history.';
+
+  @override
+  String get faqRightClickQ => 'Can I start from a right-click on a file?';
+
+  @override
+  String get faqRightClickMacA =>
+      'Yes. Right-click files or a folder in Finder and choose Open With, then Arcvert, or Quick Actions or Services, then Convert with Arcvert. Arcvert opens with them chosen, ready to pick what to make.';
+
+  @override
+  String get faqRightClickWindowsA =>
+      'Yes. Right-click files or a folder in File Explorer and choose Convert with Arcvert. On Windows 11 it\'s under Show more options. Arcvert opens with them chosen, ready to pick what to make.';
 }
