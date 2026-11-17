@@ -164,8 +164,12 @@ owner chose to ship the new look with Copy details and move the other planned it
 - **Own Make it fit slices** (`core/lib/src/my_fits.dart`, `AppSettings.myFits`, `MyFitsList` in Settings): a form's
   sizes under a name, first in Make it fit and Shift-drag, run as Form photo (`runsAs`), result named after the slice
   (`ActionOptions.nameSuffix`). Made from Form photo's **Keep as a Make it fit slice** or in Settings.
-- Next candidates, in the owner's list from 17 November 2026: export and import of settings, right-click "Convert with
-  Arcvert", a pattern for result names, a notification when a long job ends.
+  The owner tried it on devices on 17 November 2026: it works.
+- **Export and import of settings** (`settings_backup.dart`, `MoveSettings` in Settings): a JSON file marked
+  `arcvertSettings: 1` with the choices, slices and learned counts, never the results folder or anything else of this
+  device's. Bringing one in shows what changes first; slices merge by id or name, counts keep the larger.
+- Next candidates, in the owner's list from 17 November 2026: right-click "Convert with Arcvert", a pattern for result
+  names, a notification when a long job ends.
 
 ## 0.16.0: Arcvert
 

@@ -1679,4 +1679,59 @@ class WordsEn extends Words {
   @override
   String get faqSlicesA =>
       'Yes. In Form photo, fill in the sizes, switch on Keep as a Make it fit slice and give it a name. It comes first in Make it fit, and in the Shift-drag menu on a Mac or Windows, and makes that JPG in one step, from the middle of the photo. To frame it yourself, open Form photo and choose your slice from its list. Settings lists your slices to change or delete.';
+
+  @override
+  String get moveSettings => 'Move your settings';
+
+  @override
+  String get moveSettingsWhy =>
+      'Save your choices and slices as a file, then bring them in on another device. No files, folders or history go in it.';
+
+  @override
+  String get exportSettings => 'Save settings to a file';
+
+  @override
+  String get importSettings => 'Bring in settings from a file';
+
+  @override
+  String get settingsExported => 'Settings saved.';
+
+  @override
+  String get settingsExportFailed => 'The settings file could not be saved. Try again.';
+
+  @override
+  String get settingsNotAFile => 'This isn\'t an Arcvert settings file.';
+
+  @override
+  String get settingsReadFailed => 'That file could not be read. Try again.';
+
+  @override
+  String get importTitle => 'Bring in these settings?';
+
+  @override
+  String get importWhat =>
+      'Theme, language and your other choices become the file\'s. Anything that belongs to this device, such as a results folder, stays as it is.';
+
+  @override
+  String importSlices(int added, int changed) {
+    return 'Slices: $added new, $changed changed.';
+  }
+
+  @override
+  String importSlicesLeftOut(int count, int most) {
+    return '$count more did not fit: there is room for $most.';
+  }
+
+  @override
+  String get importDo => 'Bring in';
+
+  @override
+  String get settingsImported => 'Settings brought in.';
+
+  @override
+  String get faqMoveQ => 'How do I bring my settings and slices to another device?';
+
+  @override
+  String get faqMoveA =>
+      'In Settings, choose Save settings to a file, and move the file over, by email or a USB stick. On the other device, choose Bring in settings from a file. Your choices and slices come along, never your files or history.';
 }

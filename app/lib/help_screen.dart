@@ -63,6 +63,7 @@ List<HelpTopic> helpTopics(Words words, HelpPlace place, {required String key}) 
     HelpTopic(words.faqUploadQ, words.faqUploadA),
     HelpTopic(words.faqFormQ, words.faqFormA),
     HelpTopic(words.faqSlicesQ, words.faqSlicesA),
+    HelpTopic(words.faqMoveQ, words.faqMoveA),
     HelpTopic(words.faqPdfTextQ, words.faqPdfTextA),
     HelpTopic(words.faqLockedQ, words.faqLockedA),
     HelpTopic(words.faqRarPartsQ, words.faqRarPartsA),

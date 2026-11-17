@@ -303,7 +303,13 @@ mouse-up is delayed 0.4 s so a drop on the menu arrives first. No special permis
   the native menus look their ids up in what was last offered (`find` in `shift_drag_native.dart`), names cut by
   `shortSliceLabel`. Made by Form photo's keep switch (`FormDialog.onKeep`) or Settings (`MyFitsList`, `FormDialog`
   with `sliceOnly`). No framing: one file or many, the middle is used; Form photo with the slice chosen frames it.
-  Copy details says "Form photo (own slice)", never the name. Not yet tried on devices.
+  Copy details says "Form photo (own slice)", never the name. The owner tried it on devices on 17 Nov 2026: it works.
+- Moving settings (`app/lib/settings_backup.dart`, `MoveSettings` in `settings_screen.dart`): `exportSettings` writes
+  `{"arcvertSettings": 1, "appVersion", "exported", "settings"}` without `welcomed`, `lastUpdateCheck`,
+  `resultsFolder` and `whatsNewSeen`. `readSettingsBackup` refuses anything else (`FormatException`, over 1 MB too) and
+  reads the rest through `AppSettings.decode`; `importSettings` replaces only the choices the file has, merges slices by
+  id or name (keeping this device's id), keeps the larger learned count, and is shown before it's applied. Saving goes
+  through `FilePicker.saveFile` (a download in a browser), so a new setting that names a path must be left out here.
 - Copy details (`core/lib/src/failure_details.dart`, `_failureDetails` in `converter_screen.dart`): each failed row has
   an icon copying the app version, platform, action label, file kind (only if all files share it) and the `Fail` key.
   Never names, blanks or an engine's `details`, as those hold paths. Stays English for whoever reads the report.

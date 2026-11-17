@@ -5,7 +5,10 @@
 - **Your own Make it fit slices.** In Form photo, fill in the sizes your form asks for, switch on **Keep as a Make it
   fit slice** and name it, such as "College form". From then on it is first in Make it fit, and in the Shift-drag menu on a Mac or Windows,
   and one drop makes that JPG, named `photo (college form).jpg`, from the middle of the photo. Settings lists your
-  slices to change, delete (with Undo) or add without a file. Up to 12, kept on this device only.
+  slices to change, delete (with Undo) or add without a file. Up to 12.
+- **Move your settings** to another device: in Settings, **Save settings to a file**, then **Bring in settings from a
+  file** on the other one. Your choices and slices come along; your files, folders and history never do. Before
+  anything changes, it says what will: slices with the same name are updated, others are added.
 
 ## 0.16.0 (beta, 17 November 2026)
 

@@ -76,7 +76,9 @@ Exactly what's offered depends on the file and the device. The menu only shows w
 
 **Form photos.** Pick a preset or type your own sizes. For a signature, sign in dark ink on plain paper and photograph or scan it: **Clean up a signature**, on for the signature presets, crops to the ink, makes the paper white and the ink darker, and fits it to the form without cutting any of it off. Leave it off for photos. Rules change and differ between forms, so **always check against your form's own notice**. A file of the right size can still be refused for other reasons, such as what the photo shows.
 
-**Your own slices.** Using the same sizes again? In Form photo, switch on **Keep as a Make it fit slice** and give it a name, such as "College form". It then comes first in Make it fit, and in the Shift-drag menu on a Mac or Windows: one step makes the JPG, from the middle of the photo, named `photo (college form).jpg`. To choose the framing yourself, open Form photo and pick your slice from its list. **Settings** lists your slices: tap one to change it, or delete it (Undo brings it back). You can keep up to 12, on this device only.
+**Your own slices.** Using the same sizes again? In Form photo, switch on **Keep as a Make it fit slice** and give it a name, such as "College form". It then comes first in Make it fit, and in the Shift-drag menu on a Mac or Windows: one step makes the JPG, from the middle of the photo, named `photo (college form).jpg`. To choose the framing yourself, open Form photo and pick your slice from its list. **Settings** lists your slices: tap one to change it, or delete it (Undo brings it back). You can keep up to 12.
+
+**Another device.** In **Settings**, **Save settings to a file** keeps your choices and slices in a small file. Move it over by email or a USB stick, and on the other device choose **Bring in settings from a file**. It says what will change first. Your files, folders and history are never in it.
 
 **Extract pages.** Choose a PDF, then **Extract pages** in **Tools**. Tap the pages you want, or type them, such as `1-3, 7`, and press **Extract**: they come out as one PDF, in the order typed.
 

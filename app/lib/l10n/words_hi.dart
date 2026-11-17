@@ -1680,4 +1680,59 @@ class WordsHi extends Words {
   @override
   String get faqSlicesA =>
       'हाँ। Form photo में साइज़ भरें, Make it fit स्लाइस के रूप में रखें चालू करें और नाम दें। यह Make it fit में सबसे पहले आता है, और Mac या Windows पर Shift-drag मेनू में भी, और एक कदम में वही JPG बनाता है, फ़ोटो के बीच के हिस्से से। फ़्रेम खुद चुनने के लिए Form photo खोलें और सूची से अपना स्लाइस चुनें। सेटिंग में आपके स्लाइस हैं, बदलने या हटाने के लिए।';
+
+  @override
+  String get moveSettings => 'अपनी सेटिंग दूसरे डिवाइस पर ले जाएँ';
+
+  @override
+  String get moveSettingsWhy =>
+      'अपनी पसंद और स्लाइस एक फ़ाइल में सेव करें, फिर दूसरे डिवाइस पर ले आएँ। इसमें कोई फ़ाइल, फ़ोल्डर या हिस्ट्री नहीं जाती।';
+
+  @override
+  String get exportSettings => 'सेटिंग फ़ाइल में सेव करें';
+
+  @override
+  String get importSettings => 'फ़ाइल से सेटिंग लाएँ';
+
+  @override
+  String get settingsExported => 'सेटिंग सेव हो गईं।';
+
+  @override
+  String get settingsExportFailed => 'सेटिंग फ़ाइल सेव नहीं हो सकी। फिर कोशिश करें।';
+
+  @override
+  String get settingsNotAFile => 'यह Arcvert की सेटिंग फ़ाइल नहीं है।';
+
+  @override
+  String get settingsReadFailed => 'वह फ़ाइल पढ़ी नहीं जा सकी। फिर कोशिश करें।';
+
+  @override
+  String get importTitle => 'ये सेटिंग लाएँ?';
+
+  @override
+  String get importWhat =>
+      'थीम, भाषा और आपकी बाकी पसंद फ़ाइल वाली हो जाएँगी। इस डिवाइस की अपनी चीज़ें, जैसे नतीजों का फ़ोल्डर, वैसी ही रहेंगी।';
+
+  @override
+  String importSlices(int added, int changed) {
+    return 'स्लाइस: $added नए, $changed बदले।';
+  }
+
+  @override
+  String importSlicesLeftOut(int count, int most) {
+    return '$count और नहीं आ सके: जगह $most की ही है।';
+  }
+
+  @override
+  String get importDo => 'लाएँ';
+
+  @override
+  String get settingsImported => 'सेटिंग आ गईं।';
+
+  @override
+  String get faqMoveQ => 'अपनी सेटिंग और स्लाइस दूसरे डिवाइस पर कैसे ले जाऊँ?';
+
+  @override
+  String get faqMoveA =>
+      'सेटिंग में सेटिंग फ़ाइल में सेव करें चुनें, और फ़ाइल ईमेल या USB स्टिक से दूसरे डिवाइस पर ले जाएँ। वहाँ फ़ाइल से सेटिंग लाएँ चुनें। आपकी पसंद और स्लाइस आते हैं, आपकी फ़ाइलें या हिस्ट्री कभी नहीं।';
 }

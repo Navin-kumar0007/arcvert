@@ -2882,6 +2882,102 @@ abstract class Words {
   /// In en, this message translates to:
   /// **'Yes. In Form photo, fill in the sizes, switch on Keep as a Make it fit slice and give it a name. It comes first in Make it fit, and in the Shift-drag menu on a Mac or Windows, and makes that JPG in one step, from the middle of the photo. To frame it yourself, open Form photo and choose your slice from its list. Settings lists your slices to change or delete.'**
   String get faqSlicesA;
+
+  /// No description provided for @moveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Move your settings'**
+  String get moveSettings;
+
+  /// No description provided for @moveSettingsWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your choices and slices as a file, then bring them in on another device. No files, folders or history go in it.'**
+  String get moveSettingsWhy;
+
+  /// No description provided for @exportSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Save settings to a file'**
+  String get exportSettings;
+
+  /// No description provided for @importSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring in settings from a file'**
+  String get importSettings;
+
+  /// No description provided for @settingsExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings saved.'**
+  String get settingsExported;
+
+  /// No description provided for @settingsExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The settings file could not be saved. Try again.'**
+  String get settingsExportFailed;
+
+  /// No description provided for @settingsNotAFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t an Arcvert settings file.'**
+  String get settingsNotAFile;
+
+  /// No description provided for @settingsReadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That file could not be read. Try again.'**
+  String get settingsReadFailed;
+
+  /// No description provided for @importTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring in these settings?'**
+  String get importTitle;
+
+  /// No description provided for @importWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, language and your other choices become the file\'s. Anything that belongs to this device, such as a results folder, stays as it is.'**
+  String get importWhat;
+
+  /// No description provided for @importSlices.
+  ///
+  /// In en, this message translates to:
+  /// **'Slices: {added} new, {changed} changed.'**
+  String importSlices(int added, int changed);
+
+  /// No description provided for @importSlicesLeftOut.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more did not fit: there is room for {most}.'**
+  String importSlicesLeftOut(int count, int most);
+
+  /// No description provided for @importDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring in'**
+  String get importDo;
+
+  /// No description provided for @settingsImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings brought in.'**
+  String get settingsImported;
+
+  /// No description provided for @faqMoveQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I bring my settings and slices to another device?'**
+  String get faqMoveQ;
+
+  /// No description provided for @faqMoveA.
+  ///
+  /// In en, this message translates to:
+  /// **'In Settings, choose Save settings to a file, and move the file over, by email or a USB stick. On the other device, choose Bring in settings from a file. Your choices and slices come along, never your files or history.'**
+  String get faqMoveA;
 }
 
 class _WordsDelegate extends LocalizationsDelegate<Words> {

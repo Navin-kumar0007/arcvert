@@ -1,13 +1,18 @@
 import 'package:file_picker/file_picker.dart';
+
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:radial_core/radial_core.dart';
 
+import 'about.dart' show appVersion;
 import 'app_settings.dart';
 import 'open_page.dart';
 import 'option_screens.dart' show FormDialog;
 import 'presets.dart';
+import 'settings_backup.dart';
 import 'shift_drag.dart';
 import 'update_check.dart';
 import 'home_parts.dart' show triggerKeyName;
@@ -34,6 +39,8 @@ class SettingsScreen extends StatelessWidget {
     this.updateWay,
     this.chooseFolder = _chooseFolder,
     this.loadPresets = loadBundledPresets,
+    this.saveBackup = saveSettingsFile,
+    this.pickBackup = pickSettingsFile,
   });
 
   /// Opens the first-launch guide again, after Settings closes.
@@ -47,6 +54,10 @@ class SettingsScreen extends StatelessWidget {
 
   /// The form presets a new slice can be filled in from.
   final Future<List<Preset>> Function() loadPresets;
+
+  /// Saves a settings file, and asks for one to bring in.
+  final Future<bool> Function(String name, Uint8List bytes) saveBackup;
+  final Future<Uint8List?> Function() pickBackup;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +92,8 @@ class SettingsScreen extends StatelessWidget {
                 if (settings != null && updates == UpdateWay.check)
                   UpdateChecks(settings: settings),
                 if (updates == UpdateWay.page) const GetNewest(),
+                if (settings != null)
+                  MoveSettings(settings: settings, save: saveBackup, pick: pickBackup),
                 if (onShowGuide != null)
                   ListTile(
                     contentPadding: EdgeInsets.zero,
@@ -720,4 +733,112 @@ String mySliceSummary(Words words, FormTarget form) {
     if (form.signature) words.sliceSignature,
   ];
   return parts.isEmpty ? words.sliceAnySize : parts.join(', ');
+}
+
+/// Settings as a file to bring to another device, and back in.
+class MoveSettings extends StatelessWidget {
+  const MoveSettings({super.key, required this.settings, required this.save, required this.pick});
+
+  final SettingsStore settings;
+  final Future<bool> Function(String name, Uint8List bytes) save;
+  final Future<Uint8List?> Function() pick;
+
+  Future<void> _export(BuildContext context) async {
+    final words = context.words;
+    final messenger = ScaffoldMessenger.of(context);
+    final text = exportSettings(settings.value, appVersion: appVersion);
+    bool saved;
+    try {
+      saved = await save(backupFileName(), utf8.encode(text));
+    } catch (error) {
+      debugPrint('Saving settings failed: $error');
+      messenger.showSnackBar(SnackBar(content: Text(words.settingsExportFailed)));
+      return;
+    }
+    if (saved) messenger.showSnackBar(SnackBar(content: Text(words.settingsExported)));
+  }
+
+  Future<void> _import(BuildContext context) async {
+    final words = context.words;
+    final messenger = ScaffoldMessenger.of(context);
+    void say(String message) => messenger.showSnackBar(SnackBar(content: Text(message)));
+    final Uint8List? bytes;
+    try {
+      bytes = await pick();
+    } catch (error) {
+      debugPrint('Choosing a settings file failed: $error');
+      say(words.settingsReadFailed);
+      return;
+    }
+    if (bytes == null) return;
+    final SettingsBackup backup;
+    try {
+      backup = readSettingsBackup(bytes);
+    } on FormatException {
+      say(words.settingsNotAFile);
+      return;
+    }
+    if (!context.mounted) return;
+    final preview = importSettings(settings.value, backup);
+    final go = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(words.importTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(words.importWhat),
+            if (backup.settings.myFits.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(words.importSlices(preview.slicesAdded, preview.slicesChanged)),
+            ],
+            if (preview.slicesLeftOut > 0) ...[
+              const SizedBox(height: 8),
+              Text(words.importSlicesLeftOut(preview.slicesLeftOut, MyFit.most)),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(words.cancel)),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(words.importDo),
+          ),
+        ],
+      ),
+    );
+    if (go != true) return;
+    // Worked out again from the settings as they are now.
+    await settings.change((now) => importSettings(now, backup).result);
+    say(words.settingsImported);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final words = context.words;
+    return _Labelled(
+      label: words.moveSettings,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            words.moveSettingsWhy,
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
+          TextButton.icon(
+            onPressed: () => _export(context),
+            icon: const Icon(Icons.save_alt),
+            label: Text(words.exportSettings),
+          ),
+          TextButton.icon(
+            onPressed: () => _import(context),
+            icon: const Icon(Icons.file_open_outlined),
+            label: Text(words.importSettings),
+          ),
+        ],
+      ),
+    );
+  }
 }
